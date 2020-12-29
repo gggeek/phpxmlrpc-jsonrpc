@@ -20,8 +20,6 @@
         "sami/sami": "Required for doc generation using pake. Version constraints: ^3.3 || ^4.1"
     },
     "autoload": {
-        "autoload": {
-            "psr-4": {"PhpXmlRpc\\JsonRpc\\": "src/"}
-        }
+        "psr-4": {"PhpXmlRpc\\JsonRpc\\": "src/"}
     }
 }
