@@ -8,7 +8,7 @@
     {
         "php": "^5.3.0 || ^7.0 || ^8.0",
         "ext-json": "*",
-        "phpxmlrpc/phpxmlrpc": "^4.5.0"
+        "phpxmlrpc/phpxmlrpc": "^4.5.1"
     },
     "require-dev": {
         "ext-curl": "*",
@@ -24,5 +24,10 @@
     },
     "autoload": {
         "psr-4": {"PhpXmlRpc\\JsonRpc\\": "src/"}
+    },
+    "config": {
+        "preferred-install": {
+            "phpxmlrpc/phpxmlrpc": "source"
+        }
     }
 }

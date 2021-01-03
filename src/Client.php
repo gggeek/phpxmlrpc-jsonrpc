@@ -8,7 +8,7 @@ use PhpXmlRpc\Client as BaseClient;
 /**
  * @todo the JSON proposed RFC states that when making json calls, we should
  *       specify an 'accept: application/json' http header. Currently we either
- *       do not output an 'accept' header or specify  'any' (in curl mode)
+ *       do not output an 'accept' header or specify 'any' (in curl mode)
  */
 class Client extends BaseClient
 {
@@ -16,7 +16,7 @@ class Client extends BaseClient
     public $no_multicall = true;
 
     // default return type of calls to json-rpc servers: jsonrpcvals
-    var $return_type = 'jsonrpcvals';
+    public $return_type = 'jsonrpcvals';
 
     /*
     function __construct($path, $server='', $port='', $method='')

@@ -3,6 +3,7 @@
 
 namespace PhpXmlRpc\JsonRpc;
 
+use PhpXmlRpc\JsonRpc\Helper\Charset;
 use PhpXmlRpc\Server as BaseServer;
 
 /**
@@ -12,17 +13,17 @@ use PhpXmlRpc\Server as BaseServer;
  */
 class Server extends BaseServer
 {
-    //var $allow_system_funcs = false;
-    var $functions_parameters_type = 'jsonrpcvals';
+    //public $allow_system_funcs = false;
+    public $functions_parameters_type = 'jsonrpcvals';
 
-    function serializeDebug($charset_encoding = '')
+    public function serializeDebug($charsetEncoding = '')
     {
         $out = '';
         if ($this->debug_info != '') {
             $out .= "/* SERVER DEBUG INFO (BASE64 ENCODED):\n" . base64_encode($this->debug_info) . "\n*/\n";
         }
         if ($GLOBALS['_xmlrpc_debuginfo'] != '') {
-            $out .= "/* DEBUG INFO:\n\n" . json_encode_entitites($GLOBALS['_xmlrpc_debuginfo'], null, $charset_encoding) . "\n*/\n";
+            $out .= "/* DEBUG INFO:\n\n" . Charset::instance()->encodeEntities($GLOBALS['_xmlrpc_debuginfo'], null, $charsetEncoding) . "\n*/\n";
         }
         return $out;
     }
@@ -123,7 +124,7 @@ class Server extends BaseServer
                     if ($this->functions_parameters_type == 'epivals') {
                         $r = call_user_func_array($func, array($methName, $params, $this->user_data));
                         // mimic EPI behaviour: if we get an array that looks like an error, make it
-                        // an eror response
+                        // an error response
                         if (is_array($r) && array_key_exists('faultCode', $r) && array_key_exists('faultString', $r)) {
                             $r = new Response(0, (integer)$r['faultCode'], (string)$r['faultString']);
                         } else {
@@ -149,7 +150,7 @@ class Server extends BaseServer
                 // since he had an existing xmlrpc server with boatloads of code.
                 // Be nice to him, and serialize the xmlrpc stuff into JSON.
                 // We also override the content_type of the xmlrpc response,
-                // but lack knoweledge of intented response charset...
+                // but lack knowledge of intended response charset...
                 $r->content_type = 'application/json';
                 $r->payload = serialize_jsonrpcresp($r, $msgID);
             } else {
@@ -207,7 +208,7 @@ class Server extends BaseServer
                 // build an xmlrpcmsg object with data parsed from xml
                 $m = new Request($GLOBALS['_xh']['method'], 0, $GLOBALS['_xh']['id']);
                 // now add parameters in
-                /// @todo for more speeed, we could just substitute the array...
+                /// @todo for more speed, we could just substitute the array...
                 for ($i = 0; $i < sizeof($GLOBALS['_xh']['params']); $i++) {
                     $m->addParam($GLOBALS['_xh']['params'][$i]);
                 }
@@ -227,7 +228,7 @@ class Server extends BaseServer
      * @param string $charsetEncoding
      * @access protected
      */
-    function xml_header($charsetEncoding = '')
+    protected function xml_header($charsetEncoding = '')
     {
         return '';
     }

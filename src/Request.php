@@ -3,6 +3,8 @@
 
 namespace PhpXmlRpc\JsonRpc;
 
+use PhpXmlRpc\Helper\Http;
+use PhpXmlRpc\Helper\Logger;
 use PhpXmlRpc\Request as BaseRequest;
 
 class Request extends BaseRequest
@@ -12,7 +14,7 @@ class Request extends BaseRequest
 
     /**
      * @param string $methodName the name of the method to invoke
-     * @param array $params array of parameters to be paased to the method (xmlrpcval objects)
+     * @param \PhpXmlRpc\Value[] $params array of parameters to be passed to the method (xmlrpcval objects)
      * @param mixed $id the id of the jsonrpc request
      */
     public function __construct($methodName, $params = 0, $id = null)
@@ -37,7 +39,7 @@ class Request extends BaseRequest
         $this->payload = "{\n\"method\": \"" . json_encode_entities($this->methodname, '', $charsetEncoding) . "\",\n\"params\": [ ";
         for ($i = 0; $i < sizeof($this->params); $i++) {
             $p = $this->params[$i];
-            // MB: we try to force serialization as json even though the object
+            // NB: we try to force serialization as json even though the object
             // param might be a plain xmlrpcval object.
             // This way we do not need to override addParam, aren't we lazy?
             $this->payload .= "\n  " . serialize_jsonrpcval($p, $charsetEncoding) .
@@ -70,7 +72,7 @@ class Request extends BaseRequest
     function parseResponse($data = '', $headersProcessed = false, $returnType = 'jsonrpcvals')
     {
         if ($this->debug) {
-            print "<PRE>---GOT---\n" . htmlentities($data) . "\n---END---\n</PRE>";
+            Logger::instance()->debugMessage("---GOT---\n$data\n---END---");
         }
 
         if ($data == '') {
@@ -84,7 +86,8 @@ class Request extends BaseRequest
         $raw_data = $data;
         // parse the HTTP headers of the response, if present, and separate them from data
         if (substr($data, 0, 4) == 'HTTP') {
-            $r = $this->parseResponseHeaders($data, $headersProcessed);
+            $httpParser = new Http();
+            $r = $httpParser->parseResponseHeaders($data, $headersProcessed, $this->debug);
             if ($r) {
                 // parent class implementation of parseResponseHeaders returns in case
                 // of error an object of the wrong type: recode it into correct object
@@ -145,10 +148,10 @@ class Request extends BaseRequest
         else {
             $v = $GLOBALS['_xh']['value'];
 
-            if ($this->debug) {
-                print "<PRE>---PARSED---\n";
-                var_export($v);
-                print "\n---END---</PRE>";
+            if ($this->debug > 1) {
+                Logger::instance()->debugMessage(
+                    "---PARSED---\n" . var_export($v, true) . "\n---END---"
+                );
             }
 
             if ($GLOBALS['_xh']['isf']) {
@@ -162,6 +165,7 @@ class Request extends BaseRequest
         $r->hdrs = $GLOBALS['_xh']['headers'];
         $r->_cookies = $GLOBALS['_xh']['cookies'];
         $r->raw_data = $raw_data;
+
         return $r;
     }
 }

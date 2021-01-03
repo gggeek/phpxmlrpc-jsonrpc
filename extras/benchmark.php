@@ -3,7 +3,7 @@
  * Benchmarking suite for the json module of the PHP-XMLRPC lib
  *
  * @author Gaetano Giunta
- * @copyright (c) 2006-2020 G. Giunta
+ * @copyright (c) 2006-2021 G. Giunta
  * @license code licensed under the BSD License: see license.txt
  *
  * There are known differences in data handling that result in CRC discrepancies:
@@ -67,17 +67,17 @@ for ($i = 0; $i < $num_tests; $i++) {
         $valarray = array();
         foreach ($data[$j] as $key => $val) {
             $values = array();
-            $values[] =& new jsonrpcval($val[0], 'int');
-            $values[] =& new jsonrpcval($val[1], 'double');
-            $values[] =& new jsonrpcval($val[2], 'string');
-            $values[] =& new jsonrpcval($val[3], 'boolean');
-            $values[] =& new jsonrpcval($val[4], 'null');
-            $values[] =& new jsonrpcval($val[5], 'int');
-            $values[] =& new jsonrpcval($val[6], 'double');
-            $values[] =& new jsonrpcval($val[7], 'string');
-            $values[] =& new jsonrpcval($val[8], 'boolean');
-            $values[] =& new jsonrpcval($val[9], 'null');
-            $valarray[$key] =& new jsonrpcval($values, 'array');
+            $values[] = new jsonrpcval($val[0], 'int');
+            $values[] = new jsonrpcval($val[1], 'double');
+            $values[] = new jsonrpcval($val[2], 'string');
+            $values[] = new jsonrpcval($val[3], 'boolean');
+            $values[] = new jsonrpcval($val[4], 'null');
+            $values[] = new jsonrpcval($val[5], 'int');
+            $values[] = new jsonrpcval($val[6], 'double');
+            $values[] = new jsonrpcval($val[7], 'string');
+            $values[] = new jsonrpcval($val[8], 'boolean');
+            $values[] = new jsonrpcval($val[9], 'null');
+            $valarray[$key] = new jsonrpcval($values, 'array');
         }
         $vals[] =& new jsonrpcval($valarray, 'struct');
     }
