@@ -84,8 +84,8 @@ function php_jsonrpc_encode($phpVal, $options = array())
 
 function php_jsonrpc_decode_json($jsonVal, $options = array())
 {
-    $encoder = new Encoder();
-    return $encoder->decodeJson($jsonVal, $options);
+    $parser = new Parser();
+    return $parser->decodeJson($jsonVal, $options);
 }
 
 /*

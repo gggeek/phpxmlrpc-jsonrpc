@@ -3,7 +3,6 @@
 namespace PhpXmlRpc\JsonRpc;
 
 use PhpXmlRpc\JsonRpc\Helper\Serializer;
-use PhpXmlRpc\PhpXmlRpc;
 use PhpXmlRpc\Value;
 
 /**
@@ -13,7 +12,6 @@ use PhpXmlRpc\Value;
  */
 class Encoder
 {
-
     protected static $serializer;
 
     public function getSerializer()
@@ -34,7 +32,7 @@ class Encoder
      *
      * Works with xmlrpc objects as input, too.
      *
-     * @param Value $jsonrpcVal
+     * @param Value|Request $jsonrpcVal
      * @param array $options if 'decode_php_objs' is set in the options array, jsonrpc objects can be decoded into php objects
      * @return mixed
      *
@@ -42,45 +40,49 @@ class Encoder
      */
     public function decode($jsonrpcVal, $options = array())
     {
-        $kind = $jsonrpcVal->kindOf();
+        switch ($jsonrpcVal->kindOf()) {
+            case 'scalar':
+                /// @todo should we support 'dates_as_objects' and datetime xmlrpc Values ?
+                return $jsonrpcVal->scalarval();
 
-        if ($kind == 'scalar') {
-            return $jsonrpcVal->scalarval();
-        } elseif ($kind == 'array') {
-/// @todo
-            $size = $jsonrpcVal->arraysize();
-            $arr = array();
-
-            for ($i = 0; $i < $size; $i++) {
-                $arr[] = $this->decode($jsonrpcVal->arraymem($i), $options);
-            }
-            return $arr;
-        } elseif ($kind == 'struct') {
-/// @todo
-            $jsonrpcVal->structreset();
-            // If user said so, try to rebuild php objects for specific struct vals.
-            /// @todo should we raise a warning for class not found?
-            // shall we check for proper subclass of xmlrpcval instead of
-            // presence of _php_class to detect what we can do?
-            if (in_array('decode_php_objs', $options)) {
-                if ($jsonrpcVal->_php_class != '' && class_exists($jsonrpcVal->_php_class)
-                ) {
-                    $obj = @new $jsonrpcVal->_php_class;
-                } else {
-                    $obj = new \stdClass();
-                }
-                while (list($key, $value) = $jsonrpcVal->structeach()) {
-                    $obj->$key = $this->decode($value, $options);
-                }
-                return $obj;
-            } else {
-/// @todo
+            case 'array':
                 $arr = array();
-                while (list($key, $value) = $jsonrpcVal->structeach()) {
-                    $arr[$key] = $this->decode($value, $options);
+                foreach($jsonrpcVal as $value) {
+                    $arr[] = $this->decode($value, $options);
                 }
                 return $arr;
-            }
+
+            case 'struct':
+                // If user said so, try to rebuild php objects for specific struct vals.
+                /// @todo should we raise a warning for class not found?
+                // shall we check for proper subclass of xmlrpc value instead of presence of _php_class to detect
+                // what we can do?
+                if (in_array('decode_php_objs', $options) && $jsonrpcVal->_php_class != ''
+                    && class_exists($jsonrpcVal->_php_class)
+                ) {
+                    $obj = @new $jsonrpcVal->_php_class();
+                    foreach ($jsonrpcVal as $key => $value) {
+                        $obj->$key = $this->decode($value, $options);
+                    }
+
+                    return $obj;
+                } else {
+                    $arr = array();
+                    foreach ($jsonrpcVal as $key => $value) {
+                        $arr[$key] = $this->decode($value, $options);
+                    }
+                    return $arr;
+                }
+
+            case 'msg':
+                $paramCount = $jsonrpcVal->getNumParams();
+                $arr = array();
+                for ($i = 0; $i < $paramCount; $i++) {
+                    $arr[] = $this->decode($jsonrpcVal->getParam($i), $options);
+                }
+                return $arr;
+
+            /// @todo throw on unsupported type
         }
     }
 
@@ -89,7 +91,7 @@ class Encoder
      * It will not re-encode Value objects.
      *
      * @param mixed $phpVal the value to be converted into a Value object
-     * @param array $options can include 'encode_php_objs'
+     * @param array $options can include 'encode_php_objs', 'auto_dates' (which means php DateTimes will be encoded as iso datetime strings)
      * @return Value
      */
     public function encode($phpVal, $options = array())
@@ -138,11 +140,11 @@ class Encoder
             case 'object':
                 if (is_a($phpVal, 'PhpXmlrpc\Value')) {
                     $jsonrpcVal = $phpVal;
+                } else if (is_a($phpVal, 'DateTimeInterface') && in_array('auto_dates', $options)) {
+                    $jsonrpcVal = new Value($phpVal->format('Ymd\TH:i:s'), Value::$xmlrpcDateTime);
                 } else {
                     $arr = array();
-                    reset($phpVal);
-/// @todo
-                    while (list($k, $v) = each($phpVal)) {
+                    foreach($phpVal as $k => $v) {
                         $arr[$k] = $this->encode($v, $options);
                     }
                     $jsonrpcVal = new Value($arr, Value::$xmlrpcStruct);
@@ -160,79 +162,5 @@ class Encoder
         }
 
         return $jsonrpcVal;
-    }
-
-    /**
-     * Convert the json representation of a jsonrpc method call, jsonrpc method response
-     * or single json value into the appropriate object (a.k.a. deserialize).
-     * Please note that there is no way to distinguish the serialized representation
-     * of a single json val of type object which has the 3 appropriate members from
-     * the serialization of a method call or method response.
-     * In such a case, the function will return a jsonrpcresp or jsonrpcmsg
-     * @param string $jsonVal
-     * @param array $options includes src_encoding, dest_encoding
-     * @return mixed false on error, or an instance of jsonrpcval, jsonrpcresp or jsonrpcmsg
-     */
-    public function decodeJson($jsonVal, $options = array())
-    {
-        $src_encoding = array_key_exists('src_encoding', $options) ? $options['src_encoding'] : PhpXmlRpc::$xmlrpc_defencoding;
-        $dest_encoding = array_key_exists('dest_encoding', $options) ? $options['dest_encoding'] : PhpXmlRpc::$xmlrpc_internalencoding;
-
-        //$GLOBALS['_xh'] = array();
-        $GLOBALS['_xh']['isf'] = 0;
-        if (!json_parse($jsonVal, false, $src_encoding, $dest_encoding)) {
-            error_log($GLOBALS['_xh']['isf_reason']);
-            return false;
-        } else {
-            $val = $GLOBALS['_xh']['value']; // shortcut
-            if ($GLOBALS['_xh']['value']->kindOf() == 'struct') {
-                if ($GLOBALS['_xh']['value']->structSize() == 3) {
-                    if ($GLOBALS['_xh']['value']->structMemExists('method') &&
-                        $GLOBALS['_xh']['value']->structMemExists('params') &&
-                        $GLOBALS['_xh']['value']->structMemExists('id')
-                    ) {
-                        /// @todo we do not check for correct type of 'method', 'params' struct members...
-                        $method = $GLOBALS['_xh']['value']->structMem('method');
-                        $msg = new Request($method->scalarval(), null, $this->decode($GLOBALS['_xh']['value']->structMem('id')));
-                        $params = $GLOBALS['_xh']['value']->structMem('params');
-                        for ($i = 0; $i < $params->arraySize(); ++$i) {
-                            $msg->addparam($params->arrayMem($i));
-                        }
-                        return $msg;
-                    } else
-                        if ($GLOBALS['_xh']['value']->structMemExists('result') &&
-                            $GLOBALS['_xh']['value']->structMemExists('error') &&
-                            $GLOBALS['_xh']['value']->structMemExists('id')
-                        ) {
-                            $id = $this->decode($GLOBALS['_xh']['value']->structMem('id'));
-                            $err = $this->decode($GLOBALS['_xh']['value']->structMem('error'));
-                            if ($err == null) {
-                                $resp = new Response($GLOBALS['_xh']['value']->structMem('result'));
-                            } else {
-                                if (is_array($err) && array_key_exists('faultCode', $err)
-                                    && array_key_exists('faultString', $err)
-                                ) {
-                                    if ($err['faultCode'] == 0) {
-                                        // FAULT returned, errno needs to reflect that
-                                        $err['faultCode'] = -1;
-                                    }
-                                }
-                                // NB: what about jsonrpc servers that do NOT respect
-                                // the faultCode/faultString convention???
-                                // we force the error into a string. regardless of type...
-                                else //if (is_string($GLOBALS['_xh']['value']))
-                                {
-                                    $err = array('faultCode' => -1, 'faultString' => $this->getSerializer()->serializeValue($GLOBALS['_xh']['value']->structMem('error')));
-                                }
-                                $resp = new Response(0, $err['faultCode'], $err['faultString']);
-                            }
-                            $resp->id = $id;
-                            return $resp;
-                        }
-                }
-            }
-            // not a request msg nor a response: a plain jsonrpcval obj
-            return $GLOBALS['_xh']['value'];
-        }
     }
 }
