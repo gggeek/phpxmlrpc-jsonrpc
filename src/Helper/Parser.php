@@ -1,138 +1,236 @@
 <?php
 
-
 namespace PhpXmlRpc\JsonRpc\Helper;
 
+use PhpXmlRpc\JsonRpc\Encoder;
+use PhpXmlRpc\JsonRpc\PhpJsonRpc;
+use PhpXmlRpc\JsonRpc\Value;
+
+/**
+ * @see https://www.jsonrpc.org/specification_v1
+ * @todo add support for __jsonclass__
+ * @todo add support for json-rpc 2.0 - see https://www.jsonrpc.org/specification
+ * @todo add support for json-rpc 1.1 ? see: https://jsonrpc.org/historical/json-rpc-1-1-wd.html and
+ *       https://jsonrpc.org/historical/json-rpc-1-1-alt.html
+ *
+ * @todo add a ParseValue method ?
+ * @todo add a Parse method (same as XMLParse) ?
+ */
 class Parser
 {
+    /**
+     * @see PhpXmlRpc/XMLParser
+     */
     public $_xh = array(
-        'ac' => '',
         'isf' => 0,
         'isf_reason' => '',
+        'value' => null,
         'method' => false,
         'params' => array(),
         'pt' => array(),
-        'rt' => '',
+        'id' => null,
     );
 
-    /**
-     * Parse a json string, expected to be jsonrpc request format
-     */
-    public function parseRequest($data, $return_phpvals = false, $use_extension = false, $src_encoding = '')
-    {
-        $this->_xh['isf'] = 0;
-        $this->_xh['isf_reason'] = '';
-        $this->_xh['pt'] = array();
-        if ($return_phpvals && $use_extension) {
-            $ok = json_parse_native($data);
-        } else {
-            $ok = json_parse($data, $return_phpvals, $src_encoding);
-        }
-        if ($ok) {
-            if (!$return_phpvals)
-                $this->_xh['value'] = @$this->_xh['value']->me['struct'];
+    protected static $encoder;
 
-            if (!is_array($this->_xh['value']) || !array_key_exists('method', $this->_xh['value'])
-                || !array_key_exists('params', $this->_xh['value']) || !array_key_exists('id', $this->_xh['value'])
-            ) {
-                $this->_xh['isf_reason'] = 'JSON parsing did not return correct jsonrpc request object';
-                return false;
-            } else {
-                $this->_xh['method'] = $this->_xh['value']['method'];
-                $this->_xh['params'] = $this->_xh['value']['params'];
-                $this->_xh['id'] = $this->_xh['value']['id'];
-                if (!$return_phpvals) {
-                    /// @todo we should check for appropriate type for method name and params array...
-                    $this->_xh['method'] = $this->_xh['method']->scalarval();
-                    $this->_xh['params'] = $this->_xh['params']->me['array'];
-                    $this->_xh['id'] = php_jsonrpc_decode($this->_xh['id']);
-                } else {
-                    // to allow 'phpvals' type servers to work, we need to rebuild $this->_xh['pt'] too
-                    foreach ($this->_xh['params'] as $val) {
-                        // since we rebuild this after converting json values to php,
-                        // we've lost the info about array/struct, and we try to rebuild it
-                        /// @bug empty objects will be recognized as empty arrays
-                        /// @bug an object with keys '0', '1', ... 'n' will be recognized as an array
-                        $typ = gettype($val);
-                        if ($typ == 'array' && count($val) && count(array_diff_key($val, array_fill(0, count($val), null))) !== 0) {
-                            $typ = 'object';
-                        }
-                        $this->_xh['pt'][] = php_2_jsonrpc_type($typ);
-                    }
-                }
-                return true;
-            }
-        } else {
-            return false;
+    public function getEncoder()
+    {
+        if (self::$encoder === null) {
+            self::$encoder = new Encoder();
         }
+        return self::$encoder;
+    }
+
+    public function setencoder($encoder)
+    {
+        self::$encoder = $encoder;
     }
 
     /**
-     * Parse a json string, expected to be in json-rpc response format.
+     * Parse a json string, expected to be in jsonrpc request format
+     * @param $data
+     * @param bool $returnPhpvals
+     * @param string $srcEncoding
+     *
+     * @return bool
+     *
+     * @todo checks missing:
+     *       - no extra members in request
+     */
+    public function parseRequest($data, $returnPhpvals = false, $srcEncoding = '')
+    {
+        $this->_xh = array(
+            'isf' => 0,
+            'isf_reason' => '',
+            'value' => null,
+            'method' => false,
+            'params' => array(),
+            'pt' => array(),
+            'id' => null,
+        );
+
+        $ok = json_decode($data, true, PhpJsonRpc::$json_decode_depth, PhpJsonRpc::$json_decode_flags);
+
+        if (!is_array($ok)) {
+            // error 3: json parsing fault, 2: invalid jsonrpc
+            $this->_xh['isf'] = (json_last_error() !== JSON_ERROR_NONE) ? 3 : 2;
+            $this->_xh['isf_reason'] = 'JSON parsing failed. error: ' . json_last_error();
+            return false;
+        }
+
+        if (!array_key_exists('method', $ok) || !is_string($ok['method']) ||
+            !array_key_exists('params', $ok) || !is_array($ok['params']) ||
+            !array_key_exists('id', $ok)
+        ) {
+            $this->_xh['isf'] = 3;
+            $this->_xh['isf_reason'] = 'JSON parsing did not return correct jsonrpc 1.0 request object';
+            return false;
+        }
+
+        if ($returnPhpvals) {
+            // to allow 'phpvals' type servers to work, we need to rebuild $this->_xh['pt'] too
+            foreach ($ok['params'] as $val) {
+                $typ = gettype($val);
+                if ($typ == 'array' && count($val) && count(array_diff_key($val, array_fill(0, count($val), null))) !== 0) {
+                    $typ = 'object';
+                }
+                $this->_xh['pt'][] = $this->php2JsonrpcType($typ);
+            }
+        } else {
+            foreach ($ok['params'] as &$val) {
+                /// @todo what should be the default encoding options ?
+                $val = $this->getEncoder()->encode($val);
+            }
+
+            /// @todo should we encode Id as well ?
+        }
+
+        $this->_xh['method'] = $ok['method'];
+        $this->_xh['params'] = $ok['params'];
+        $this->_xh['id'] = $ok['id'];
+
+        return true;
+    }
+
+    /**
+     * Parse a json string, expected to be in jsonrpc response format.
      * @todo checks missing:
      *       - no extra members in response
-     *       - no extra members in error struct
-     *       - resp. ID validation
+     * @param $data
+     * @param false $returnPhpvals
+     * @param string $srcEncoding
+     *
+     * @return bool
      */
-    public function parseResponse($data, $return_phpvals = false, $use_extension = false, $src_encoding = '')
+    public function parseResponse($data, $returnPhpvals = false, $srcEncoding = '')
     {
-        $this->_xh['isf'] = 0;
-        $this->_xh['isf_reason'] = '';
-        if ($return_phpvals && $use_extension) {
-            $ok = json_parse_native($data);
-        } else {
-            $ok = json_parse($data, $return_phpvals, $src_encoding);
-        }
-        if ($ok) {
-            if (!$return_phpvals) {
-                $this->_xh['value'] = @$this->_xh['value']->me['struct'];
-            }
-            if (!is_array($this->_xh['value']) || !array_key_exists('result', $this->_xh['value'])
-                || !array_key_exists('error', $this->_xh['value']) || !array_key_exists('id', $this->_xh['value'])
-            ) {
-                //$this->_xh['isf'] = 2;
-                $this->_xh['isf_reason'] = 'JSON parsing did not return correct jsonrpc response object';
-                return false;
-            }
-            if (!$return_phpvals) {
-                $d_error = php_jsonrpc_decode($this->_xh['value']['error']);
-                $this->_xh['value']['id'] = php_jsonrpc_decode($this->_xh['value']['id']);
-            } else {
-                $d_error = $this->_xh['value']['error'];
-            }
-            $this->_xh['id'] = $this->_xh['value']['id'];
-            if ($d_error != null) {
-                $this->_xh['isf'] = 1;
+        $this->_xh = array(
+            'isf' => 0,
+            'isf_reason' => '',
+            'value' => null,
+            'method' => false,
+            'params' => array(),
+            'pt' => array(),
+            'id' => null,
+        );
 
-                //$this->_xh['value'] = $d_error;
-                if (is_array($d_error) && array_key_exists('faultCode', $d_error)
-                    && array_key_exists('faultString', $d_error)
-                ) {
-                    if ($d_error['faultCode'] == 0) {
-                        // FAULT returned, errno needs to reflect that
-                        $d_error['faultCode'] = -1;
-                    }
-                    $this->_xh['value'] = $d_error;
-                }
-                // NB: what about jsonrpc servers that do NOT respect
-                // the faultCode/faultString convention???
-                // we force the error into a string. regardless of type...
-                else //if (is_string($this->_xh['value']))
-                {
-                    if ($return_phpvals) {
-                        $this->_xh['value'] = array('faultCode' => -1, 'faultString' => var_export($this->_xh['value']['error'], true));
-                    } else {
-                        $this->_xh['value'] = array('faultCode' => -1, 'faultString' => serialize_jsonrpcval($this->_xh['value']['error']));
-                    }
-                }
+        $ok = json_decode($data, true, PhpJsonRpc::$json_decode_depth, PhpJsonRpc::$json_decode_flags);
 
-            } else {
-                $this->_xh['value'] = $this->_xh['value']['result'];
-            }
-            return true;
-
-        } else {
+        if (!is_array($ok)) {
+            // error 3: json parsing fault, 2: invalid jsonrpc
+            $this->_xh['isf'] = (json_last_error() !== JSON_ERROR_NONE) ? 3 : 2;
+            $this->_xh['isf_reason'] = 'JSON parsing failed. error: ' . json_last_error();
             return false;
+        }
+
+        if (!array_key_exists('result', $ok) || !array_key_exists('error', $ok) || !array_key_exists('id', $ok)
+            || !($ok['error'] === null xor $ok['result'] === null)
+        ) {
+            $this->_xh['isf'] = 2;
+            $this->_xh['isf_reason'] = 'JSON parsing did not return correct jsonrpc 1.0 response object';
+            return false;
+        }
+
+        if (!$returnPhpvals) {
+            $encoder = $this->getEncoder();
+            /// @todo what should be the default encoding options ?
+            if ($ok['error'] !== null ) {
+                $ok['result'] = $encoder->encode($ok['result']);
+            }
+        }
+
+        if ($ok['error'] !== null) {
+            $this->_xh['isf'] = 1;
+
+            if (is_array($ok['error']) && array_key_exists('faultCode', $ok['error'])
+                && array_key_exists('faultString', $ok['error'])
+            ) {
+                if ($ok['error']['faultCode'] == 0) {
+                    // FAULT returned, errno needs to reflect that
+                    $ok['error']['faultCode'] = -1;
+                }
+                $this->_xh['value'] = $ok['error'];
+            }
+            /// @todo what about jsonrpc servers that do NOT respect the faultCode/faultString convention?
+            //        ATM we force the error into a string, except for ints and strings...
+            else
+            {
+                $this->_xh['value'] = array(
+                    /// @todo use a constant for this error code
+                    'faultCode' => -1,
+                    'faultString' => (is_string($ok['error']) || is_int($ok['error'])) ? $ok['error'] : var_export($ok['error'], true),
+                    'error' => $ok['error'],
+                );
+            }
+
+        } else {
+            $this->_xh['value'] = $ok['result'];
+        }
+
+        /// @todo should we encode Id as well ?
+        $this->_xh['id'] = $ok['id'];
+
+        return true;
+    }
+
+    /**
+     * Given a string defining a php type or phpxmlrpc type (loosely defined: strings
+     * accepted come from javadoc blocks), return corresponding phpxmlrpc type.
+     * NB: for php 'resource' types returns empty string, since resources cannot be serialized;
+     * for php class names returns 'struct', since php objects can be serialized as json structs;
+     * for php arrays always return 'array', even though arrays sometimes serialize as json structs
+     * @param string $phpType
+     * @return string
+     */
+    public function php2JsonrpcType($phpType)
+    {
+        switch (strtolower($phpType)) {
+            case 'string':
+                return Value::$xmlrpcString;
+            case 'integer':
+            case Value::$xmlrpcInt: // 'int'
+            case Value::$xmlrpcI4:
+                return Value::$xmlrpcInt;
+            case 'double':
+                return Value::$xmlrpcDouble;
+            case 'boolean':
+                return Value::$xmlrpcBoolean;
+            case 'array':
+                return Value::$xmlrpcArray;
+            case 'object':
+                return Value::$xmlrpcStruct;
+            //case Value::$xmlrpcBase64:
+            case Value::$xmlrpcStruct:
+                return strtolower($phpType);
+            case 'resource':
+                return '';
+            default:
+                if (class_exists($phpType)) {
+                    return Value::$xmlrpcStruct;
+                } else {
+                    // unknown: might be any 'extended' jsonrpc type
+                    return Value::$xmlrpcValue;
+                }
         }
     }
 }

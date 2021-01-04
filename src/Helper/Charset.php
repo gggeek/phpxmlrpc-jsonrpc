@@ -4,11 +4,14 @@ namespace PhpXmlRpc\JsonRpc\Helper;
 
 use PhpXmlRpc\PhpXmlRpc;
 
+/**
+ * @todo implement an Interface
+ */
 class Charset
 {
     protected $ecma262_iso88591_Entities = array();
 
-    protected static $instance = array();
+    protected static $instance = null;
 
     /**
      * This class is singleton for performance reasons.
@@ -19,7 +22,7 @@ class Charset
     public static function instance()
     {
         if (self::$instance === null) {
-            self::$instance = new self();
+            self::$instance = new static();
         }
 
         return self::$instance;
@@ -65,7 +68,7 @@ class Charset
      * @todo add support for UTF-16 as destination charset instead of ASCII
      * @todo add support for UTF-16 as source charset
      */
-    function encodeEntities($data, $src_encoding = '', $dest_encoding = '')
+    public function encodeEntities($data, $src_encoding = '', $dest_encoding = '')
     {
         if ($src_encoding == '') {
             // lame, but we know no better...

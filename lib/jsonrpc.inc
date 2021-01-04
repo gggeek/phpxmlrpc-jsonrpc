@@ -88,16 +88,24 @@ function php_jsonrpc_decode_json($jsonVal, $options = array())
     return $encoder->decodeJson($jsonVal, $options);
 }
 
-function jsonrpc_parse_req($data, $return_phpvals = false, $use_extension = false, $src_encoding = '')
+/*
+ * BC: $use_extension is now true
+ * @todo throw if it is set to false?
+ */
+function jsonrpc_parse_req($data, $return_phpvals = false, $use_extension = true, $src_encoding = '')
 {
     $parser = new Parser();
-    return $parser->parseRequest($data, $return_phpvals, $use_extension, $src_encoding);
+    return $parser->parseRequest($data, $return_phpvals, $src_encoding);
 }
 
-function jsonrpc_parse_resp($data, $return_phpvals = false, $use_extension = false, $src_encoding = '')
+/*
+ * BC: $use_extension is now true
+ * @todo throw if it is set to false?
+ */
+function jsonrpc_parse_resp($data, $return_phpvals = false, $use_extension = true, $src_encoding = '')
 {
     $parser = new Parser();
-    return $parser->parseResponse($data, $return_phpvals, $use_extension, $src_encoding);
+    return $parser->parseResponse($data, $return_phpvals, $src_encoding);
 }
 
 function serialize_jsonrpcresp($resp, $id = null, $charset_encoding = '')
@@ -114,7 +122,7 @@ function serialize_jsonrpcval($value, $charset_encoding = '')
 
 function php_2_jsonrpc_type($phptype)
 {
-    $wrapper = new Wrapper();
+    $wrapper = new Parser();
     return $wrapper->php2JsonrpcType($phptype);
 }
 

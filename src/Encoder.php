@@ -2,6 +2,7 @@
 
 namespace PhpXmlRpc\JsonRpc;
 
+use PhpXmlRpc\JsonRpc\Helper\Serializer;
 use PhpXmlRpc\PhpXmlRpc;
 use PhpXmlRpc\Value;
 
@@ -12,6 +13,22 @@ use PhpXmlRpc\Value;
  */
 class Encoder
 {
+
+    protected static $serializer;
+
+    public function getSerializer()
+    {
+        if (self::$serializer === null) {
+            self::$serializer = new Serializer();
+        }
+        return self::$serializer;
+    }
+
+    public function setSerializer($serializer)
+    {
+        self::$serializer = $serializer;
+    }
+
     /**
      * Takes a jsonrpc value in object format and translates it into native PHP types.
      *
@@ -119,8 +136,7 @@ class Encoder
                 }
                 break;
             case 'object':
-/// @todo
-                if (is_a($phpVal, 'Value')) {
+                if (is_a($phpVal, 'PhpXmlrpc\Value')) {
                     $jsonrpcVal = $phpVal;
                 } else {
                     $arr = array();
@@ -206,7 +222,7 @@ class Encoder
                                 // we force the error into a string. regardless of type...
                                 else //if (is_string($GLOBALS['_xh']['value']))
                                 {
-                                    $err = array('faultCode' => -1, 'faultString' => serialize_jsonrpcval($GLOBALS['_xh']['value']->structMem('error')));
+                                    $err = array('faultCode' => -1, 'faultString' => $this->getSerializer()->serializeValue($GLOBALS['_xh']['value']->structMem('error')));
                                 }
                                 $resp = new Response(0, $err['faultCode'], $err['faultString']);
                             }
