@@ -28,7 +28,7 @@ class Request extends BaseRequest
         return self::$logger;
     }
 
-    public function setLogger($logger)
+    public static function setLogger($logger)
     {
         self::$logger = $logger;
     }
@@ -41,7 +41,7 @@ class Request extends BaseRequest
         return self::$parser;
     }
 
-    public function setParser($parser)
+    public static function setParser($parser)
     {
         self::$parser = $parser;
     }
@@ -54,7 +54,7 @@ class Request extends BaseRequest
         return self::$serializer;
     }
 
-    public function setSerializer($serializer)
+    public static function setSerializer($serializer)
     {
         self::$serializer = $serializer;
     }
@@ -62,11 +62,10 @@ class Request extends BaseRequest
     /**
      * @param string $methodName the name of the method to invoke
      * @param \PhpXmlRpc\Value[] $params array of parameters to be passed to the method (xmlrpcval objects)
-     * @param mixed $id the id of the jsonrpc request
+     * @param mixed $id the id of the jsonrpc request. NB: a NULL id is allowed and has a very definite meaning!
      */
     public function __construct($methodName, $params = array(), $id = null)
     {
-        // NB: a NULL id is allowed and has a very definite meaning!
         $this->id = $id;
         parent::__construct($methodName, $params);
     }

@@ -22,7 +22,7 @@ class Encoder
         return self::$serializer;
     }
 
-    public function setSerializer($serializer)
+    public static function setSerializer($serializer)
     {
         self::$serializer = $serializer;
     }

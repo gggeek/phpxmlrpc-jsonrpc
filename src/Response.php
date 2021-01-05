@@ -24,12 +24,27 @@ class Response extends BaseResponse
         return self::$serializer;
     }
 
-    public function setSerializer($serializer)
+    public static function setSerializer($serializer)
     {
         self::$serializer = $serializer;
     }
 
-    /// @todo override creator, to set proper valtyp and id!
+    public function __construct($val, $fCode = 0, $fString = '', $valType = '', $id = null)
+    {
+        $this->id = $id;
+
+        /// @todo throw exception if $valType is xml or xmlrpcvals ?
+        parent::__construct($val, $fCode, $fString, $valType);
+
+        switch ($this->valtyp) {
+            case 'xml':
+                $this->valtyp = 'json';
+                break;
+            case 'xmlrpcvals':
+                $this->valtyp = 'jsonrpcvals';
+                break;
+        }
+    }
 
     /**
      * Returns json representation of the response.

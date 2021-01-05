@@ -31,7 +31,7 @@ class Server extends BaseServer
         return self::$encoder;
     }
 
-    public function setencoder($encoder)
+    public static function setencoder($encoder)
     {
         self::$encoder = $encoder;
     }
@@ -44,7 +44,7 @@ class Server extends BaseServer
         return self::$parser;
     }
 
-    public function setParser($parser)
+    public static function setParser($parser)
     {
         self::$parser = $parser;
     }
@@ -57,7 +57,7 @@ class Server extends BaseServer
         return self::$serializer;
     }
 
-    public function setSerializer($serializer)
+    public static function setSerializer($serializer)
     {
         self::$serializer = $serializer;
     }
@@ -93,7 +93,7 @@ class Server extends BaseServer
     protected function execute($m, $params = null, $paramtypes = null, $msgID = null)
     {
         if (is_object($m)) {
-            // watch out: if $m is an xmlrpcmsg obj, this will raise a warning: no id member...
+            // watch out: if $m is an xmlrpc request obj, this will raise a warning: no id member...
             $methName = $m->method();
             $msgID = $m->id;
         } else {
@@ -104,9 +104,7 @@ class Server extends BaseServer
 
         if (!isset($dmap[$methName]['function'])) {
             // No such method
-            return new Response(0,
-                PhpXmlRpc::$xmlrpcerr['unknown_method'],
-                PhpXmlRpc::$xmlrpcstr['unknown_method']);
+            return new Response(0, PhpXmlRpc::$xmlrpcerr['unknown_method'], PhpXmlRpc::$xmlrpcstr['unknown_method'], '', $msgID);
         }
 
         // Check signature
@@ -119,10 +117,8 @@ class Server extends BaseServer
             }
             if (!$ok) {
                 // Didn't match.
-                return new Response(
-                    0,
-                    PhpXmlRpc::$xmlrpcerr['incorrect_params'],
-                    PhpXmlRpc::$xmlrpcstr['incorrect_params'] . ": ${errstr}"
+                return new Response(0, PhpXmlRpc::$xmlrpcerr['incorrect_params'],
+                    PhpXmlRpc::$xmlrpcstr['incorrect_params'] . ": ${errstr}", '', $msgID
                 );
             }
         }
@@ -135,10 +131,8 @@ class Server extends BaseServer
         // verify that function to be invoked is in fact callable
         if (!is_callable($func)) {
             error_log("XML-RPC: " . __METHOD__ . ": function $func registered as method handler is not callable");
-            return new Response(
-                0,
-                PhpXmlRpc::$xmlrpcerr['server_error'],
-                PhpXmlRpc::$xmlrpcstr['server_error'] . ": no function matches method"
+            return new Response(0, PhpXmlRpc::$xmlrpcerr['server_error'],
+                PhpXmlRpc::$xmlrpcstr['server_error'] . ': no function matches method', '', $msgID
             );
         }
 
@@ -159,9 +153,7 @@ class Server extends BaseServer
                     if (is_a($r, 'PhpXmlRpc\Value')) {
                         $r = new Response($r);
                     } else {
-                        $r = new Response(
-                            0,
-                            PhpXmlRpc::$xmlrpcerr['server_error'],
+                        $r = new Response(0, PhpXmlRpc::$xmlrpcerr['server_error'],
                             PhpXmlRpc::$xmlrpcstr['server_error'] . ": function does not return jsonrpc or xmlrpc response object"
                         );
                     }
@@ -215,10 +207,10 @@ class Server extends BaseServer
                 case 2:
                     throw $e;
                 case 1:
-                    $r = new Response(0, $e->getCode(), $e->getMessage());
+                    $r = new Response(0, $e->getCode(), $e->getMessage(), '', $msgID);
                     break;
                 default:
-                    $r = new Response(0, PhpXmlRpc::$xmlrpcerr['server_error'], PhpXmlRpc::$xmlrpcstr['server_error']);
+                    $r = new Response(0, PhpXmlRpc::$xmlrpcerr['server_error'], PhpXmlRpc::$xmlrpcstr['server_error'], '', $msgID);
             }
         }
         if ($this->debug > 2) {
