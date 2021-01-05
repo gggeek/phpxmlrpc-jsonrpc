@@ -16,8 +16,22 @@ class Request extends BaseRequest
     public $id = null; // used to store request ID internally
     public $content_type = 'application/json';
 
+    protected static $logger;
     protected static $parser;
     protected static $serializer;
+
+    public function getLogger()
+    {
+        if (self::$logger === null) {
+            self::$logger = Logger::instance();
+        }
+        return self::$logger;
+    }
+
+    public function setLogger($logger)
+    {
+        self::$logger = $logger;
+    }
 
     public function getParser()
     {
@@ -103,8 +117,9 @@ class Request extends BaseRequest
      */
     public function parseResponse($data = '', $headersProcessed = false, $returnType = 'jsonrpcvals')
     {
+
         if ($this->debug) {
-            Logger::instance()->debugMessage("---GOT---\n$data\n---END---");
+            $this->getLogger()->debugMessage("---GOT---\n$data\n---END---");
         }
 
         $this->httpResponse = array('raw_data' => $data, 'headers' => array(), 'cookies' => array());
@@ -129,6 +144,24 @@ class Request extends BaseRequest
             }
         }
 
+        // remove server comments _before_ we try to parse the returned json
+
+        $serverComments = '';
+        $userComments = '';
+        if (strpos($data, '/* SERVER DEBUG INFO (BASE64 ENCODED):') === 0) {
+            $start = strlen('/* SERVER DEBUG INFO (BASE64 ENCODED):');
+            $end = strpos($data, '*/', $start);
+            $serverComments = substr($data, $start, $end - $start);
+            $data = substr($data, $end + 2);
+
+        }
+        if (strpos($data, '/* SERVER DEBUG INFO:') === 0) {
+            $start = strlen('/* DEBUG INFO:');
+            $end = strpos($data, '*/', $start);
+            $userComments = substr($data, $start, $end - $start);
+            $data = substr($data, $end + 2);
+        }
+
         // be tolerant of extra whitespace in response body
         $data = trim($data);
 
@@ -147,13 +180,13 @@ class Request extends BaseRequest
         //$respEncoding = XMLParser::guessEncoding(@$this->httpResponse['headers']['content-type'], $data);
 
         if ($this->debug) {
-            $start = strpos($data, '/* SERVER DEBUG INFO (BASE64 ENCODED):');
-            if ($start !== false) {
-                $start += strlen('/* SERVER DEBUG INFO (BASE64 ENCODED):');
-                $end = strpos($data, '*/', $start);
-                $comments = substr($data, $start, $end - $start);
-                Logger::instance()->debugMessage("---SERVER DEBUG INFO (DECODED) ---\n\t" .
-                    str_replace("\n", "\n\t", base64_decode($comments)) . "\n---END---");
+            if ($serverComments !== '') {
+                $this->getLogger()->debugMessage("---SERVER DEBUG INFO (DECODED) ---\n\t" .
+                    str_replace("\n", "\n\t", base64_decode($serverComments)) . "\n---END---");
+            }
+            if ($userComments !== '') {
+                $this->getLogger()->debugMessage("---SERVER DEBUG INFO ---\n\t" .
+                    str_replace("\n", "\n\t", $userComments) . "\n---END---");
             }
         }
 
@@ -193,7 +226,7 @@ class Request extends BaseRequest
         }
         // third error check: parsing of the response has somehow gone boink.
         /// @todo shall we omit this check, since we trust the parsing code?
-        elseif ($returnType == 'jsonrpcvals' && !is_object($parser->_xh['value'])) {
+        elseif ($returnType == 'jsonrpcvals' && !is_object($parser->_xh['value']) && $parser->_xh['isf'] == 0) {
             // something odd has happened
             // and it's time to generate a client side error
             // indicating something odd went on
@@ -202,7 +235,7 @@ class Request extends BaseRequest
         } else {
 
             if ($this->debug > 1) {
-                Logger::instance()->debugMessage(
+                $this->getLogger()->debugMessage(
                     "---PARSED---\n".var_export($parser->_xh['value'], true)."\n---END---"
                 );
             }

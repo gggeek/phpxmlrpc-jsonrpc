@@ -82,6 +82,9 @@ function php_jsonrpc_encode($phpVal, $options = array())
     return $encoder->encode($phpVal, $options);
 }
 
+/*
+ * BC: Request and Responses are now returned instead of Values even when there are more than 3 members in the parsed json hash
+ */
 function php_jsonrpc_decode_json($jsonVal, $options = array())
 {
     $parser = new Parser();

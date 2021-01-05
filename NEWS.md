@@ -8,3 +8,7 @@ Big changes this time around!
 - fully namespaced code
 - use Composer for dependency management and class autoloading
 - dropped custom json parser in favour of the native one from the php engine (the custom parser lives on as polyfill-json)
+
+PLEASE READ CAREFULLY THE NOTES BELOW to insure a smooth upgrade:
+
+...

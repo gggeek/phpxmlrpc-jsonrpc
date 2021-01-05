@@ -62,6 +62,9 @@ class Server extends BaseServer
         self::$serializer = $serializer;
     }
 
+    /**
+     * @todo allow to (optionally) send comments as top-level json element, since most json parsers will barf on js comments...
+     */
     public function serializeDebug($charsetEncoding = '')
     {
         $out = '';
@@ -69,6 +72,7 @@ class Server extends BaseServer
             $out .= "/* SERVER DEBUG INFO (BASE64 ENCODED):\n" . base64_encode($this->debug_info) . "\n*/\n";
         }
         if (static::$_xmlrpc_debuginfo != '') {
+            /// @todo make sure the user's comments can not break the JS comment
             $out .= "/* DEBUG INFO:\n\n" . Charset::instance()->encodeEntities(static::$_xmlrpc_debuginfo, PhpXmlRpc::$xmlrpc_internalencoding, $charsetEncoding) . "\n*/\n";
         }
         return $out;
@@ -141,7 +145,7 @@ class Server extends BaseServer
         // If debug level is 3, we should catch all errors generated during
         // processing of user function, and log them as part of response
         if ($this->debug > 2) {
-            self::$_xmlrpcs_prev_ehandler = set_error_handler('_xmlrpcs_errorHandler');
+            self::$_xmlrpcs_prev_ehandler = set_error_handler(array('\PhpXmlRpc\JsonRpc\Server', '_xmlrpcs_errorHandler'));
         }
         try {
             if (is_object($m)) {

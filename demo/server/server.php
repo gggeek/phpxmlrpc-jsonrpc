@@ -31,7 +31,7 @@ $signatures4 = include(__DIR__.'/methodProviders/validator1.php');
 $signatures = array_merge(/*$signatures,*/ $signatures1, $signatures2, $signatures3, $signatures4);
 
 $s = new Server($signatures, false);
-$s->setdebug(0);
+$s->setdebug(3);
 $s->compress_response = true;
 
 // out-of-band information: let the client manipulate the server operations.

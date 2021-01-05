@@ -74,18 +74,18 @@ class Parser
 
         $ok = json_decode($data, true, PhpJsonRpc::$json_decode_depth, PhpJsonRpc::$json_decode_flags);
 
-        if (!is_array($ok)) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             // error 3: json parsing fault, 2: invalid jsonrpc
-            $this->_xh['isf'] = (json_last_error() !== JSON_ERROR_NONE) ? 3 : 2;
+            $this->_xh['isf'] = 3;
             $this->_xh['isf_reason'] = 'JSON parsing failed. error: ' . json_last_error();
             return false;
         }
 
-        if (!array_key_exists('method', $ok) || !is_string($ok['method']) ||
+        if (!is_array($ok) || !array_key_exists('method', $ok) || !is_string($ok['method']) ||
             !array_key_exists('params', $ok) || !is_array($ok['params']) ||
             !array_key_exists('id', $ok)
         ) {
-            $this->_xh['isf'] = 3;
+            $this->_xh['isf'] = 2;
             $this->_xh['isf_reason'] = 'JSON parsing did not return correct jsonrpc 1.0 request object';
             return false;
         }
@@ -138,15 +138,14 @@ class Parser
         );
 
         $ok = json_decode($data, true, PhpJsonRpc::$json_decode_depth, PhpJsonRpc::$json_decode_flags);
-
-        if (!is_array($ok)) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             // error 3: json parsing fault, 2: invalid jsonrpc
-            $this->_xh['isf'] = (json_last_error() !== JSON_ERROR_NONE) ? 3 : 2;
+            $this->_xh['isf'] = 3;
             $this->_xh['isf_reason'] = 'JSON parsing failed. error: ' . json_last_error();
             return false;
         }
 
-        if (!array_key_exists('result', $ok) || !array_key_exists('error', $ok) || !array_key_exists('id', $ok)
+        if (!is_array($ok) || !array_key_exists('result', $ok) || !array_key_exists('error', $ok) || !array_key_exists('id', $ok)
             || !($ok['error'] === null xor $ok['result'] === null)
         ) {
             $this->_xh['isf'] = 2;
@@ -170,6 +169,7 @@ class Parser
             ) {
                 if ($ok['error']['faultCode'] == 0) {
                     // FAULT returned, errno needs to reflect that
+                    /// @todo use a constant for this error code
                     $ok['error']['faultCode'] = -1;
                 }
                 $this->_xh['value'] = $ok['error'];
@@ -205,69 +205,71 @@ class Parser
      * In such a case, the function will return a jsonrpcresp or jsonrpcmsg
      * @param string $jsonVal
      * @param array $options includes src_encoding, dest_encoding
-     * @return mixed false on error, or an instance of jsonrpcval, jsonrpcresp or jsonrpcmsg
+     * @return Request|Response|Value|false false on error, or an instance of jsonrpcval, jsonrpcresp or jsonrpcmsg
      */
     public function decodeJson($jsonVal, $options = array())
     {
         $src_encoding = array_key_exists('src_encoding', $options) ? $options['src_encoding'] : PhpXmlRpc::$xmlrpc_defencoding;
         $dest_encoding = array_key_exists('dest_encoding', $options) ? $options['dest_encoding'] : PhpXmlRpc::$xmlrpc_internalencoding;
 
-        //$GLOBALS['_xh'] = array();
-        $GLOBALS['_xh']['isf'] = 0;
-        if (!json_parse($jsonVal, false, $src_encoding, $dest_encoding)) {
-            error_log($GLOBALS['_xh']['isf_reason']);
-            return false;
-        } else {
-            $val = $GLOBALS['_xh']['value']; // shortcut
-            if ($GLOBALS['_xh']['value']->kindOf() == 'struct') {
-                if ($GLOBALS['_xh']['value']->structSize() == 3) {
-                    if ($GLOBALS['_xh']['value']->structMemExists('method') &&
-                        $GLOBALS['_xh']['value']->structMemExists('params') &&
-                        $GLOBALS['_xh']['value']->structMemExists('id')
-                    ) {
-                        /// @todo we do not check for correct type of 'method', 'params' struct members...
-                        $method = $GLOBALS['_xh']['value']->structMem('method');
-                        $msg = new Request($method->scalarval(), null, $this->decode($GLOBALS['_xh']['value']->structMem('id')));
-                        $params = $GLOBALS['_xh']['value']->structMem('params');
-                        for ($i = 0; $i < $params->arraySize(); ++$i) {
-                            $msg->addparam($params->arrayMem($i));
-                        }
-                        return $msg;
-                    } else
-                        if ($GLOBALS['_xh']['value']->structMemExists('result') &&
-                            $GLOBALS['_xh']['value']->structMemExists('error') &&
-                            $GLOBALS['_xh']['value']->structMemExists('id')
-                        ) {
-                            $id = $this->decode($GLOBALS['_xh']['value']->structMem('id'));
-                            $err = $this->decode($GLOBALS['_xh']['value']->structMem('error'));
-                            if ($err == null) {
-                                $resp = new Response($GLOBALS['_xh']['value']->structMem('result'));
-                            } else {
-                                if (is_array($err) && array_key_exists('faultCode', $err)
-                                    && array_key_exists('faultString', $err)
-                                ) {
-                                    if ($err['faultCode'] == 0) {
-                                        // FAULT returned, errno needs to reflect that
-                                        $err['faultCode'] = -1;
-                                    }
-                                }
-                                // NB: what about jsonrpc servers that do NOT respect
-                                // the faultCode/faultString convention???
-                                // we force the error into a string. regardless of type...
-                                else //if (is_string($GLOBALS['_xh']['value']))
-                                {
-                                    $err = array('faultCode' => -1, 'faultString' => $this->getSerializer()->serializeValue($GLOBALS['_xh']['value']->structMem('error')));
-                                }
-                                $resp = new Response(0, $err['faultCode'], $err['faultString']);
-                            }
-                            $resp->id = $id;
-                            return $resp;
-                        }
-                }
-            }
+        $this->_xh = array(
+            'isf' => 0,
+            'isf_reason' => '',
+            'value' => null,
+            'method' => false,
+            'params' => array(),
+            'pt' => array(),
+            'id' => null,
+        );
 
-            // not a request msg nor a response: a plain jsonrpcval obj
-            return $GLOBALS['_xh']['value'];
+        $ok = json_decode($jsonVal, true, PhpJsonRpc::$json_decode_depth, PhpJsonRpc::$json_decode_flags);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            // error 3: json parsing fault, 2: invalid jsonrpc
+            $this->_xh['isf'] = (json_last_error() !== JSON_ERROR_NONE) ? 3 : 2;
+            $this->_xh['isf_reason'] = 'JSON parsing failed. error: ' . json_last_error();
+
+            error_log($this->_xh['isf_reason']);
+            return false;
+        }
+
+        $encoder = $this->getEncoder();
+
+        if (is_array($ok) && array_key_exists('method', $ok) && array_key_exists('params', $ok) && array_key_exists('id', $ok) &&
+            is_string($ok['method']) && is_array($ok['params'])) {
+            $msg = new Request($ok['method'], array(), $ok['id']);
+            foreach ($ok['params'] as $param) {
+                $msg->addparam($encoder->encode($param, $options));
+            }
+            return $msg;
+        }
+
+        if (is_array($ok) && array_key_exists('result', $ok) && array_key_exists('error', $ok) && array_key_exists('id', $ok)) {
+            if ($ok['error'] !== null) {
+                $resp = new Response($encoder->encode($ok['result']));
+            } else {
+                if (is_array($ok['error']) && array_key_exists('faultCode', $ok['error'])
+                    && array_key_exists('faultString', $ok['error'])
+                ) {
+                    $err = $ok['error'];
+                    if ($err['faultCode'] == 0) {
+                        // FAULT returned, errno needs to reflect that
+                        /// @todo use a constant for this error code
+                        $err['faultCode'] = -1;
+                    }
+                }
+                // NB: what about jsonrpc servers that do NOT respect
+                // the faultCode/faultString convention???
+                // we force the error into a string. regardless of type...
+                else
+                {
+                    /// @todo use a constant for this error code
+                    $err = array('faultCode' => -1, 'faultString' => (is_string($ok['error']) || is_int($ok['error'])) ? $ok['error'] : var_export($ok['error'], true));
+                }
+                $resp = new Response(0, $err['faultCode'], $err['faultString']);
+            }
+            $resp->id = $ok['id'];
+            return $resp;
         }
     }
 
