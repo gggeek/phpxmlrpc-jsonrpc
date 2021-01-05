@@ -11,9 +11,7 @@
 
 require_once __DIR__ . "/_prepend.php";
 
-use PhpXmlRpc\JsonRpc\Response;
 use PhpXmlRpc\JsonRpc\Server;
-use PhpXmlRpc\JsonRpc\Value;
 
 // Most of the code used to implement the webservices, and their signatures, are stowed away in neatly organized
 // files, each demoing a different topic
@@ -31,11 +29,18 @@ $signatures4 = include(__DIR__.'/methodProviders/validator1.php');
 $signatures = array_merge(/*$signatures,*/ $signatures1, $signatures2, $signatures3, $signatures4);
 
 $s = new Server($signatures, false);
-$s->setdebug(3);
+
 $s->compress_response = true;
 
 // out-of-band information: let the client manipulate the server operations.
 // we do this to help the testsuite script: do not reproduce in production!
+
+// NB: when enabling debug mode, the server prepends the response's Json payload with a javascript comment.
+// This will be considered an invalid response by most json-rpc client found in the wild - except our client of course
+if (isset($_GET['FORCE_DEBUG'])) {
+    $s->setDebug($_GET['FORCE_DEBUG']);
+}
+
 if (isset($_GET['RESPONSE_ENCODING'])) {
     $s->response_charset_encoding = $_GET['RESPONSE_ENCODING'];
 }
