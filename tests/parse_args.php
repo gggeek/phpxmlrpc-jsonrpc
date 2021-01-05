@@ -9,12 +9,11 @@
  * @param string  HTTPSSURI
  * @param string  PROXY
  *
- * @copyright (C) 2007-2020 G. Giunta
+ * @copyright (C) 2007-2021 G. Giunta
  * @license code licensed under the BSD License: see license.txt
+ *
+ * @todo rebuild as class based (see the phpxmlrpc version)
  **/
-
-require_once('xmlrpc.inc');
-require_once('xmlrpcs.inc');
 
 // play nice to older PHP versions that miss superglobals
 if (!isset($_SERVER)) {
