@@ -18,6 +18,7 @@ use PhpXmlRpc\PhpXmlRpc;
  *
  * @todo add a ParseValue method ?
  * @todo add a Parse method (same as XMLParse) ?
+ * @todo add a guessEncoding function which is similar to the one in XMLParser but obeys better to rfc8259 (paragraph 8.1)
  */
 class Parser
 {

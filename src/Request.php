@@ -63,6 +63,8 @@ class Request extends BaseRequest
      * @param string $methodName the name of the method to invoke
      * @param \PhpXmlRpc\Value[] $params array of parameters to be passed to the method (xmlrpcval objects)
      * @param mixed $id the id of the jsonrpc request. NB: a NULL id is allowed and has a very definite meaning!
+     * @todo if $id = null maybe we could assign it an incrementing unique-ish value, and allow another way to send
+     *       notification requests?
      */
     public function __construct($methodName, $params = array(), $id = null)
     {

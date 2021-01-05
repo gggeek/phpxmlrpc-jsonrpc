@@ -1,6 +1,5 @@
 <?php
 
-
 namespace PhpXmlRpc\JsonRpc;
 
 use PhpXmlRpc\JsonRpc\Helper\Charset;
@@ -12,7 +11,7 @@ use PhpXmlRpc\Server as BaseServer;
 /**
  * @todo implement dispatching of multicall requests, json way
  * @todo test system.XXX methods, with special care to multicall
- * @todo support for 'ping' calls, i.e. if id is null, echo back nothing
+ * @todo support 'notification' calls, i.e. if id is null, echo back nothing
  */
 class Server extends BaseServer
 {
@@ -63,7 +62,7 @@ class Server extends BaseServer
     }
 
     /**
-     * @todo allow to (optionally) send comments as top-level json element, since most json parsers will barf on js comments...
+     * @todo allow to (optionally) send comments as top-level json element, since 99.99% of json parsers will barf on js comments...
      */
     public function serializeDebug($charsetEncoding = '')
     {
@@ -72,8 +71,8 @@ class Server extends BaseServer
             $out .= "/* SERVER DEBUG INFO (BASE64 ENCODED):\n" . base64_encode($this->debug_info) . "\n*/\n";
         }
         if (static::$_xmlrpc_debuginfo != '') {
-            /// @todo make sure the user's comments can not break the JS comment
-            $out .= "/* DEBUG INFO:\n\n" . Charset::instance()->encodeEntities(static::$_xmlrpc_debuginfo, PhpXmlRpc::$xmlrpc_internalencoding, $charsetEncoding) . "\n*/\n";
+            // make sure the user's comments can not break the JS comment
+            $out .= "/* DEBUG INFO:\n\n" . str_replace('*/', '*\u002f', Charset::instance()->encodeEntities(static::$_xmlrpc_debuginfo, PhpXmlRpc::$xmlrpc_internalencoding, $charsetEncoding) . "\n*/\n");
         }
         return $out;
     }

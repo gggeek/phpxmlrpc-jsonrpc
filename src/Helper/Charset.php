@@ -62,7 +62,7 @@ class Charset
      * All chars outside ASCII range are converted to \uXXXX for maximum portability.
      * @param string $data (in iso-8859-1 charset by default)
      * @param string charset of source string, defaults to PhpXmlRpc::$xmlrpc_internalencoding
-     * @param string charset of the encoded string, defaults to ASCII for maximum interoperabilty
+     * @param string charset of the encoded string, defaults to ASCII for maximum interoperability
      * @return string
      * @access private
      * @todo add support for UTF-16 as destination charset instead of ASCII
@@ -105,7 +105,7 @@ class Charset
                 for ($nn = 0; $nn < $ns; $nn++) {
                     $ch = $data[$nn];
                     $ii = ord($ch);
-                    //1 7 0bbbbbbb (127)
+                    // 1 - 7 bits: 0bbbbbbb (127)
                     if ($ii < 128) {
                         /// @todo shall we replace this with a (supposedly) faster str_replace?
                         switch ($ii) {
@@ -139,7 +139,7 @@ class Charset
                             default:
                                 $escapedData .= $ch;
                         } // switch
-                    } //2 11 110bbbbb 10bbbbbb (2047)
+                    } // 2 - 11 bits: 110bbbbb 10bbbbbb (2047)
                     else if ($ii >> 5 == 6) {
                         $b1 = ($ii & 31);
                         $ii = ord($data[$nn + 1]);
@@ -148,7 +148,7 @@ class Charset
                         $ent = sprintf('\u%\'04x', $ii);
                         $escapedData .= $ent;
                         $nn += 1;
-                    } //3 16 1110bbbb 10bbbbbb 10bbbbbb
+                    } // 3 - 16 bits: 1110bbbb 10bbbbbb 10bbbbbb
                     else if ($ii >> 4 == 14) {
                         $b1 = ($ii & 15);
                         $ii = ord($data[$nn + 1]);
@@ -159,7 +159,7 @@ class Charset
                         $ent = sprintf('\u%\'04x', $ii);
                         $escapedData .= $ent;
                         $nn += 2;
-                    } //4 21 11110bbb 10bbbbbb 10bbbbbb 10bbbbbb
+                    } // 4 - 21 bits: 11110bbb 10bbbbbb 10bbbbbb 10bbbbbb
                     else if ($ii >> 3 == 30) {
                         $b1 = ($ii & 7);
                         $ii = ord($data[$nn + 1]);
