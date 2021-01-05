@@ -28,13 +28,11 @@ include_once(__DIR__.'/../src/Helper/Serializer.php');
 include_once(__DIR__.'/../src/Request.php');
 include_once(__DIR__.'/../src/Response.php');
 include_once(__DIR__.'/../src/Value.php');
-include_once(__DIR__.'/../src/Wrapper.php');
 
 use PhpXmlRpc\JsonRpc\Encoder;
 use PhpXmlRpc\JsonRpc\Helper\Charset;
 use PhpXmlRpc\JsonRpc\Helper\Parser;
 use PhpXmlRpc\JsonRpc\Helper\Serializer;
-use PhpXmlRpc\JsonRpc\Wrapper;
 
 // Note: the json spec omits \v, but it is present in ECMA-262, so we allow it
 /// @deprecated
@@ -54,6 +52,74 @@ $GLOBALS['ecma262_iso88591_Entities'] = Charset::instance()->buildConversionTabl
 
 class jsonrpc_client extends \PhpXmlRpc\JsonRpc\Client
 {
+    // BC: default to full ASCII escaping of generated requests
+    public $request_charset_encoding = '';
+
+    // bring back methods from xmlrpc_client which are missing in \PhpXmlRpc\JsonRpc\Client
+
+    /**
+     * @deprecated
+     * @param xmlrpcval $o
+     * @return string
+     */
+    public function serializeval($o)
+    {
+        // add check? slower, but helps to avoid recursion in serializing broken xmlrpcvals...
+        //if (is_object($o) && (get_class($o) == 'xmlrpcval' || is_subclass_of($o, 'xmlrpcval')))
+        //{
+        $ar = $o->me;
+        $val = reset($ar);
+        $typ = key($ar);
+
+        return '<value>' . $this->serializedata($typ, $val) . "</value>\n";
+        //}
+    }
+
+    /**
+     * @deprecated this code looks like it is very fragile and has not been fixed
+     * for a long long time. Shall we remove it for 2.0?
+     */
+    public function getval()
+    {
+        // UNSTABLE
+        $b = reset($this->me);
+        $a = key($this->me);
+        // contributed by I Sofer, 2001-03-24
+        // add support for nested arrays to scalarval
+        // i've created a new method here, so as to
+        // preserve back compatibility
+
+        if (is_array($b)) {
+            foreach($b as $id => $cont) {
+                $b[$id] = $cont->scalarval();
+            }
+        }
+
+        // add support for structures directly encoding php objects
+        if (is_object($b)) {
+            $t = get_object_vars($b);
+            foreach($t as $id => $cont) {
+                $t[$id] = $cont->scalarval();
+            }
+            foreach($t as $id => $cont) {
+                @$b->$id = $cont;
+            }
+        }
+        // end contrib
+        return $b;
+    }
+
+    /// reset functionality added by parent class: same as it would happen if no interface was declared
+    public function count()
+    {
+        return 1;
+    }
+
+    /// reset functionality added by parent class: same as it would happen if no interface was declared
+    public function getIterator()
+    {
+        return new ArrayIterator($this);
+    }
 }
 
 class jsonrpcmsg extends \PhpXmlRpc\JsonRpc\Request
@@ -125,8 +191,8 @@ function serialize_jsonrpcval($value, $charset_encoding = '')
 
 function php_2_jsonrpc_type($phptype)
 {
-    $wrapper = new Parser();
-    return $wrapper->php2JsonrpcType($phptype);
+    $parser = new Parser();
+    return $parser->php2JsonrpcType($phptype);
 }
 
 function json_parse_native($data)
