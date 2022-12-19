@@ -20,6 +20,8 @@ include_once __DIR__ . '/../vendor/autoload.php';
 include __DIR__ . '/../tests/parse_args.php';
 //$args = argParser::getArgs();
 
+/// @todo fix: usage of undefined vars $LOCALSERVER, $URI
+
 function begin_test($test_name, $test_case)
 {
     global $test_results;

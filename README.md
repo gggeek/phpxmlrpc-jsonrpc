@@ -3,7 +3,7 @@ JSONRPC for PHP
 
 A php library for building json-rpc clients and servers.
 
-Originally bundled as part of the [phpxmlrpc/extras](https://github.com/gggeek/phpxmlrpc-jsonrpc) package.
+Originally bundled as part of the [phpxmlrpc/extras](https://github.com/gggeek/phpxmlrpc-extras) package.
 
 At the moment it only (partially) supports version 1.0 of the JSON-RPC protocol.
 Features still to be implemented are: multicall, notifications, peer-to-peer communication.
@@ -23,7 +23,7 @@ Requirements
 
 * PHP >= 5.3
 * PHP Json extension
-* phpxmlrpc/phpxmlrpc >= 4.5.1
+* phpxmlrpc/phpxmlrpc >= 4.9.2
 
 Installation
 ------------
