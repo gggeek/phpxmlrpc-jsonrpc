@@ -10,6 +10,14 @@ if (!file_exists($vendorDir.'/autoload.php') || !file_exists($vendorDir.'/phpxml
 
 include_once($vendorDir.'/autoload.php');
 
-define('DEFAULT_WSTYPE', '1');
+define('DEFAULT_WSTYPE', '1', false);
+
+if (!defined('JSXMLRPC_PATH')) {
+    // phpxmlrpc will be within vendors, whereas its default config does not expect that
+    define('JSXMLRPC_PATH', '../../../../..', false);
+    if (!defined('JSXMLRPC_BASEURL')) {
+        define('JSXMLRPC_BASEURL', '../../jsxmlrpc/debugger/', false);
+    }
+}
 
 include($vendorDir.'/phpxmlrpc/phpxmlrpc/debugger/controller.php');
