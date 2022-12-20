@@ -1,4 +1,4 @@
-## JSONRPC for PHP version 1.0-beta1 - 2022/12/19
+## JSONRPC for PHP version 1.0-beta1 - 2022/12/20
 
 - bumped the minimum required version of phpxmlrpc/phpxmlrpc to 4.9.2
 
