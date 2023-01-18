@@ -1,6 +1,6 @@
 <?php
 /**
- * Defines functions and signatures which can be registered as methods exposed by an XMLRPC Server.
+ * Defines functions and signatures which can be registered as methods exposed by a JSON-RPC Server.
  *
  * To use this, use something akin to:
  * $signatures = include('interop.php');
