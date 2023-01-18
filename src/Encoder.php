@@ -58,8 +58,7 @@ class Encoder
                 // shall we check for proper subclass of xmlrpc value instead of presence of _php_class to detect
                 // what we can do?
                 if (in_array('decode_php_objs', $options) && $jsonrpcVal->_php_class != ''
-                    && class_exists($jsonrpcVal->_php_class)
-                ) {
+                    && class_exists($jsonrpcVal->_php_class)) {
                     $obj = @new $jsonrpcVal->_php_class();
                     foreach ($jsonrpcVal as $key => $value) {
                         $obj->$key = $this->decode($value, $options);
@@ -116,10 +115,10 @@ class Encoder
                 $jsonrpcVal = new Value($phpVal, Value::$xmlrpcNull);
                 break;
             case 'array':
-                // PHP arrays can be encoded to either objects or arrays,
-                // depending on whether they are hashes or plain 0..n integer indexed
+                // PHP arrays can be encoded to either objects or arrays, depending on whether they are hashes or plain
+                // 0..n integer indexed
                 // A shorter one-liner would be
-                // $tmp = array_diff(array_keys($phpVal), range(0, count($phpVal)-1));
+                //   $tmp = array_diff(array_keys($phpVal), range(0, count($phpVal)-1));
                 // but execution time skyrockets!
                 $j = 0;
                 $arr = array();

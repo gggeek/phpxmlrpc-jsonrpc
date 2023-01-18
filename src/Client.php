@@ -1,6 +1,5 @@
 <?php
 
-
 namespace PhpXmlRpc\JsonRpc;
 
 use PhpXmlRpc\Client as BaseClient;
@@ -8,7 +7,7 @@ use PhpXmlRpc\PhpXmlRpc;
 
 /**
  * @todo the JSON proposed RFC states that when making json calls, we should specify an 'accept: application/json'
- *       http header. Currently we either do not output an 'accept' header or specify 'any' (in curl mode)
+ *       http header. Currently, we either do not output an 'accept' header or specify 'any' (in curl mode)
  * @todo add a constant for return_type 'jsonrpcvals'
  */
 class Client extends BaseClient

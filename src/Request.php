@@ -1,6 +1,5 @@
 <?php
 
-
 namespace PhpXmlRpc\JsonRpc;
 
 use PhpXmlRpc\Helper\Http;

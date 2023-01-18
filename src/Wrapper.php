@@ -2,9 +2,9 @@
 
 namespace PhpXmlRpc\JsonRpc;
 
-use PhpXmlRpc\Value;
+use PhpXmlRpc\Wrapper as BaseWrapper;
 
-class Wrapper
+class Wrapper extends BaseWrapper
 {
-
+    static protected $namespace = '\\PhpXmlRpc\\JsonRpc\\';
 }
