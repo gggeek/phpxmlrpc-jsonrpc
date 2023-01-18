@@ -12,6 +12,7 @@ use PhpXmlRpc\Server as BaseServer;
  * @todo implement dispatching of multicall requests, json way
  * @todo test system.XXX methods, with special care to multicall
  * @todo support 'notification' calls, i.e. if id is null, echo back nothing
+ * @todo should we override all parent's methods related to multicall which do not work for us?
  */
 class Server extends BaseServer
 {
@@ -19,7 +20,6 @@ class Server extends BaseServer
     public $functions_parameters_type = 'jsonrpcvals';
 
     protected static $encoder;
-    protected static $parser;
     protected static $serializer;
 
     public function getEncoder()
@@ -30,22 +30,9 @@ class Server extends BaseServer
         return self::$encoder;
     }
 
-    public static function setencoder($encoder)
+    public static function setEncoder($encoder)
     {
         self::$encoder = $encoder;
-    }
-
-    public function getParser()
-    {
-        if (self::$parser === null) {
-            self::$parser = new Parser();
-        }
-        return self::$parser;
-    }
-
-    public static function setParser($parser)
-    {
-        self::$parser = $parser;
     }
 
     public function getSerializer()
@@ -59,6 +46,14 @@ class Server extends BaseServer
     public static function setSerializer($serializer)
     {
         self::$serializer = $serializer;
+    }
+
+    public function getParser()
+    {
+        if (self::$parser === null) {
+            self::$parser = new Parser();
+        }
+        return self::$parser;
     }
 
     /**
@@ -83,7 +78,6 @@ class Server extends BaseServer
      * @param null $params
      * @param null $paramtypes
      * @param null $msgID
-     *
      * @return Response|\PhpXmlRpc\Response
      *
      * @throws \Exception
@@ -152,7 +146,7 @@ class Server extends BaseServer
                         $r = new Response($r);
                     } else {
                         $r = new Response(0, PhpXmlRpc::$xmlrpcerr['server_error'],
-                            PhpXmlRpc::$xmlrpcstr['server_error'] . ": function does not return jsonrpc or xmlrpc response object"
+                            PhpXmlRpc::$xmlrpcstr['server_error'] . ": function does not return json-rpc or xmlrpc response object"
                         );
                     }
                 }
@@ -185,22 +179,34 @@ class Server extends BaseServer
                     $r = new Response($this->getEncoder()->encode($r, $this->phpvals_encoding_options));
                 }
             }
-            // here $r is either an xmlrpcresp or jsonrpcresp
+            // here $r is either an xmlrpc response or a json-rpc response
             if (!is_a($r, 'PhpXmlRpc\JsonRpc\Response')) {
 
-                // dirty trick: user has given us back an xmlrpc response,
-                // since he had an existing xmlrpc server with boatloads of code.
+                // Dirty trick!!!
+                // User has given us back an xmlrpc response, since he had an existing xmlrpc server with boatloads of code.
                 // Be nice to him, and serialize the xmlrpc stuff into JSON.
-                // We also override the content_type of the xmlrpc response,
-                // but lack knowledge of intended response charset...
+                // We also override the content_type of the xmlrpc response, but lack knowledge of intended response
+                // charset...
                 $r->content_type = 'application/json';
                 $r->payload = $this->getSerializer()->serializeResponse($r, $msgID);
             } else {
                 $r->id = $msgID;
             }
         } catch (\Exception $e) {
-            // (barring errors in the lib) an uncatched exception happened
-            // in the called function, we wrap it in a proper error-response
+            // (barring errors in the lib) an uncatched exception happened in the called function, we wrap it in a
+            // proper error-response
+            switch ($this->exception_handling) {
+                case 2:
+                    throw $e;
+                case 1:
+                    $r = new Response(0, $e->getCode(), $e->getMessage(), '', $msgID);
+                    break;
+                default:
+                    $r = new Response(0, PhpXmlRpc::$xmlrpcerr['server_error'], PhpXmlRpc::$xmlrpcstr['server_error'], '', $msgID);
+            }
+        } catch (\Error $e) {
+            // (barring errors in the lib) an uncatched exception happened in the called function, we wrap it in a
+            // proper error-response
             switch ($this->exception_handling) {
                 case 2:
                     throw $e;
@@ -211,6 +217,7 @@ class Server extends BaseServer
                     $r = new Response(0, PhpXmlRpc::$xmlrpcerr['server_error'], PhpXmlRpc::$xmlrpcstr['server_error'], '', $msgID);
             }
         }
+
         if ($this->debug > 2) {
             // note: restore the error handler we found before calling the
             // user func, even if it has been changed inside the func itself
@@ -226,12 +233,11 @@ class Server extends BaseServer
     /**
      * @param string $data
      * @param string $reqEncoding
-     *
      * @return Response|\PhpXmlRpc\Response
      *
      * @throws \Exception
      *
-     * @access protected
+     * @internal this function will become protected in the future
      */
     public function parseRequest($data, $reqEncoding = '')
     {
@@ -250,7 +256,7 @@ class Server extends BaseServer
                 }
                 $r = $this->execute($parser->_xh['method'], $parser->_xh['params'], $parser->_xh['pt'], $parser->_xh['id']);
             } else {
-                // build an xmlrpcmsg object with data parsed from xml
+                // build a json-rpc Request object with data parsed from json
                 $m = new Request($parser->_xh['method'], array(), $parser->_xh['id']);
                 // now add parameters in
                 /// @todo for more speed, we could just substitute the array...
@@ -280,16 +286,19 @@ class Server extends BaseServer
 
     /**
      * @return array[]
-     * @todo if building jsonrpc-only webservers, you should at least undeclare the xmlrpc capability:
+     * @todo if building json-rpc-only webservers, you should at least undeclare the xmlrpc capability:
      *        unset($outAr['xmlrpc']);
      */
     public function getCapabilities()
     {
         $outAr = parent::getCapabilities();
-        $outAr['json-rpc'] = new Value(array(
-            'specUrl' => new Value('http://json-rpc.org/wiki/specification', Value::$xmlrpcString),
-            'specVersion' => new Value(1, Value::$xmlrpcInt)
-        ), Value::$xmlrpcStruct);
+        $outAr['json-rpc'] = new Value(
+            array(
+                'specUrl' => new Value('http://json-rpc.org/wiki/specification', Value::$xmlrpcString),
+                'specVersion' => new Value(1, Value::$xmlrpcInt)
+            ),
+            Value::$xmlrpcStruct
+        );
         if (isset($outAr['nil'])) {
             unset($outAr['nil']);
         }

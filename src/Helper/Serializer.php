@@ -25,8 +25,8 @@ class Serializer
     }
 
     /**
-     * Serialize a jsonrpcval (or xmlrpcval) as json.
-     * Moved outside of the corresponding class to ease multi-serialization of xmlrpc value objects
+     * Serialize a json-rpc Value (or xml-rpc Value) as json.
+     * Moved outside the corresponding class to ease multi-serialization of xml-rpc value objects
      *
      * @param \PhpXmlRpc\Value $value
      * @param string $charsetEncoding
@@ -108,7 +108,7 @@ class Serializer
                 $rs = '{' . substr($rs, 1) . '}';
                 break;
             case 0:
-                // let uninitialized jsonrpcval objects serialize to an empty string, as they do in xmlrpc land
+                // let uninitialized jsonrpcval objects serialize to an empty string, as they do in xml-rpc land
                 $rs = '""';
                 break;
             default:

@@ -28,12 +28,12 @@ class Encoder
     }
 
     /**
-     * Takes a jsonrpc value in object format and translates it into native PHP types.
+     * Takes a json-rpc value in object format and translates it into native PHP types.
      *
-     * Works with xmlrpc objects as input, too.
+     * Works with xml-rpc objects as input, too.
      *
      * @param Value|Request $jsonrpcVal
-     * @param array $options if 'decode_php_objs' is set in the options array, jsonrpc objects can be decoded into php objects
+     * @param array $options if 'decode_php_objs' is set in the options array, json-rpc objects can be decoded into php objects
      * @return mixed
      *
      * @todo add support for Request objects
@@ -42,7 +42,7 @@ class Encoder
     {
         switch ($jsonrpcVal->kindOf()) {
             case 'scalar':
-                /// @todo should we support 'dates_as_objects' and datetime xmlrpc Values ?
+                /// @todo should we support 'dates_as_objects' and datetime xml-rpc Values ?
                 return $jsonrpcVal->scalarval();
 
             case 'array':
@@ -55,7 +55,7 @@ class Encoder
             case 'struct':
                 // If user said so, try to rebuild php objects for specific struct vals.
                 /// @todo should we raise a warning for class not found?
-                // shall we check for proper subclass of xmlrpc value instead of presence of _php_class to detect
+                // shall we check for proper subclass of xml-rpc value instead of presence of _php_class to detect
                 // what we can do?
                 if (in_array('decode_php_objs', $options) && $jsonrpcVal->_php_class != ''
                     && class_exists($jsonrpcVal->_php_class)) {
@@ -86,7 +86,7 @@ class Encoder
     }
 
     /**
-     * Takes native php types and encodes them into jsonrpc PHP object format.
+     * Takes native php types and encodes them into json-rpc PHP object format.
      * It will not re-encode Value objects.
      *
      * @param mixed $phpVal the value to be converted into a Value object

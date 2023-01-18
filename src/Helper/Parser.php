@@ -45,17 +45,16 @@ class Parser
         return self::$encoder;
     }
 
-    public function setencoder($encoder)
+    public function setEncoder($encoder)
     {
         self::$encoder = $encoder;
     }
 
     /**
-     * Parse a json string, expected to be in jsonrpc request format
+     * Parse a json string, expected to be in json-rpc request format
      * @param $data
      * @param bool $returnPhpvals
      * @param string $srcEncoding
-     *
      * @return bool
      *
      * @todo checks missing:
@@ -76,7 +75,7 @@ class Parser
         $ok = json_decode($data, true, PhpJsonRpc::$json_decode_depth, PhpJsonRpc::$json_decode_flags);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            // error 3: json parsing fault, 2: invalid jsonrpc
+            // error 3: json parsing fault, 2: invalid json-rpc
             $this->_xh['isf'] = 3;
             $this->_xh['isf_reason'] = 'JSON parsing failed. error: ' . json_last_error();
             return false;
@@ -87,7 +86,7 @@ class Parser
             !array_key_exists('id', $ok)
         ) {
             $this->_xh['isf'] = 2;
-            $this->_xh['isf_reason'] = 'JSON parsing did not return correct jsonrpc 1.0 request object';
+            $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 request object';
             return false;
         }
 
@@ -117,13 +116,12 @@ class Parser
     }
 
     /**
-     * Parse a json string, expected to be in jsonrpc response format.
+     * Parse a json string, expected to be in json-rpc response format.
      * @todo checks missing:
      *       - no extra members in response
      * @param $data
      * @param bool $returnPhpvals
      * @param string $srcEncoding
-     *
      * @return bool
      */
     public function parseResponse($data, $returnPhpvals = false, $srcEncoding = '')
@@ -140,7 +138,7 @@ class Parser
 
         $ok = json_decode($data, true, PhpJsonRpc::$json_decode_depth, PhpJsonRpc::$json_decode_flags);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            // error 3: json parsing fault, 2: invalid jsonrpc
+            // error 3: json parsing fault, 2: invalid json-rpc
             $this->_xh['isf'] = 3;
             $this->_xh['isf_reason'] = 'JSON parsing failed. error: ' . json_last_error();
             return false;
@@ -150,7 +148,7 @@ class Parser
             || !($ok['error'] === null xor $ok['result'] === null)
         ) {
             $this->_xh['isf'] = 2;
-            $this->_xh['isf_reason'] = 'JSON parsing did not return correct jsonrpc 1.0 response object';
+            $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 response object';
             return false;
         }
 
@@ -175,7 +173,7 @@ class Parser
                 }
                 $this->_xh['value'] = $ok['error'];
             }
-            /// @todo what about jsonrpc servers that do NOT respect the faultCode/faultString convention?
+            /// @todo what about json-rpc servers that do NOT respect the faultCode/faultString convention?
             //        ATM we force the error into a string, except for ints and strings...
             else
             {
@@ -198,15 +196,15 @@ class Parser
     }
 
     /**
-     * Convert the json representation of a jsonrpc method call, jsonrpc method response
-     * or single json value into the appropriate object (a.k.a. deserialize).
-     * Please note that there is no way to distinguish the serialized representation
-     * of a single json val of type object which has the 3 appropriate members from
-     * the serialization of a method call or method response.
-     * In such a case, the function will return a jsonrpcresp or jsonrpcmsg
+     * Convert the json representation of a json-rpc method call, json-rpc method response or single json value into the
+     * appropriate object (a.k.a. deserialize).
+     * Please note that there is no way to distinguish the serialized representation of a single json val of type object
+     * which has the 3 appropriate members from the serialization of a method call or method response.
+     * In such a case, the function will return a json-rpc Request or json-rpc Response
+     *
      * @param string $jsonVal
      * @param array $options includes src_encoding, dest_encoding
-     * @return Request|Response|Value|false false on error, or an instance of jsonrpcval, jsonrpcresp or jsonrpcmsg
+     * @return Request|Response|Value|false false on error, or an instance of Value, Response or Request
      */
     public function decodeJson($jsonVal, $options = array())
     {
@@ -226,7 +224,7 @@ class Parser
         $ok = json_decode($jsonVal, true, PhpJsonRpc::$json_decode_depth, PhpJsonRpc::$json_decode_flags);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            // error 3: json parsing fault, 2: invalid jsonrpc
+            // error 3: json parsing fault, 2: invalid json-rpc
             $this->_xh['isf'] = (json_last_error() !== JSON_ERROR_NONE) ? 3 : 2;
             $this->_xh['isf_reason'] = 'JSON parsing failed. error: ' . json_last_error();
 
@@ -238,11 +236,11 @@ class Parser
 
         if (is_array($ok) && array_key_exists('method', $ok) && array_key_exists('params', $ok) && array_key_exists('id', $ok) &&
             is_string($ok['method']) && is_array($ok['params'])) {
-            $msg = new Request($ok['method'], array(), $ok['id']);
+            $req = new Request($ok['method'], array(), $ok['id']);
             foreach ($ok['params'] as $param) {
-                $msg->addparam($encoder->encode($param, $options));
+                $req->addparam($encoder->encode($param, $options));
             }
-            return $msg;
+            return $req;
         }
 
         if (is_array($ok) && array_key_exists('result', $ok) && array_key_exists('error', $ok) && array_key_exists('id', $ok)) {
@@ -259,7 +257,7 @@ class Parser
                         $err['faultCode'] = -1;
                     }
                 }
-                // NB: what about jsonrpc servers that do NOT respect
+                // NB: what about json-rpc servers that do NOT respect
                 // the faultCode/faultString convention???
                 // we force the error into a string. regardless of type...
                 else
@@ -275,11 +273,12 @@ class Parser
     }
 
     /**
-     * Given a string defining a php type or phpxmlrpc type (loosely defined: strings
-     * accepted come from javadoc blocks), return corresponding phpxmlrpc type.
+     * Given a string defining a php type or phpxmlrpc type (loosely defined: strings accepted come from phpdoc blocks),
+     * return corresponding phpxmlrpc type.
      * NB: for php 'resource' types returns empty string, since resources cannot be serialized;
      * for php class names returns 'struct', since php objects can be serialized as json structs;
      * for php arrays always return 'array', even though arrays sometimes serialize as json structs
+     *
      * @param string $phpType
      * @return string
      */
@@ -309,7 +308,7 @@ class Parser
                 if (class_exists($phpType)) {
                     return Value::$xmlrpcStruct;
                 } else {
-                    // unknown: might be any 'extended' jsonrpc type
+                    // unknown: might be any 'extended' json-rpc type
                     return Value::$xmlrpcValue;
                 }
         }

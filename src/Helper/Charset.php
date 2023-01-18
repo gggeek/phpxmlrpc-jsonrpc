@@ -36,7 +36,7 @@ class Charset
     }
 
     /**
-     * @access protected
+     * @internal this function will become protected in the future
      * @return array[]
      */
     public function buildConversionTable()
@@ -60,11 +60,11 @@ class Charset
     /**
      * Encode php strings to valid JSON unicode representation.
      * All chars outside ASCII range are converted to \uXXXX for maximum portability.
-     * @param string $data (in iso-8859-1 charset by default)
-     * @param string charset of source string, defaults to PhpXmlRpc::$xmlrpc_internalencoding
-     * @param string charset of the encoded string, defaults to ASCII for maximum interoperability
+     * @param string $data
+     * @param string $src_encoding charset of source string, defaults to PhpXmlRpc::$xmlrpc_internalencoding
+     * @param string $dest_encoding charset of the encoded string, defaults to ASCII for maximum interoperability
      * @return string
-     * @access private
+     *
      * @todo add support for UTF-16 as destination charset instead of ASCII
      * @todo add support for UTF-16 as source charset
      */

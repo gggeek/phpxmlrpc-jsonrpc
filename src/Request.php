@@ -3,7 +3,6 @@
 namespace PhpXmlRpc\JsonRpc;
 
 use PhpXmlRpc\Helper\Http;
-use PhpXmlRpc\Helper\Logger;
 //use PhpXmlRpc\Helper\XMLParser;
 use PhpXmlRpc\JsonRpc\Helper\Parser;
 use PhpXmlRpc\JsonRpc\Helper\Serializer;
@@ -15,35 +14,7 @@ class Request extends BaseRequest
     public $id = null; // used to store request ID internally
     public $content_type = 'application/json';
 
-    protected static $logger;
-    protected static $parser;
     protected static $serializer;
-
-    public function getLogger()
-    {
-        if (self::$logger === null) {
-            self::$logger = Logger::instance();
-        }
-        return self::$logger;
-    }
-
-    public static function setLogger($logger)
-    {
-        self::$logger = $logger;
-    }
-
-    public function getParser()
-    {
-        if (self::$parser === null) {
-            self::$parser = new Parser();
-        }
-        return self::$parser;
-    }
-
-    public static function setParser($parser)
-    {
-        self::$parser = $parser;
-    }
 
     public function getSerializer()
     {
@@ -58,10 +29,19 @@ class Request extends BaseRequest
         self::$serializer = $serializer;
     }
 
+    public function getParser()
+    {
+        if (self::$parser === null) {
+            self::$parser = new Parser();
+        }
+        return self::$parser;
+    }
+
     /**
      * @param string $methodName the name of the method to invoke
      * @param \PhpXmlRpc\Value[] $params array of parameters to be passed to the method (xmlrpcval objects)
-     * @param mixed $id the id of the jsonrpc request. NB: a NULL id is allowed and has a very definite meaning!
+     * @param mixed $id the id of the json-rpc request. NB: a NULL id is allowed and has a very definite meaning!
+     *
      * @todo if $id = null maybe we could assign it an incrementing unique-ish value, and allow another way to send
      *       notification requests?
      */
@@ -74,6 +54,7 @@ class Request extends BaseRequest
     /**
      * Reimplemented for completeness.
      * @internal this function will become protected in the future
+     *
      * @param string $charsetEncoding
      * @return string
      */
@@ -85,6 +66,7 @@ class Request extends BaseRequest
     /**
      * Reimplemented for completeness.
      * @internal this function will become protected in the future
+     *
      * @return string
      */
     public function xml_footer()
@@ -94,7 +76,7 @@ class Request extends BaseRequest
 
     /**
      * @param string $charsetEncoding
-     * @access protected
+     * @return void
      */
     public function createPayload($charsetEncoding = '')
     {
@@ -106,11 +88,12 @@ class Request extends BaseRequest
     }
 
     /**
-     * Parse the jsonrpc response contained in the string $data and return a jsonrpcresp object.
-     * @param string $data the xmlrpc response, eventually including http headers
+     * Parse the json-rpc response contained in the string $data and return a jsonrpcresp object.
+     * @param string $data the json-rpc response, possibly including http headers
      * @param bool $headersProcessed when true prevents parsing HTTP headers for interpretation of content-encoding and conseuqent decoding
      * @param string $returnType decides return type, i.e. content of response->value(). Either 'jsonrpcvals', 'json' or 'phpvals'
      * @return Response
+     *
      * @todo move more of this parsing into the parent class (split method in smaller ones)
      * @todo throw when $returnType == 'xmlrpcvals', 'epivals' or 'xml'
      * @todo we should check that the received Id is the same s the one sent
