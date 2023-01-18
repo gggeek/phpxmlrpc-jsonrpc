@@ -6,14 +6,13 @@ set -e
 
 ACTION="${1}"
 
-# Valid values: 'default', 5.6, 7.0 .. 7.4, 8.0
+# Valid values: 'default', 5.6, 7.0 .. 7.4, 8.0 .. 8.1
 export PHP_VERSION=${PHP_VERSION:-default}
-# Valid values: precise (12), trusty (14), xenial (16), bionic (18), focal (20)
-# We default to the same version we use on Travis
-export UBUNTU_VERSION=${UBUNTU_VERSION:-xenial}
+# Valid values: precise (12), trusty (14), xenial (16), bionic (18), focal (20), jammy (22)
+export UBUNTU_VERSION=${UBUNTU_VERSION:-focal}
 
 CONTAINER_USER=docker
-CONTAINER_BUILD_DIR="/home/${CONTAINER_USER}/build"
+CONTAINER_BUILD_DIR="/home/${CONTAINER_USER}/workspace"
 ROOT_DIR="$(dirname -- "$(dirname -- "$(dirname -- "$(readlink -f "$0")")")")"
 IMAGE_NAME=phpjsonrpc:${UBUNTU_VERSION}-${PHP_VERSION}
 CONTAINER_NAME=phpjsonrpc_${UBUNTU_VERSION}_${PHP_VERSION}
@@ -42,8 +41,8 @@ Options:
     -h                print help
 
 Environment variables: to be set before the 'build' action
-    PHP_VERSION       default value: 'default', ie. the stock php version from the Ubuntu version in use. Other possible values: 7.0 .. 8.0
-    UBUNTU_VERSION    default value: xenial. Other possible values: bionic, focal
+    PHP_VERSION       default value: 'default', ie. the stock php version from the Ubuntu version in use. Other possible values: 7.0 .. 8.1
+    UBUNTU_VERSION    default value: focal. Other possible values: xenial, bionic, jammy
 "
 }
 
@@ -114,9 +113,9 @@ case "${ACTION}" in
     runcoverage)
         # @todo clean up /tmp/phpxmlrpc and .phpunit.result.cache
         if [ ! -d build ]; then mkdir build; fi
-        docker exec -t "${CONTAINER_NAME}" /home/${CONTAINER_USER}/build/tests/ci/setup/setup_code_coverage.sh enable
+        docker exec -t "${CONTAINER_NAME}" "${CONTAINER_BUILD_DIR}/tests/ci/setup/setup_code_coverage.sh" enable
         docker exec -it "${CONTAINER_NAME}" su "${CONTAINER_USER}" -c "./vendor/bin/phpunit --coverage-html build/coverage -v tests"
-        docker exec -t "${CONTAINER_NAME}" /home/${CONTAINER_USER}/build/tests/ci/setup/setup_code_coverage.sh disable
+        docker exec -t "${CONTAINER_NAME}" "${CONTAINER_BUILD_DIR}/tests/ci/setup/setup_code_coverage.sh" disable
         ;;
 
     runtests)
