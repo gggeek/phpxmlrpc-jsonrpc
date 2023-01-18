@@ -79,7 +79,6 @@ class Server extends BaseServer
 
     /**
      * Note: syntax differs from overridden method, by adding an ID param
-     * @access protected
      * @param mixed $m
      * @param null $params
      * @param null $paramtypes

@@ -50,7 +50,6 @@ class Response extends BaseResponse
      * Returns json representation of the response.
      *
      * @param string $charsetEncoding the charset to be used for serialization. if null, US-ASCII is assumed
-     *
      * @return string the json representation of the response
      */
     public function serialize($charsetEncoding = '')

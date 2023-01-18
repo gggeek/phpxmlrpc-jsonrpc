@@ -118,7 +118,6 @@ class Request extends BaseRequest
      */
     public function parseResponse($data = '', $headersProcessed = false, $returnType = 'jsonrpcvals')
     {
-
         if ($this->debug) {
             $this->getLogger()->debugMessage("---GOT---\n$data\n---END---");
         }
