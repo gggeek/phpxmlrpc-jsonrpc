@@ -1,5 +1,8 @@
 /.idea
-/build/*
+/debugger/jsxmlrpc
+/debugger/node_modules
+/debugger/vendor
 /vendor/*
 /.phpunit.result.cache
 /composer.lock
+/phpunit.xml
