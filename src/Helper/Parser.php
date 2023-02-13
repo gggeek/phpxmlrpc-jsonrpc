@@ -2,12 +2,13 @@
 
 namespace PhpXmlRpc\JsonRpc\Helper;
 
-use PhpXmlRpc\JsonRpc\Encoder;
 use PhpXmlRpc\JsonRpc\PhpJsonRpc;
 use PhpXmlRpc\JsonRpc\Request;
 use PhpXmlRpc\JsonRpc\Response;
+use PhpXmlRpc\JsonRpc\Traits\EncoderAware;
 use PhpXmlRpc\JsonRpc\Value;
 use PhpXmlRpc\PhpXmlRpc;
+use PhpXmlRpc\Traits\LoggerAware;
 
 /**
  * @see https://www.jsonrpc.org/specification_v1
@@ -17,11 +18,16 @@ use PhpXmlRpc\PhpXmlRpc;
  *       https://jsonrpc.org/historical/json-rpc-1-1-alt.html
  *
  * @todo add a ParseValue method ?
- * @todo add a Parse method (same as XMLParse) ?
+ * @todo add a Parse method (same as XMLParser) ?
  * @todo add a guessEncoding function which is similar to the one in XMLParser but obeys better to rfc8259 (paragraph 8.1)
  */
 class Parser
 {
+    use EncoderAware;
+    use LoggerAware;
+
+    const RETURN_JSONRPCVALS = 'jsonrpcvals';
+
     /**
      * @see PhpXmlRpc/XMLParser
      */
@@ -34,21 +40,6 @@ class Parser
         'pt' => array(),
         'id' => null,
     );
-
-    protected static $encoder;
-
-    public function getEncoder()
-    {
-        if (self::$encoder === null) {
-            self::$encoder = new Encoder();
-        }
-        return self::$encoder;
-    }
-
-    public function setEncoder($encoder)
-    {
-        self::$encoder = $encoder;
-    }
 
     /**
      * Parse a json string, expected to be in json-rpc request format
@@ -228,7 +219,7 @@ class Parser
             $this->_xh['isf'] = (json_last_error() !== JSON_ERROR_NONE) ? 3 : 2;
             $this->_xh['isf_reason'] = 'JSON parsing failed. error: ' . json_last_error();
 
-            error_log($this->_xh['isf_reason']);
+            $this->getLogger()->error($this->_xh['isf_reason']);
             return false;
         }
 

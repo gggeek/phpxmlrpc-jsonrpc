@@ -5,37 +5,16 @@ namespace PhpXmlRpc\JsonRpc;
 use PhpXmlRpc\Helper\Http;
 //use PhpXmlRpc\Helper\XMLParser;
 use PhpXmlRpc\JsonRpc\Helper\Parser;
-use PhpXmlRpc\JsonRpc\Helper\Serializer;
+use PhpXmlRpc\JsonRpc\Traits\SerializerAware;
 use PhpXmlRpc\PhpXmlRpc;
 use PhpXmlRpc\Request as BaseRequest;
 
 class Request extends BaseRequest
 {
+    use SerializerAware;
+
     public $id = null; // used to store request ID internally
     public $content_type = 'application/json';
-
-    protected static $serializer;
-
-    public function getSerializer()
-    {
-        if (self::$serializer === null) {
-            self::$serializer = new Serializer();
-        }
-        return self::$serializer;
-    }
-
-    public static function setSerializer($serializer)
-    {
-        self::$serializer = $serializer;
-    }
-
-    public function getParser()
-    {
-        if (self::$parser === null) {
-            self::$parser = new Parser();
-        }
-        return self::$parser;
-    }
 
     /**
      * @param string $methodName the name of the method to invoke
@@ -49,6 +28,18 @@ class Request extends BaseRequest
     {
         $this->id = $id;
         parent::__construct($methodName, $params);
+    }
+
+    /**
+     * Reimplemented to make us use the correct parser type
+     * @return Parser
+     */
+    public function getParser()
+    {
+        if (self::$parser === null) {
+            self::$parser = new Parser();
+        }
+        return self::$parser;
     }
 
     /**
@@ -75,6 +66,7 @@ class Request extends BaseRequest
     }
 
     /**
+     * @internal this function will become protected in the future
      * @param string $charsetEncoding
      * @return void
      */
@@ -84,6 +76,7 @@ class Request extends BaseRequest
             $this->content_type = 'application/json; charset=' . $charsetEncoding;
         else
             $this->content_type = 'application/json';
+
         $this->payload = $this->getSerializer()->serializeRequest($this, $this->id, $charsetEncoding);
     }
 
@@ -98,7 +91,7 @@ class Request extends BaseRequest
      * @todo throw when $returnType == 'xmlrpcvals', 'epivals' or 'xml'
      * @todo we should check that the received Id is the same s the one sent
      */
-    public function parseResponse($data = '', $headersProcessed = false, $returnType = 'jsonrpcvals')
+    public function parseResponse($data = '', $headersProcessed = false, $returnType = Parser::RETURN_JSONRPCVALS)
     {
         if ($this->debug) {
             $this->getLogger()->debugMessage("---GOT---\n$data\n---END---");
@@ -107,7 +100,7 @@ class Request extends BaseRequest
         $this->httpResponse = array('raw_data' => $data, 'headers' => array(), 'cookies' => array());
 
         if ($data == '') {
-            error_log('XML-RPC: ' . __METHOD__ . ': no response received from server.');
+            $this->getLogger()->error('JSON-RPC: ' . __METHOD__ . ': no response received from server.');
             return new Response(0, PhpXmlRpc::$xmlrpcerr['no_data'], PhpXmlRpc::$xmlrpcstr['no_data']);
         }
 
@@ -163,11 +156,11 @@ class Request extends BaseRequest
 
         if ($this->debug) {
             if ($serverComments !== '') {
-                $this->getLogger()->debugMessage("---SERVER DEBUG INFO (DECODED) ---\n\t" .
+                $this->getLogger()->debugMessage("---SERVER DEBUG INFO (DECODED)---\n\t" .
                     str_replace("\n", "\n\t", base64_decode($serverComments)) . "\n---END---");
             }
             if ($userComments !== '') {
-                $this->getLogger()->debugMessage("---SERVER DEBUG INFO ---\n\t" .
+                $this->getLogger()->debugMessage("---SERVER DEBUG INFO---\n\t" .
                     str_replace("\n", "\n\t", $userComments) . "\n---END---");
             }
         }
@@ -186,21 +179,25 @@ class Request extends BaseRequest
         //}
 
         $parser = $this->getParser();
-        $parser->parseResponse($data, $returnType == 'phpvals');
+        $_xh = $parser->parseResponse($data, $returnType == 'phpvals');
+        // BC
+        if (!is_array($_xh)) {
+            $_xh = $parser->_xh;
+        }
 
         // first error check: json not well formed
-        if ($parser->_xh['isf'] > 2) {
+        if ($_xh['isf'] > 2) {
             $r = new Response(0, PhpXmlRpc::$xmlrpcerr['invalid_return'],
-                PhpXmlRpc::$xmlrpcstr['invalid_return'] . ' ' . $parser->_xh['isf_reason']);
+                PhpXmlRpc::$xmlrpcstr['invalid_return'] . ' ' . $_xh['isf_reason']);
 
             if ($this->debug) {
-                print $parser->_xh['isf_reason'];
+                print $_xh['isf_reason'];
             }
         }
         // second error check: json well formed but not json-rpc compliant
-        elseif ($parser->_xh['isf'] == 2) {
+        elseif ($_xh['isf'] == 2) {
             $r = new Response(0, PhpXmlRpc::$xmlrpcerr['invalid_return'],
-                PhpXmlRpc::$xmlrpcstr['invalid_return'] . ' ' . $parser->_xh['isf_reason']);
+                PhpXmlRpc::$xmlrpcstr['invalid_return'] . ' ' . $_xh['isf_reason']);
 
             if ($this->debug) {
                 /// @todo echo something for user?
@@ -208,7 +205,7 @@ class Request extends BaseRequest
         }
         // third error check: parsing of the response has somehow gone boink.
         /// @todo shall we omit this check, since we trust the parsing code?
-        elseif ($returnType == 'jsonrpcvals' && !is_object($parser->_xh['value']) && $parser->_xh['isf'] == 0) {
+        elseif ($returnType == Parser::RETURN_JSONRPCVALS && !is_object($_xh['value']) && $_xh['isf'] == 0) {
             // something odd has happened
             // and it's time to generate a client side error
             // indicating something odd went on
@@ -218,19 +215,19 @@ class Request extends BaseRequest
 
             if ($this->debug > 1) {
                 $this->getLogger()->debugMessage(
-                    "---PARSED---\n".var_export($parser->_xh['value'], true)."\n---END---"
+                    "---PARSED---\n".var_export($_xh['value'], true)."\n---END---"
                 );
             }
 
-            $v = $parser->_xh['value'];
+            $v = $_xh['value'];
 
-            if ($parser->_xh['isf']) {
+            if ($_xh['isf']) {
                 $r = new Response(0, $v['faultCode'], $v['faultString']);
             } else {
                 $r = new Response($v, 0, '', $returnType);
             }
 
-            $r->id = $parser->_xh['id'];
+            $r->id = $_xh['id'];
         }
 
         $r->hdrs = $this->httpResponse['headers'];

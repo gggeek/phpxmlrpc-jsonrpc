@@ -1,9 +1,19 @@
-## JSONRPC for PHP version 1.0-beta1 - 2022/12/20
+## JSON-RPC for PHP version XXX - unreleased
+
+- bumped the minimum required version of php to 5.4
+
+- bumped the minimum required version of phpxmlrpc/phpxmlrpc to 4.10, fixing the `Client->call` method sometimes
+  returning an xml-rpc response instead of a json-rpc one
+
+- made all error messages go through the Logger facility instead of calling directly `error_log`
+
+
+## JSON-RPC for PHP version 1.0-beta1 - 2022/12/20
 
 - bumped the minimum required version of phpxmlrpc/phpxmlrpc to 4.9.2
 
 
-## JSONRPC for PHP version 1.0-alpha - 2021/1/5
+## JSON-RPC for PHP version 1.0-alpha - 2021/1/5
 
 Big changes this time around!
 

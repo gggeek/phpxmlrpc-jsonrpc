@@ -2,8 +2,7 @@
 
 namespace PhpXmlRpc\JsonRpc;
 
-use PhpXmlRpc\JsonRpc\Helper\Serializer;
-use PhpXmlRpc\Value;
+use PhpXmlRpc\JsonRpc\Traits\SerializerAware;
 
 /**
  * A helper class to easily convert between Value objects and php native values
@@ -12,27 +11,14 @@ use PhpXmlRpc\Value;
  */
 class Encoder
 {
-    protected static $serializer;
-
-    public function getSerializer()
-    {
-        if (self::$serializer === null) {
-            self::$serializer = new Serializer();
-        }
-        return self::$serializer;
-    }
-
-    public static function setSerializer($serializer)
-    {
-        self::$serializer = $serializer;
-    }
+    use SerializerAware;
 
     /**
      * Takes a json-rpc value in object format and translates it into native PHP types.
      *
      * Works with xml-rpc objects as input, too.
      *
-     * @param Value|Request $jsonrpcVal
+     * @param \PhpXmlRpc\Value|Request $jsonrpcVal
      * @param array $options if 'decode_php_objs' is set in the options array, json-rpc objects can be decoded into php objects
      * @return mixed
      *
@@ -148,8 +134,7 @@ class Encoder
                     }
                     $jsonrpcVal = new Value($arr, Value::$xmlrpcStruct);
                     if (in_array('encode_php_objs', $options)) {
-                        // let's save original class name into xmlrpcval:
-                        // might be useful later on...
+                        // let's save original class name into xmlrpcval: might be useful later on...
                         $jsonrpcVal->_php_class = get_class($phpVal);
                     }
                 }

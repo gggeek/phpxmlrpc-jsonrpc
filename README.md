@@ -1,5 +1,5 @@
-JSONRPC for PHP
-===============
+JSON-RPC for PHP (a.k.a. PHPJSONRPC)
+====================================
 
 A php library for building json-rpc clients and servers.
 

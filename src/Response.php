@@ -2,31 +2,15 @@
 
 namespace PhpXmlRpc\JsonRpc;
 
-use PhpXmlRpc\JsonRpc\Helper\Serializer;
+use PhpXmlRpc\JsonRpc\Traits\SerializerAware;
 use PhpXmlRpc\Response as BaseResponse;
 
-/**
- * @todo once we make php 5.4 a mandatory requirement, implement a SerializerAware trait
- */
 class Response extends BaseResponse
 {
+    use SerializerAware;
+
     public $content_type = 'application/json'; // NB: forces us to send US-ASCII over http
     public $id = null;
-
-    protected static $serializer;
-
-    public function getSerializer()
-    {
-        if (self::$serializer === null) {
-            self::$serializer = new Serializer();
-        }
-        return self::$serializer;
-    }
-
-    public static function setSerializer($serializer)
-    {
-        self::$serializer = $serializer;
-    }
 
     public function __construct($val, $fCode = 0, $fString = '', $valType = '', $id = null)
     {
@@ -46,7 +30,7 @@ class Response extends BaseResponse
     }
 
     /**
-     * Returns json representation of the response.
+     * Returns json representation of the response. Sets `payload` and `content_type` properties
      *
      * @param string $charsetEncoding the charset to be used for serialization. if null, US-ASCII is assumed
      * @return string the json representation of the response
@@ -57,7 +41,18 @@ class Response extends BaseResponse
             $this->content_type = 'application/json; charset=' . $charsetEncoding;
         else
             $this->content_type = 'application/json';
+
         $this->payload = $this->getSerializer()->serializeResponse($this, $this->id, $charsetEncoding);
         return $this->payload;
+    }
+
+    /**
+     * Reimplemented for completeness.
+     * @param string $charsetEncoding
+     * @return string
+     */
+    public function xml_header($charsetEncoding = '')
+    {
+        return '';
     }
 }

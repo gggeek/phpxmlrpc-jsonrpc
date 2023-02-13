@@ -3,12 +3,15 @@
 namespace PhpXmlRpc\JsonRpc\Helper;
 
 use PhpXmlRpc\PhpXmlRpc;
+use PhpXmlRpc\Traits\LoggerAware;
 
 /**
  * @todo implement an Interface
  */
 class Charset
 {
+    use LoggerAware;
+
     protected $ecma262_iso88591_Entities = array();
 
     protected static $instance = null;
@@ -178,7 +181,7 @@ class Charset
 
             default:
                 $escapedData = '';
-                error_log("Converting from $src_encoding to $dest_encoding: not supported...");
+                $this->getLogger()->error("Converting from $src_encoding to $dest_encoding: not supported...");
         } // switch
 
         return $escapedData;

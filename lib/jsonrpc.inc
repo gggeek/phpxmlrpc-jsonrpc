@@ -55,8 +55,19 @@ class jsonrpc_client extends \PhpXmlRpc\JsonRpc\Client
     // BC: default to full ASCII escaping of generated requests
     public $request_charset_encoding = '';
 
-    // bring back methods from xmlrpc_client which are missing in \PhpXmlRpc\JsonRpc\Client
+    /// @todo bring back methods from xmlrpc_client which are missing in \PhpXmlRpc\JsonRpc\Client, if any
+}
 
+class jsonrpcmsg extends \PhpXmlRpc\JsonRpc\Request
+{
+}
+
+class jsonrpcresp extends \PhpXmlRpc\JsonRpc\Response
+{
+}
+
+class jsonrpcval extends \PhpXmlRpc\JsonRpc\Value
+{
     /**
      * @deprecated
      * @param xmlrpcval $o
@@ -76,8 +87,8 @@ class jsonrpc_client extends \PhpXmlRpc\JsonRpc\Client
     }
 
     /**
-     * @deprecated this code looks like it is very fragile and has not been fixed
-     * for a long long time. Shall we remove it for 2.0?
+     * @deprecated this code looks like it is very fragile and has not been fixed for a long long time.
+     * Shall we remove it for 2.0?
      */
     public function getval()
     {
@@ -120,18 +131,6 @@ class jsonrpc_client extends \PhpXmlRpc\JsonRpc\Client
     {
         return new ArrayIterator($this);
     }
-}
-
-class jsonrpcmsg extends \PhpXmlRpc\JsonRpc\Request
-{
-}
-
-class jsonrpcresp extends \PhpXmlRpc\JsonRpc\Response
-{
-}
-
-class jsonrpcval extends \PhpXmlRpc\JsonRpc\Value
-{
 }
 
 /* Expose as global functions the ones which are now class methods */

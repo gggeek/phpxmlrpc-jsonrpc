@@ -2,10 +2,12 @@
 
 namespace PhpXmlRpc\JsonRpc\Helper;
 
+use PhpXmlRpc\Exception\StateErrorException;
+use PhpXmlRpc\JsonRpc\Encoder;
 use PhpXmlRpc\JsonRpc\Value;
 
 /**
- * @todo once we make php 5.4 a mandatory requirement, implement a CharsetEncoderAware trait
+ * @todo implement a CharsetEncoderAware trait (as soon as there is a 2nd user of Charset)
  */
 class Serializer
 {
@@ -35,8 +37,8 @@ class Serializer
      */
     public function serializeValue($value, $charsetEncoding = '')
     {
-        $val = reset($value->me);
-        $typ = key($value->me);
+        $val = $value->scalarVal();
+        $typ = $value->scalarTyp();
 
         $rs = '';
         switch (@Value::$xmlrpcTypes[$typ]) {
@@ -45,8 +47,8 @@ class Serializer
                     case Value::$xmlrpcString:
                         $rs .= '"' . $this->getCharsetEncoder()->encodeEntities($val, null, $charsetEncoding) . '"';
                         break;
-                    case Value::$xmlrpcI4:
                     case Value::$xmlrpcInt:
+                    case Value::$xmlrpcI4:
                         $rs .= (int)$val;
                         break;
                     case Value::$xmlrpcDateTime:
@@ -93,9 +95,9 @@ class Serializer
                 break;
             case 3:
                 // struct
+                /// @todo implement json-rpc extension for object serialization
                 //if ($value->_php_class)
                 //{
-                /// @todo implement json-rpc extension for object serialization
                 //$rs.='<struct php_class="' . $this->_php_class . "\">\n";
                 //}
                 //else
@@ -126,8 +128,7 @@ class Serializer
      */
     public function serializeRequest($req, $id = null, $charsetEncoding = '')
     {
-        // @ todo: verify if all chars are allowed for method names or can
-        // we just skip the js encoding on it?
+        // @todo: verify if all chars are allowed for method names or can we just skip the js encoding on it?
         $result = "{\n\"method\": \"" . $this->getCharsetEncoder()->encodeEntities($req->methodname, '', $charsetEncoding) . "\",\n\"params\": [ ";
         for ($i = 0; $i < sizeof($req->params); $i++) {
             $p = $req->params[$i];
@@ -189,17 +190,18 @@ class Serializer
             // by encoding non ascii chars
             $result .= "\"error\": { \"faultCode\": " . $resp->faultCode() . ", \"faultString\": \"" . $this->getCharsetEncoder()->encodeEntities($resp->errstr, null, $charsetEncoding) . "\" }, \"result\": null";
         } else {
-            $val= $resp->value();
-            if (!is_object($val) || !is_a($val, 'PhpXmlRpc\Value')) {
-                if (is_string($val) && $resp->valtyp == 'json') {
-                    $result .= "\"error\": null, \"result\": " . $val;
-                } else {
-                    /// @todo try to build something serializable?
-                    throw new \Exception('cannot serialize jsonrpcresp objects whose content is native php values');
-                }
-            } else {
+            $val = $resp->value();
+            if (is_object($val) && is_a($val, 'PhpXmlRpc\Value')) {
                 $result .= "\"error\": null, \"result\": " .
                     $this->serializeValue($val, $charsetEncoding);
+            } else if (is_string($val) && $resp->valueType() == 'json') {
+                $result .= "\"error\": null, \"result\": " . $val;
+            } else if ($resp->valueType() == 'phpvals') {
+                $encoder = new Encoder();
+                $val = $encoder->encode($val);
+                $result .= "\"error\": null, \"result\": " . $val->serialize($charsetEncoding);
+            } else {
+                throw new StateErrorException('cannot serialize jsonrpcresp objects whose content is native php values');
             }
         }
         $result .= "\n}";

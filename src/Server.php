@@ -4,7 +4,8 @@ namespace PhpXmlRpc\JsonRpc;
 
 use PhpXmlRpc\JsonRpc\Helper\Charset;
 use PhpXmlRpc\JsonRpc\Helper\Parser;
-use PhpXmlRpc\JsonRpc\Helper\Serializer;
+use PhpXmlRpc\JsonRpc\Traits\EncoderAware;
+use PhpXmlRpc\JsonRpc\Traits\SerializerAware;
 use PhpXmlRpc\PhpXmlRpc;
 use PhpXmlRpc\Server as BaseServer;
 
@@ -16,38 +17,16 @@ use PhpXmlRpc\Server as BaseServer;
  */
 class Server extends BaseServer
 {
+    use EncoderAware;
+    use SerializerAware;
+
     //public $allow_system_funcs = false;
-    public $functions_parameters_type = 'jsonrpcvals';
+    public $functions_parameters_type = Parser::RETURN_JSONRPCVALS;
 
-    protected static $encoder;
-    protected static $serializer;
-
-    public function getEncoder()
-    {
-        if (self::$encoder === null) {
-            self::$encoder = new Encoder();
-        }
-        return self::$encoder;
-    }
-
-    public static function setEncoder($encoder)
-    {
-        self::$encoder = $encoder;
-    }
-
-    public function getSerializer()
-    {
-        if (self::$serializer === null) {
-            self::$serializer = new Serializer();
-        }
-        return self::$serializer;
-    }
-
-    public static function setSerializer($serializer)
-    {
-        self::$serializer = $serializer;
-    }
-
+    /**
+     * Reimplemented to make us use the correct parser type
+     * @return Parser
+     */
     public function getParser()
     {
         if (self::$parser === null) {
@@ -74,23 +53,27 @@ class Server extends BaseServer
 
     /**
      * Note: syntax differs from overridden method, by adding an ID param
-     * @param mixed $m
-     * @param null $params
-     * @param null $paramtypes
-     * @param null $msgID
-     * @return Response|\PhpXmlRpc\Response
+     * @param Request|string $req
+     * @param mixed[] $params
+     * @param string[] $paramtypes
+     * @param mixed $msgID
+     * @return Response
      *
      * @throws \Exception
      */
-    protected function execute($m, $params = null, $paramtypes = null, $msgID = null)
+    protected function execute($req, $params = null, $paramtypes = null, $msgID = null)
     {
-        if (is_object($m)) {
-            // watch out: if $m is an xmlrpc request obj, this will raise a warning: no id member...
-            $methName = $m->method();
-            $msgID = $m->id;
+        static::$_xmlrpcs_occurred_errors = '';
+        static::$_xmlrpc_debuginfo = '';
+
+        if (is_object($req)) {
+            /// @todo if $req is an xml-rpc request obj, this will raise a warning: no id member...
+            $methName = $req->method();
+            $msgID = $req->id;
         } else {
-            $methName = $m;
+            $methName = $req;
         }
+
         $sysCall = $this->isSyscall($methName);
         $dmap = $sysCall ? $this->getSystemDispatchMap() : $this->dmap;
 
@@ -102,30 +85,51 @@ class Server extends BaseServer
         // Check signature
         if (isset($dmap[$methName]['signature'])) {
             $sig = $dmap[$methName]['signature'];
-            if (is_object($m)) {
-                list($ok, $errstr) = $this->verifySignature($m, $sig);
+            if (is_object($req)) {
+                list($ok, $errStr) = $this->verifySignature($req, $sig);
             } else {
-                list($ok, $errstr) = $this->verifySignature($paramtypes, $sig);
+                list($ok, $errStr) = $this->verifySignature($paramtypes, $sig);
             }
             if (!$ok) {
                 // Didn't match.
                 return new Response(0, PhpXmlRpc::$xmlrpcerr['incorrect_params'],
-                    PhpXmlRpc::$xmlrpcstr['incorrect_params'] . ": ${errstr}", '', $msgID
+                    PhpXmlRpc::$xmlrpcstr['incorrect_params'] . ": ${errStr}", '', $msgID
                 );
             }
         }
 
         $func = $dmap[$methName]['function'];
+
         // let the 'class::function' syntax be accepted in dispatch maps
         if (is_string($func) && strpos($func, '::')) {
             $func = explode('::', $func);
         }
+
+        // build string representation of function 'name'
+        if (is_array($func)) {
+            if (is_object($func[0])) {
+                $funcName = get_class($func[0]) . '->' . $func[1];
+            } else {
+                $funcName = implode('::', $func);
+            }
+        } else if ($func instanceof \Closure) {
+            $funcName = 'Closure';
+        } else {
+            $funcName = $func;
+        }
+
         // verify that function to be invoked is in fact callable
         if (!is_callable($func)) {
-            error_log("XML-RPC: " . __METHOD__ . ": function $func registered as method handler is not callable");
+            $this->getLogger()->error("JSON-RPC: " . __METHOD__ . ": function $funcName registered as method handler is not callable");
             return new Response(0, PhpXmlRpc::$xmlrpcerr['server_error'],
                 PhpXmlRpc::$xmlrpcstr['server_error'] . ': no function matches method', '', $msgID
             );
+        }
+
+        if (isset($dmap[$methodName]['exception_handling'])) {
+            $exception_handling = (int)$dmap[$methodName]['exception_handling'];
+        } else {
+            $exception_handling = $this->exception_handling;
         }
 
         // If debug level is 3, we should catch all errors generated during
@@ -133,15 +137,16 @@ class Server extends BaseServer
         if ($this->debug > 2) {
             self::$_xmlrpcs_prev_ehandler = set_error_handler(array('\PhpXmlRpc\JsonRpc\Server', '_xmlrpcs_errorHandler'));
         }
+
         try {
-            if (is_object($m)) {
+            if (is_object($req)) {
                 if ($sysCall) {
-                    $r = call_user_func($func, $this, $m);
+                    $r = call_user_func($func, $this, $req);
                 } else {
-                    $r = call_user_func($func, $m);
+                    $r = call_user_func($func, $req);
                 }
                 if (!is_a($r, 'PhpXmlRpc\Response')) {
-                    error_log("XML-RPC: " . __METHOD__ . ": function $func registered as method handler does not return an xmlrpc response object");
+                    $this->getLogger()->error("JSON-RPC: " . __METHOD__ . ": function $func registered as method handler does not return an xmlrpc response object");
                     if (is_a($r, 'PhpXmlRpc\Value')) {
                         $r = new Response($r);
                     } else {
@@ -187,19 +192,27 @@ class Server extends BaseServer
                 // Be nice to him, and serialize the xmlrpc stuff into JSON.
                 // We also override the content_type of the xmlrpc response, but lack knowledge of intended response
                 // charset...
-                $r->content_type = 'application/json';
-                $r->payload = $this->getSerializer()->serializeResponse($r, $msgID);
+                $r->setPayload($this->getSerializer()->serializeResponse($r, $msgID), 'application/json');
             } else {
                 $r->id = $msgID;
             }
         } catch (\Exception $e) {
             // (barring errors in the lib) an uncatched exception happened in the called function, we wrap it in a
             // proper error-response
-            switch ($this->exception_handling) {
+            switch ($exception_handling) {
                 case 2:
+                    if (self::$_xmlrpcs_prev_ehandler) {
+                        set_error_handler(self::$_xmlrpcs_prev_ehandler);
+                    } else {
+                        restore_error_handler();
+                    }
                     throw $e;
                 case 1:
-                    $r = new Response(0, $e->getCode(), $e->getMessage(), '', $msgID);
+                    $errCode = $e->getCode();
+                    if ($errCode == 0) {
+                        $errCode = PhpXmlRpc::$xmlrpcerr['server_error'];
+                    }
+                    $r = new Response(0, $errCode, $e->getMessage(), '', $msgID);
                     break;
                 default:
                     $r = new Response(0, PhpXmlRpc::$xmlrpcerr['server_error'], PhpXmlRpc::$xmlrpcstr['server_error'], '', $msgID);
@@ -207,11 +220,20 @@ class Server extends BaseServer
         } catch (\Error $e) {
             // (barring errors in the lib) an uncatched exception happened in the called function, we wrap it in a
             // proper error-response
-            switch ($this->exception_handling) {
+            switch ($exception_handling) {
                 case 2:
+                    if (self::$_xmlrpcs_prev_ehandler) {
+                        set_error_handler(self::$_xmlrpcs_prev_ehandler);
+                    } else {
+                        restore_error_handler();
+                    }
                     throw $e;
                 case 1:
-                    $r = new Response(0, $e->getCode(), $e->getMessage(), '', $msgID);
+                    $errCode = $e->getCode();
+                    if ($errCode == 0) {
+                        $errCode = PhpXmlRpc::$xmlrpcerr['server_error'];
+                    }
+                    $r = new Response(0, $errCode, $e->getMessage(), '', $msgID);
                     break;
                 default:
                     $r = new Response(0, PhpXmlRpc::$xmlrpcerr['server_error'], PhpXmlRpc::$xmlrpcstr['server_error'], '', $msgID);
@@ -219,14 +241,15 @@ class Server extends BaseServer
         }
 
         if ($this->debug > 2) {
-            // note: restore the error handler we found before calling the
-            // user func, even if it has been changed inside the func itself
+            // note: restore the error handler we found before calling the user func, even if it has been changed inside
+            // the func itself
             if (self::$_xmlrpcs_prev_ehandler) {
                 set_error_handler(self::$_xmlrpcs_prev_ehandler);
             } else {
                 restore_error_handler();
             }
         }
+
         return $r;
     }
 
@@ -247,41 +270,32 @@ class Server extends BaseServer
                 PhpXmlRpc::$xmlrpcerr['invalid_request'],
                 PhpXmlRpc::$xmlrpcstr['invalid_request'] . ' ' . $parser->_xh['isf_reason']);
         } else {
+            $_xh = $parser->_xh;
             if ($this->functions_parameters_type == 'phpvals' || $this->functions_parameters_type == 'epivals' ||
-                (isset($this->dmap[$parser->_xh['method']]['parameters_type']) &&
-                ($this->dmap[$parser->_xh['method']]['parameters_type'] == 'phpvals' || $this->dmap[$parser->_xh['method']]['parameters_type'] == 'epivals'))
+                (isset($this->dmap[$_xh['method']]['parameters_type']) &&
+                ($this->dmap[$_xh['method']]['parameters_type'] == 'phpvals' || $this->dmap[$_xh['method']]['parameters_type'] == 'epivals'))
             ) {
                 if ($this->debug > 1) {
-                    $this->debugmsg("\n+++PARSED+++\n" . var_export($parser->_xh['params'], true) . "\n+++END+++");
+                    $this->debugMsg("\n+++PARSED+++\n" . var_export($_xh['params'], true) . "\n+++END+++");
                 }
-                $r = $this->execute($parser->_xh['method'], $parser->_xh['params'], $parser->_xh['pt'], $parser->_xh['id']);
+                $r = $this->execute($_xh['method'], $_xh['params'], $_xh['pt'], $_xh['id']);
             } else {
                 // build a json-rpc Request object with data parsed from json
-                $m = new Request($parser->_xh['method'], array(), $parser->_xh['id']);
+                $m = new Request($_xh['method'], array(), $_xh['id']);
                 // now add parameters in
                 /// @todo for more speed, we could just substitute the array...
-                for ($i = 0; $i < sizeof($parser->_xh['params']); $i++) {
-                    $m->addParam($parser->_xh['params'][$i]);
+                for ($i = 0; $i < sizeof($_xh['params']); $i++) {
+                    $m->addParam($_xh['params'][$i]);
                 }
 
                 if ($this->debug > 1) {
-                    $this->debugmsg("\n+++PARSED+++\n" . var_export($m, true) . "\n+++END+++");
+                    $this->debugMsg("\n+++PARSED+++\n" . var_export($m, true) . "\n+++END+++");
                 }
 
                 $r = $this->execute($m);
             }
         }
         return $r;
-    }
-
-    /**
-     * No xml header generated by the server, since we are sending json
-     * @param string $charsetEncoding
-     * @return string
-     */
-    protected function xml_header($charsetEncoding = '')
-    {
-        return '';
     }
 
     /**
@@ -292,6 +306,7 @@ class Server extends BaseServer
     public function getCapabilities()
     {
         $outAr = parent::getCapabilities();
+
         $outAr['json-rpc'] = new Value(
             array(
                 'specUrl' => new Value('http://json-rpc.org/wiki/specification', Value::$xmlrpcString),
@@ -299,9 +314,22 @@ class Server extends BaseServer
             ),
             Value::$xmlrpcStruct
         );
+
         if (isset($outAr['nil'])) {
             unset($outAr['nil']);
         }
+
         return $outAr;
+    }
+
+    /**
+     * No xml header generated by the server, since we are sending json.
+     * @deprecated this method was moved to the Response class
+     * @param string $charsetEncoding
+     * @return string
+     */
+    protected function xml_header($charsetEncoding = '')
+    {
+        return '';
     }
 }
