@@ -129,9 +129,9 @@ class Serializer
     public function serializeRequest($req, $id = null, $charsetEncoding = '')
     {
         // @todo: verify if all chars are allowed for method names or can we just skip the js encoding on it?
-        $result = "{\n\"method\": \"" . $this->getCharsetEncoder()->encodeEntities($req->methodname, '', $charsetEncoding) . "\",\n\"params\": [ ";
-        for ($i = 0; $i < sizeof($req->params); $i++) {
-            $p = $req->params[$i];
+        $result = "{\n\"method\": \"" . $this->getCharsetEncoder()->encodeEntities($req->method(), '', $charsetEncoding) . "\",\n\"params\": [ ";
+        for ($i = 0; $i < $req->getNumParams(); $i++) {
+            $p = $req->getParam($i);
             // NB: we try to force serialization as json even though the object
             // param might be a plain xmlrpcval object.
             // This way we do not need to override addParam, aren't we lazy?
