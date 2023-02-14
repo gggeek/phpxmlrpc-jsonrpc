@@ -2,7 +2,7 @@
 
 - bumped the minimum required version of php to 5.4
 
-- bumped the minimum required version of phpxmlrpc/phpxmlrpc to 4.10, fixing the `Client->call` method sometimes
+- bumped the minimum required version of phpxmlrpc/phpxmlrpc to 4.10.1, fixing the `Client->call` method sometimes
   returning an xml-rpc response instead of a json-rpc one
 
 - made all error messages go through the Logger facility instead of calling directly `error_log`
