@@ -64,40 +64,43 @@ class Charset
      * Encode php strings to valid JSON unicode representation.
      * All chars outside ASCII range are converted to \uXXXX for maximum portability.
      * @param string $data
-     * @param string $src_encoding charset of source string, defaults to PhpXmlRpc::$xmlrpc_internalencoding
-     * @param string $dest_encoding charset of the encoded string, defaults to ASCII for maximum interoperability
+     * @param string $srcEncoding charset of source string, defaults to PhpXmlRpc::$xmlrpc_internalencoding
+     * @param string $destEncoding charset of the encoded string, defaults to ASCII for maximum interoperability
      * @return string
      *
      * @todo add support for UTF-16 as destination charset instead of ASCII
      * @todo add support for UTF-16 as source charset
      */
-    public function encodeEntities($data, $src_encoding = '', $dest_encoding = '')
+    public function encodeEntities($data, $srcEncoding = '', $destEncoding = '')
     {
-        if ($src_encoding == '') {
+        if ($srcEncoding == '') {
             // lame, but we know no better...
-            $src_encoding = PhpXmlRpc::$xmlrpc_internalencoding;
+            $srcEncoding = PhpXmlRpc::$xmlrpc_internalencoding;
         }
 
-        switch (strtoupper($src_encoding . '_' . $dest_encoding)) {
-            case 'ISO-8859-1_':
-            case 'ISO-8859-1_US-ASCII':
-                $this->buildConversionTable();
-                $escapedData = str_replace(array('\\', '"', '/', "\t", "\n", "\r", chr(8), chr(11), chr(12)), array('\\\\', '\"', '\/', '\t', '\n', '\r', '\b', '\v', '\f'), $data);
-                $escapedData = str_replace($this->ecma262_iso88591_Entities['in'], $this->ecma262_iso88591_Entities['out'], $escapedData);
-                break;
-            case 'ISO-8859-1_UTF-8':
-                $escapedData = str_replace(array('\\', '"', '/', "\t", "\n", "\r", chr(8), chr(11), chr(12)), array('\\\\', '\"', '\/', '\t', '\n', '\r', '\b', '\v', '\f'), $data);
-                $escapedData = utf8_encode($escapedData);
-                break;
-            case 'ISO-8859-1_ISO-8859-1':
-            case 'US-ASCII_US-ASCII':
-            case 'US-ASCII_UTF-8':
-            case 'US-ASCII_':
-            case 'US-ASCII_ISO-8859-1':
+        if ($destEncoding == '') {
+            $destEncoding = 'US-ASCII';
+        }
+
+        // in case there is transcoding going on, let's upscale to UTF8
+        /// @todo we should do this as well when $srcEncoding == $destEncoding and the encoding is not supported by
+        ///       htmlspecialchars
+        if (!in_array($srcEncoding, array('UTF-8', 'ISO-8859-1', 'US-ASCII')) && $srcEncoding != $destEncoding &&
+            function_exists('mb_convert_encoding')) {
+            $data = mb_convert_encoding($data, 'UTF-8', str_replace('US-ASCII', 'ASCII', $srcEncoding));
+            $srcEncoding = 'UTF-8';
+        }
+
+        // list ordered with (expected) most common scenarios first
+        switch (strtoupper($srcEncoding . '_' . $destEncoding)) {
             case 'UTF-8_UTF-8':
+            case 'ISO-8859-1_ISO-8859-1':
+            case 'US-ASCII_UTF-8':
+            case 'US-ASCII_US-ASCII':
+            case 'US-ASCII_ISO-8859-1':
                 $escapedData = str_replace(array('\\', '"', '/', "\t", "\n", "\r", chr(8), chr(11), chr(12)), array('\\\\', '\"', '\/', '\t', '\n', '\r', '\b', '\v', '\f'), $data);
                 break;
-            case 'UTF-8_':
+
             case 'UTF-8_US-ASCII':
             case 'UTF-8_ISO-8859-1':
                 // NB: this will choke on invalid UTF-8, going most likely beyond EOF
@@ -179,9 +182,51 @@ class Charset
                 }
                 break;
 
+            case 'ISO-8859-1_UTF-8':
+                $escapedData = str_replace(array('\\', '"', '/', "\t", "\n", "\r", chr(8), chr(11), chr(12)), array('\\\\', '\"', '\/', '\t', '\n', '\r', '\b', '\v', '\f'), $data);
+                $escapedData = utf8_encode($escapedData);
+                break;
+
+            case 'ISO-8859-1_US-ASCII':
+                $this->buildConversionTable();
+                $escapedData = str_replace(array('\\', '"', '/', "\t", "\n", "\r", chr(8), chr(11), chr(12)), array('\\\\', '\"', '\/', '\t', '\n', '\r', '\b', '\v', '\f'), $data);
+                $escapedData = str_replace($this->ecma262_iso88591_Entities['in'], $this->ecma262_iso88591_Entities['out'], $escapedData);
+                break;
+
             default:
-                $escapedData = '';
-                $this->getLogger()->error("Converting from $src_encoding to $dest_encoding: not supported...");
+                if (function_exists('mb_convert_encoding')) {
+                    // If reaching where, there are only 2 cases possible: UTF8->XXX or XXX->XXX
+                    if ($srcEncoding === 'UTF-8') {
+                        $data = str_replace(array('\\', '"', '/', "\t", "\n", "\r", chr(8), chr(11), chr(12)), array('\\\\', '\"', '\/', '\t', '\n', '\r', '\b', '\v', '\f'), $data);
+                    }
+                    if ($srcEncoding !== $destEncoding) {
+                        try {
+                            // php 7.4 and lower: a warning is generated. php 8.0 and up: an Error is thrown. So much for BC...
+                            $data = @mb_convert_encoding($data, str_replace('US-ASCII', 'ASCII', $destEncoding), str_replace('US-ASCII', 'ASCII', $srcEncoding));
+                        } catch (\ValueError $e) {
+                            $data = false;
+                        }
+                    }
+                    if ($data === false) {
+                        $escapedData = '';
+                        $this->getLogger()->error('XML-RPC: ' . __METHOD__ . ": Converting from $srcEncoding to $destEncoding via mbstring: failed...");
+                    } else {
+                        if ($srcEncoding === 'UTF-8') {
+                            $escapedData = $data;
+                        } else {
+                            /// @todo cache this conversion table
+                            $search = array('\\', '"', '/', "\t", "\n", "\r", chr(8), chr(11), chr(12));
+                            foreach ($search as $char) {
+
+                                $replace[] = mb_convert_encoding($char, str_replace('US-ASCII', 'ASCII', $destEncoding), str_replace('US-ASCII', 'ASCII', $srcEncoding));
+                            }
+                            $escapedData = str_replace($search, $replace, $data);
+                        }
+                    }
+                } else {
+                    $escapedData = '';
+                    $this->getLogger()->error('XML-RPC: ' . __METHOD__ . ": Converting from $srcEncoding to $destEncoding: not supported...");
+                }
         } // switch
 
         return $escapedData;

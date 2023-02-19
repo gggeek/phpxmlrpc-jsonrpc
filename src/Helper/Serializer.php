@@ -54,11 +54,12 @@ class Serializer
                     case Value::$xmlrpcDateTime:
                         // quote date as a json string.
                         // assumes date format is valid and will not break js...
+/// @todo check: how to handle the cases where $val is a timestamp or a DateTime?
                         $rs .= '"' . $val . '"';
                         break;
                     case Value::$xmlrpcDouble:
                         // add a .0 in case value is integer.
-                        // This helps us carrying around floats in js, and keep them separated from ints
+                        // This helps us to carry around floats in js, and keep them separated from ints
                         $sval = strval((double)$val); // convert to string
                         // fix usage of comma, in case of eg. german locale
                         $sval = str_replace(',', '.', $sval);
