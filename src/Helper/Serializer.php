@@ -49,6 +49,7 @@ class Serializer
                         break;
                     case Value::$xmlrpcInt:
                     case Value::$xmlrpcI4:
+                    case Value::$xmlrpcI8;
                         $rs .= (int)$val;
                         break;
                     case Value::$xmlrpcDateTime:
