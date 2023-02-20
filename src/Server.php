@@ -24,7 +24,17 @@ class Server extends BaseServer
     protected static $responseClass = '\\PhpXmlRpc\\JsonRpc\\Response';
 
     //public $allow_system_funcs = false;
-    public $functions_parameters_type = Parser::RETURN_JSONRPCVALS;
+    protected $functions_parameters_type = Parser::RETURN_JSONRPCVALS;
+
+    /**
+     * @var array
+     * Option used for fine-tuning the encoding the php values returned from functions registered in the dispatch map
+     * when the functions_parameters_type member is set to 'phpvals'.
+     * @see Encoder::encode for a list of values
+     */
+    protected $phpvals_encoding_options = array();
+
+    protected $debug = 0;
 
     /**
      * Reimplemented to make us use the correct parser type
@@ -272,7 +282,7 @@ class Server extends BaseServer
         // BC we now get false|array, we did use to get true/false
         if (is_array($ok)) {
             $_xh = $ok;
-            $ok = $this->_xh['isf'] != 0;
+            $ok = $parser->_xh['isf'] == 0;
         } else {
             $_xh = $parser->_xh;
         }

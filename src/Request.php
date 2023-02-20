@@ -94,7 +94,7 @@ class Request extends BaseRequest
     public function parseResponse($data = '', $headersProcessed = false, $returnType = Parser::RETURN_JSONRPCVALS)
     {
         if ($this->debug) {
-            $this->getLogger()->debugMessage("---GOT---\n$data\n---END---");
+            $this->getLogger()->debug("---GOT---\n$data\n---END---");
         }
 
         $this->httpResponse = array('raw_data' => $data, 'headers' => array(), 'cookies' => array());
@@ -156,11 +156,11 @@ class Request extends BaseRequest
 
         if ($this->debug) {
             if ($serverComments !== '') {
-                $this->getLogger()->debugMessage("---SERVER DEBUG INFO (DECODED)---\n\t" .
+                $this->getLogger()->debug("---SERVER DEBUG INFO (DECODED)---\n\t" .
                     str_replace("\n", "\n\t", base64_decode($serverComments)) . "\n---END---");
             }
             if ($userComments !== '') {
-                $this->getLogger()->debugMessage("---SERVER DEBUG INFO---\n\t" .
+                $this->getLogger()->debug("---SERVER DEBUG INFO---\n\t" .
                     str_replace("\n", "\n\t", $userComments) . "\n---END---");
             }
         }
@@ -214,7 +214,7 @@ class Request extends BaseRequest
         } else {
 
             if ($this->debug > 1) {
-                $this->getLogger()->debugMessage(
+                $this->getLogger()->debug(
                     "---PARSED---\n".var_export($_xh['value'], true)."\n---END---"
                 );
             }
