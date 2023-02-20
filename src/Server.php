@@ -268,12 +268,19 @@ class Server extends BaseServer
     public function parseRequest($data, $reqEncoding = '')
     {
         $parser = $this->getParser();
-        if (!$parser->parseRequest($data, $this->functions_parameters_type == 'phpvals' || $this->functions_parameters_type == 'epivals', $reqEncoding)) {
-            $r = new static::$responseClass(0,
-                PhpXmlRpc::$xmlrpcerr['invalid_request'],
-                PhpXmlRpc::$xmlrpcstr['invalid_request'] . ' ' . $parser->_xh['isf_reason']);
+        $ok = $parser->parseRequest($data, $this->functions_parameters_type == 'phpvals' || $this->functions_parameters_type == 'epivals', $reqEncoding);
+        // BC we now get false|array, we did use to get true/false
+        if (is_array($ok)) {
+            $_xh = $ok;
+            $ok = $this->_xh['isf'] != 0;
         } else {
             $_xh = $parser->_xh;
+        }
+        if (!$ok) {
+            $r = new static::$responseClass(0,
+                PhpXmlRpc::$xmlrpcerr['invalid_request'],
+                PhpXmlRpc::$xmlrpcstr['invalid_request'] . ' ' . $_xh['isf_reason']);
+        } else {
             if ($this->functions_parameters_type == 'phpvals' || $this->functions_parameters_type == 'epivals' ||
                 (isset($this->dmap[$_xh['method']]['parameters_type']) &&
                 ($this->dmap[$_xh['method']]['parameters_type'] == 'phpvals' || $this->dmap[$_xh['method']]['parameters_type'] == 'epivals'))

@@ -67,9 +67,6 @@ class Charset
      * @param string $srcEncoding charset of source string, defaults to PhpXmlRpc::$xmlrpc_internalencoding
      * @param string $destEncoding charset of the encoded string, defaults to ASCII for maximum interoperability
      * @return string
-     *
-     * @todo add support for UTF-16 as destination charset instead of ASCII
-     * @todo add support for UTF-16 as source charset
      */
     public function encodeEntities($data, $srcEncoding = '', $destEncoding = '')
     {
@@ -83,8 +80,6 @@ class Charset
         }
 
         // in case there is transcoding going on, let's upscale to UTF8
-        /// @todo we should do this as well when $srcEncoding == $destEncoding and the encoding is not supported by
-        ///       htmlspecialchars
         if (!in_array($srcEncoding, array('UTF-8', 'ISO-8859-1', 'US-ASCII')) && $srcEncoding != $destEncoding &&
             function_exists('mb_convert_encoding')) {
             $data = mb_convert_encoding($data, 'UTF-8', str_replace('US-ASCII', 'ASCII', $srcEncoding));
@@ -217,8 +212,7 @@ class Charset
                             /// @todo cache this conversion table
                             $search = array('\\', '"', '/', "\t", "\n", "\r", chr(8), chr(11), chr(12));
                             foreach ($search as $char) {
-
-                                $replace[] = mb_convert_encoding($char, str_replace('US-ASCII', 'ASCII', $destEncoding), str_replace('US-ASCII', 'ASCII', $srcEncoding));
+                                $replace[] = mb_convert_encoding($char, str_replace('US-ASCII', 'ASCII', $destEncoding), 'ASCII');
                             }
                             $escapedData = str_replace($search, $replace, $data);
                         }
@@ -230,50 +224,5 @@ class Charset
         } // switch
 
         return $escapedData;
-
-        /*
-            $length = strlen($data);
-            $escapeddata = "";
-            for($position = 0; $position < $length; $position++)
-            {
-                $character = substr($data, $position, 1);
-                $code = ord($character);
-                switch($code)
-                {
-                    case 8:
-                        $character = '\b';
-                        break;
-                    case 9:
-                        $character = '\t';
-                        break;
-                    case 10:
-                        $character = '\n';
-                        break;
-                    case 12:
-                        $character = '\f';
-                        break;
-                    case 13:
-                        $character = '\r';
-                        break;
-                    case 34:
-                        $character = '\"';
-                        break;
-                    case 47:
-                        $character = '\/';
-                        break;
-                    case 92:
-                        $character = '\\\\';
-                        break;
-                    default:
-                        if($code < 32 || $code > 159)
-                        {
-                            $character = "\u".str_pad(dechex($code), 4, '0', STR_PAD_LEFT);
-                        }
-                        break;
-                }
-                $escapeddata .= $character;
-            }
-            return $escapeddata;
-            */
     }
 }

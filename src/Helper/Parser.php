@@ -46,7 +46,7 @@ class Parser
      * @param $data
      * @param bool $returnPhpvals
      * @param string $srcEncoding
-     * @return bool
+     * @return false|array
      *
      * @todo checks missing:
      *       - no extra members in request
@@ -103,7 +103,7 @@ class Parser
         $this->_xh['params'] = $ok['params'];
         $this->_xh['id'] = $ok['id'];
 
-        return true;
+        return $this->_xh;
     }
 
     /**
@@ -113,7 +113,7 @@ class Parser
      * @param $data
      * @param bool $returnPhpvals
      * @param string $srcEncoding
-     * @return bool
+     * @return false|array
      */
     public function parseResponse($data, $returnPhpvals = false, $srcEncoding = '')
     {
@@ -183,7 +183,7 @@ class Parser
         /// @todo should we encode Id as well ?
         $this->_xh['id'] = $ok['id'];
 
-        return true;
+        return $this->_xh;
     }
 
     /**
