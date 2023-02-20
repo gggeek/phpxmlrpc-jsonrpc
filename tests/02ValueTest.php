@@ -32,25 +32,25 @@ class ValueTest extends PhpJsonRpc_LoggerAwareTestCase
     public function testAddScalarToStruct()
     {
         $v = new Value(array('a' => 'b'), 'struct');
-        $r = $v->addscalar('c');
+        $r = $v->addScalar('c');
         $this->assertEquals(0, $r);
     }
 
     public function testAddStructToStruct()
     {
         $v = new Value(array('a' => new Value('b')), 'struct');
-        $r = $v->addstruct(array('b' => new Value('c')));
+        $r = $v->addStruct(array('b' => new Value('c')));
         $this->assertEquals(2, $v->structsize());
         $this->assertEquals(1, $r);
-        $r = $v->addstruct(array('b' => new Value('b')));
+        $r = $v->addStruct(array('b' => new Value('b')));
         $this->assertEquals(2, $v->structsize());
     }
 
     public function testAddArrayToArray()
     {
         $v = new Value(array(new Value('a'), new Value('b')), 'array');
-        $r = $v->addarray(array(new Value('b'), new Value('c')));
-        $this->assertEquals(4, $v->arraysize());
+        $r = $v->addArray(array(new Value('b'), new Value('c')));
+        $this->assertEquals(4, $v->arraySize());
         $this->assertEquals(1, $r);
     }
 
