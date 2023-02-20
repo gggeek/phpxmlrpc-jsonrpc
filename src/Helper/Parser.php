@@ -32,6 +32,7 @@ class Parser
      * @see PhpXmlRpc/XMLParser
      */
     public $_xh = array(
+        // 3: json parsing fault, 2: invalid json-rpc, 1: fault response
         'isf' => 0,
         'isf_reason' => '',
         'value' => null,
@@ -217,7 +218,7 @@ class Parser
         if (json_last_error() !== JSON_ERROR_NONE) {
             // error 3: json parsing fault, 2: invalid json-rpc
             $this->_xh['isf'] = (json_last_error() !== JSON_ERROR_NONE) ? 3 : 2;
-            $this->_xh['isf_reason'] = 'JSON parsing failed. error: ' . json_last_error();
+            $this->_xh['isf_reason'] = 'JSON parsing failed. Error: ' . json_last_error();
 
             $this->getLogger()->error($this->_xh['isf_reason']);
             return false;
