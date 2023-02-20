@@ -1,0 +1,85 @@
+<?php
+
+include_once __DIR__ . '/LoggerAwareTestCase.php';
+
+use PHPUnit\Extensions\SeleniumCommon\RemoteCoverage;
+use PHPUnit\Framework\TestResult;
+
+abstract class PhpJsonRpc_ServerAwareTestCase extends PhpJsonRpc_LoggerAwareTestCase
+{
+    /** @var string */
+    protected $baseUrl;
+    /** @var string */
+    protected $testId;
+    /** @var boolean */
+    protected $collectCodeCoverageInformation;
+    /** @var string */
+    protected $coverageScriptUrl;
+
+    protected static $randId;
+
+    /**
+     * Reimplemented to allow us to collect code coverage info from the target server.
+     * Code taken from PHPUnit_Extensions_Selenium2TestCase
+     *
+     * @param TestResult $result
+     * @return TestResult
+     * @throws Exception
+     *
+     * @todo instead of overriding run via _run, try to achieve this by implementing Yoast\PHPUnitPolyfills\TestListeners\TestListenerDefaultImplementation
+     */
+    public function _run($result = NULL)
+    {
+        $this->testId = get_class($this) . '__' . $this->getName();
+
+        if ($result === NULL) {
+            $result = $this->createResult();
+        }
+
+        $this->collectCodeCoverageInformation = $result->getCollectCodeCoverageInformation();
+
+        parent::_run($result);
+
+        if ($this->collectCodeCoverageInformation) {
+            $coverage = new RemoteCoverage(
+                $this->coverageScriptUrl,
+                $this->testId
+            );
+            $result->getCodeCoverage()->append(
+                $coverage->get(), $this
+            );
+        }
+
+        // do not call this before to give the time to the Listeners to run
+        //$this->getStrategy()->endOfTest($this->session);
+
+        return $result;
+    }
+
+    public static function set_up_before_class()
+    {
+        parent::set_up_before_class();
+
+        // Set up a database connection or other fixture which needs to be available.
+        self::$randId = uniqid();
+        file_put_contents(sys_get_temp_dir() . '/phpunit_rand_id.txt', self::$randId);
+    }
+
+    public static function tear_down_after_class()
+    {
+        if (is_file(sys_get_temp_dir() . '/phpunit_rand_id.txt')) {
+            unlink(sys_get_temp_dir() . '/phpunit_rand_id.txt');
+        }
+
+        parent::tear_down_after_class();
+    }
+
+    public function set_up()
+    {
+        parent::set_up();
+
+        // assumes HTTPURI to be in the form /tests/index.php?etc...
+        $this->baseUrl = 'http://' . $this->args['HTTPSERVER'] . preg_replace('|\?.+|', '', $this->args['HTTPURI']);
+        $this->coverageScriptUrl = 'http://' . $this->args['HTTPSERVER'] . preg_replace('|/tests/index\.php(\?.*)?|', '/tests/phpunit_coverage.php', $this->args['HTTPURI']);
+    }
+}

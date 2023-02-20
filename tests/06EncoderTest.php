@@ -7,7 +7,7 @@ use PhpXmlRpc\JsonRpc\Encoder;
 /**
  * Tests involving automatic encoding/decoding of php values into xmlrpc values (the Encoder class).
  *
- * @todo add tests for encoding options: 'encode_php_objs', 'auto_dates', 'null_extension'
+ * @todo add tests for encoding options: 'encode_php_objs', 'auto_dates off', 'null_extension'
  * @todo add tests for decoding
  */
 class EncoderTest extends PhpJsonRpc_LoggerAwareTestCase

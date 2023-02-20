@@ -1,14 +1,8 @@
 <?php
-/**
- * Hackish code used to make the demos both viewable as source, runnable, and viewable as html
- */
 
-// Make errors visible
-ini_set('display_errors', true);
-error_reporting(E_ALL);
-
+// Hackish code used to make the demos both viewable as source and runnable
 if (isset($_GET['showSource']) && $_GET['showSource']) {
-    $file = debug_backtrace()[0]['file'];
+    $file = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS)[0]['file'];
     highlight_file($file);
     die();
 }
