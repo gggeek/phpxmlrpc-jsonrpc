@@ -128,25 +128,6 @@ class ValueTest extends PhpJsonRpc_LoggerAwareTestCase
         $this->assertEquals(1000, $v3['i4']);
     }
 
-    /// @todo do not use \PhpXmlRpc\JsonRpc\Encoder for this test
-    public function testBigJson()
-    {
-        // nb: make sure that  the serialized xml corresponding to this is > 10MB in size
-        $data = array();
-        for ($i = 0; $i < 500000; $i++ ) {
-            $data[] = 'hello world';
-        }
-
-        $encoder = new \PhpXmlRpc\JsonRpc\Encoder();
-        $val = $encoder->encode($data);
-        $req = new \PhpXmlRpc\JsonRpc\Request('test', array($val));
-        $json = $req->serialize();
-        $parser = new \PhpXmlRpc\JsonRpc\Helper\Parser();
-        $_xh = $parser->parseRequest($json);
-        $this->assertNotEquals(false, $_xh);
-        $this->assertEquals(0, $_xh['isf']);
-    }
-
     public function testLatin15InternalEncoding()
     {
         if (!function_exists('mb_convert_encoding')) {

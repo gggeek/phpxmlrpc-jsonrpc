@@ -28,8 +28,8 @@ class Encoder
     {
         switch ($jsonrpcVal->kindOf()) {
             case 'scalar':
-                /// @todo should we support 'dates_as_objects' and datetime xml-rpc Values ?
-                return $jsonrpcVal->scalarval();
+/// @todo check all options of phpxmlrpc encoder, such as 'dates_as_objects' and datetime xml-rpc Values
+                return $jsonrpcVal->scalarVal();
 
             case 'array':
                 $arr = array();
@@ -74,6 +74,7 @@ class Encoder
     /**
      * Takes native php types and encodes them into json-rpc PHP object format.
      * It will not re-encode Value objects.
+     * Empty php arrays get encoded as json arrays, never as hashes.
      *
      * @param mixed $phpVal the value to be converted into a Value object
      * @param array $options can include 'encode_php_objs', 'auto_dates' (which means php DateTimes will be encoded as iso datetime strings)
