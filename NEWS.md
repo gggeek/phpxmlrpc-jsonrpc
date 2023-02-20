@@ -5,7 +5,14 @@
 - bumped the minimum required version of phpxmlrpc/phpxmlrpc to 4.10.1, fixing the `Client->call` method sometimes
   returning an xml-rpc response instead of a json-rpc one
 
+- there is support for extra character sets than UTF-8/ISO-8859-1/ASCII when the php `mbstring` extension is installed,
+  both as internal application charset and as received payload
+
 - made all error messages go through the Logger facility instead of calling directly `error_log`
+
+- BC notes:
+
+  - the `Parser::parseRequest` and `Parser::parseResponse` now return an array instead of `true` upon success
 
 
 ## JSON-RPC for PHP version 1.0-beta1 - 2022/12/20
