@@ -27,7 +27,6 @@ if ($_SERVER['SERVER_ADMIN'] == 'info@altervista.org') {
 require_once __DIR__ . "/_prepend.php";
 
 use PhpXmlRpc\JsonRpc\Server;
-use PhpXmlRpc\PhpXmlRpc;
 
 // Most of the code used to implement the webservices, and their signatures, are stowed away in neatly organized files,
 // each demoing a different topic
