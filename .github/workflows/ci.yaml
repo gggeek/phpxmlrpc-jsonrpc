@@ -61,6 +61,7 @@ jobs:
                 # @todo add env setup scripts for windows
                 run: |
                     chmod 755 ./tests/ci/setup/*.sh
+                    sudo --preserve-env=GITHUB_ACTIONS ./tests/ci/setup/install_packages.sh
                     sudo --preserve-env=GITHUB_ACTIONS ./tests/ci/setup/setup_apache.sh
                     sudo --preserve-env=GITHUB_ACTIONS ./tests/ci/setup/setup_php.sh ${{ matrix.php }}
                     sudo --preserve-env=GITHUB_ACTIONS ./tests/ci/setup/setup_composer.sh
