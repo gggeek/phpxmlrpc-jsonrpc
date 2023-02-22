@@ -106,7 +106,7 @@ class Server extends BaseServer
             if (!$ok) {
                 // Didn't match.
                 return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['incorrect_params'],
-                    PhpXmlRpc::$xmlrpcstr['incorrect_params'] . ": ${errStr}", '', $msgID
+                    PhpXmlRpc::$xmlrpcstr['incorrect_params'] . ": {$errStr}", '', $msgID
                 );
             }
         }
