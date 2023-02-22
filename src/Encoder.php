@@ -126,7 +126,8 @@ class Encoder
             case 'object':
                 if (is_a($phpVal, 'PhpXmlrpc\Value')) {
                     $jsonrpcVal = $phpVal;
-                } else if (is_a($phpVal, 'DateTimeInterface') && in_array('auto_dates', $options)) {
+                    // BC with php 5.4
+                } else if ((is_a($phpVal, 'DateTimeInterface') || is_a($phpVal, 'DateTime')) && in_array('auto_dates', $options)) {
                     $jsonrpcVal = new Value($phpVal->format('Ymd\TH:i:s'), Value::$xmlrpcDateTime);
                 } else {
                     $arr = array();
