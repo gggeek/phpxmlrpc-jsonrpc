@@ -7,7 +7,9 @@ jobs:
         runs-on: ${{ matrix.operating-system }}
         env:
             HTTPSERVER: localhost
+            HTTPURI: /tests/index.php?demo=server/server.php
             HTTPSSERVER: localhost
+            HTTPSURI: /tests/index.php?demo=server/server.php
             HTTPSVERIFYHOST: 2
             HTTPSIGNOREPEER: 0
             SSLVERSION: 0
