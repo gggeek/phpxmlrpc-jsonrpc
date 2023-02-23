@@ -10,6 +10,10 @@
 
 - made all error messages go through the Logger facility instead of calling directly `error_log`
 
+- fixed one warning with php 8.2 when running a Server
+
+- fixed encoding of DateTime objects with php 5.4 in `Encoder::encode`
+
 - BC notes:
 
   - the `Parser::parseRequest` and `Parser::parseResponse` now return an array instead of `true` upon success
