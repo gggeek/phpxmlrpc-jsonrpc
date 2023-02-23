@@ -20,14 +20,17 @@
  * with the previous API of the library
  *****************************************************************************/
 
-include_once(__DIR__.'/../src/Client.php');
-include_once(__DIR__.'/../src/Encoder.php');
+include_once(__DIR__.'/../src/PhpJsonRpc.php');
+include_once(__DIR__.'/../src/Traits/EncoderAware.php');
+include_once(__DIR__.'/../src/Traits/SerializerAware.php');
 include_once(__DIR__.'/../src/Helper/Charset.php');
 include_once(__DIR__.'/../src/Helper/Parser.php');
 include_once(__DIR__.'/../src/Helper/Serializer.php');
+include_once(__DIR__.'/../src/Value.php');
 include_once(__DIR__.'/../src/Request.php');
 include_once(__DIR__.'/../src/Response.php');
-include_once(__DIR__.'/../src/Value.php');
+include_once(__DIR__.'/../src/Client.php');
+include_once(__DIR__.'/../src/Encoder.php');
 
 use PhpXmlRpc\JsonRpc\Encoder;
 use PhpXmlRpc\JsonRpc\Helper\Charset;
