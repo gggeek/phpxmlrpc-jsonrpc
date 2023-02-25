@@ -116,7 +116,8 @@ return array(
         "signature" => $i_echoValue_sig,
         "docstring" => $i_echoValue_doc,
     ),
-    "interopEchoTests.echoBase64" => array(
+    // these do not make a lot of sense for json-rpc, which does not have base64/datetime types
+    /*"interopEchoTests.echoBase64" => array(
         "function" => "i_echoParam",
         "signature" => $i_echoBase64_sig,
         "docstring" => $i_echoBase64_doc,
@@ -125,7 +126,7 @@ return array(
         "function" => "i_echoParam",
         "signature" => $i_echoDate_sig,
         "docstring" => $i_echoDate_doc,
-    ),
+    ),*/
     "interopEchoTests.whichToolkit" => array(
         "function" => "i_whichToolkit",
         "signature" => $i_whichToolkit_sig,
