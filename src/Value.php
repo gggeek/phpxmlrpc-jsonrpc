@@ -11,6 +11,7 @@ class Value extends BaseValue
 
     /**
      * Returns json representation of the value.
+     *
      * @param string $charsetEncoding the charset to be used for serialization. if null, US-ASCII is assumed
      * @return string
      */

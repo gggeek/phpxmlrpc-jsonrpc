@@ -9,15 +9,16 @@ class Response extends BaseResponse
 {
     use SerializerAware;
 
-    public $content_type = 'application/json'; // NB: forces us to send US-ASCII over http
+    protected $content_type = 'application/json';
+    /// @todo make this protected, allowing access via __get and co
     public $id = null;
 
-    public function __construct($val, $fCode = 0, $fString = '', $valType = '', $id = null)
+    public function __construct($val, $fCode = 0, $fString = '', $valType = '', $id = null, $httpResponse = null)
     {
         $this->id = $id;
 
         /// @todo throw exception if $valType is xml or xmlrpcvals ?
-        parent::__construct($val, $fCode, $fString, $valType);
+        parent::__construct($val, $fCode, $fString, $valType, $httpResponse);
 
         switch ($this->valtyp) {
             case 'xml':
@@ -30,14 +31,14 @@ class Response extends BaseResponse
     }
 
     /**
-     * Returns json representation of the response. Sets `payload` and `content_type` properties
+     * Returns json representation of the response. Sets `payload` and `content_type` properties.
      *
      * @param string $charsetEncoding the charset to be used for serialization. if null, US-ASCII is assumed
      * @return string the json representation of the response
      */
     public function serialize($charsetEncoding = '')
     {
-        if ($charsetEncoding != '')
+        if ($charsetEncoding != '' && $charsetEncoding != 'UTF-8')
             $this->content_type = 'application/json; charset=' . $charsetEncoding;
         else
             $this->content_type = 'application/json';
@@ -48,6 +49,7 @@ class Response extends BaseResponse
 
     /**
      * Reimplemented for completeness.
+     *
      * @param string $charsetEncoding
      * @return string
      */

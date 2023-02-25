@@ -13,7 +13,6 @@ use PhpXmlRpc\PhpXmlRpc;
 class Client extends BaseClient
 {
     protected static $requestClass = '\\PhpXmlRpc\\JsonRpc\\Request';
-    /** @var string */
     protected static $responseClass = '\\PhpXmlRpc\\JsonRpc\\Response';
 
     // by default, no multicall exists for JSON-RPC, so do not try it

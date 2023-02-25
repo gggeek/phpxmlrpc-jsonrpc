@@ -32,7 +32,6 @@ class Serializer
      *
      * @param \PhpXmlRpc\Value $value
      * @param string $charsetEncoding
-     *
      * @return string
      */
     public function serializeValue($value, $charsetEncoding = '')
@@ -125,7 +124,6 @@ class Serializer
      * @param \PhpXmlRpc\Request $req
      * @param mixed $id
      * @param string $charsetEncoding
-     *
      * @return string
      */
     public function serializeRequest($req, $id = null, $charsetEncoding = '')
@@ -161,13 +159,12 @@ class Serializer
 
     /**
      * Serialize a Response as json.
-     * Moved outside of the corresponding class to ease multi-serialization of xmlrpc response objects
+     * Moved outside the corresponding class to ease multi-serialization of xmlrpc response objects.
+     *
      * @param \PhpXmlRpc\Response $resp
      * @param mixed $id
      * @param string $charsetEncoding
-     *
      * @return string
-     *
      * @throws \Exception
      */
     public function serializeResponse($resp, $id = null, $charsetEncoding = '')
@@ -188,8 +185,7 @@ class Serializer
         }
         $result .= ", ";
         if ($resp->faultCode()) {
-            // let non-ASCII response messages be tolerated by clients
-            // by encoding non ascii chars
+            // let non-ASCII response messages be tolerated by clients by encoding non ascii chars
             $result .= "\"error\": { \"faultCode\": " . $resp->faultCode() . ", \"faultString\": \"" . $this->getCharsetEncoder()->encodeEntities($resp->errstr, null, $charsetEncoding) . "\" }, \"result\": null";
         } else {
             $val = $resp->value();

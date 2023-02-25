@@ -2,6 +2,7 @@
 
 namespace PhpXmlRpc\JsonRpc;
 
+use PhpXmlRpc\Exception\NoSuchMethodException;
 use PhpXmlRpc\JsonRpc\Helper\Charset;
 use PhpXmlRpc\JsonRpc\Helper\Parser;
 use PhpXmlRpc\JsonRpc\Traits\EncoderAware;
@@ -20,7 +21,6 @@ class Server extends BaseServer
     use EncoderAware;
     use SerializerAware;
 
-    /** @var string */
     protected static $responseClass = '\\PhpXmlRpc\\JsonRpc\\Response';
 
     //public $allow_system_funcs = false;
@@ -37,7 +37,8 @@ class Server extends BaseServer
     protected $debug = 0;
 
     /**
-     * Reimplemented to make us use the correct parser type
+     * Reimplemented to make us use the correct parser type.
+     *
      * @return Parser
      */
     public function getParser()
@@ -66,15 +67,15 @@ class Server extends BaseServer
 
     /**
      * Note: syntax differs from overridden method, by adding an ID param
+     *
      * @param Request|string $req
      * @param mixed[] $params
-     * @param string[] $paramtypes
+     * @param string[] $paramTypes
      * @param mixed $msgID
      * @return Response
-     *
      * @throws \Exception
      */
-    protected function execute($req, $params = null, $paramtypes = null, $msgID = null)
+    protected function execute($req, $params = null, $paramTypes = null, $msgID = null)
     {
         static::$_xmlrpcs_occurred_errors = '';
         static::$_xmlrpc_debuginfo = '';
@@ -101,7 +102,7 @@ class Server extends BaseServer
             if (is_object($req)) {
                 list($ok, $errStr) = $this->verifySignature($req, $sig);
             } else {
-                list($ok, $errStr) = $this->verifySignature($paramtypes, $sig);
+                list($ok, $errStr) = $this->verifySignature($paramTypes, $sig);
             }
             if (!$ok) {
                 // Didn't match.
@@ -145,11 +146,9 @@ class Server extends BaseServer
             $exception_handling = $this->exception_handling;
         }
 
-        // If debug level is 3, we should catch all errors generated during
-        // processing of user function, and log them as part of response
-        if ($this->debug > 2) {
-            self::$_xmlrpcs_prev_ehandler = set_error_handler(array('\PhpXmlRpc\JsonRpc\Server', '_xmlrpcs_errorHandler'));
-        }
+        // We always catch all errors generated during processing of user function, and log them as part of response;
+        // if debug level is 3 or above, we also serialize them in the response as comments
+        self::$_xmlrpcs_prev_ehandler = set_error_handler(array('\PhpXmlRpc\JsonRpc\Server', '_xmlrpcs_errorHandler'));
 
         try {
             if (is_object($req)) {
@@ -216,6 +215,7 @@ class Server extends BaseServer
                 case 2:
                     if (self::$_xmlrpcs_prev_ehandler) {
                         set_error_handler(self::$_xmlrpcs_prev_ehandler);
+                        self::$_xmlrpcs_prev_ehandler = null;
                     } else {
                         restore_error_handler();
                     }
@@ -237,6 +237,7 @@ class Server extends BaseServer
                 case 2:
                     if (self::$_xmlrpcs_prev_ehandler) {
                         set_error_handler(self::$_xmlrpcs_prev_ehandler);
+                        self::$_xmlrpcs_prev_ehandler = null;
                     } else {
                         restore_error_handler();
                     }
@@ -253,14 +254,12 @@ class Server extends BaseServer
             }
         }
 
-        if ($this->debug > 2) {
-            // note: restore the error handler we found before calling the user func, even if it has been changed inside
-            // the func itself
-            if (self::$_xmlrpcs_prev_ehandler) {
-                set_error_handler(self::$_xmlrpcs_prev_ehandler);
-            } else {
-                restore_error_handler();
-            }
+        // note: restore the error handler we found before calling the user func, even if it has been changed inside
+        // the func itself
+        if (self::$_xmlrpcs_prev_ehandler) {
+            set_error_handler(self::$_xmlrpcs_prev_ehandler);
+        } else {
+            restore_error_handler();
         }
 
         return $r;
@@ -270,7 +269,6 @@ class Server extends BaseServer
      * @param string $data
      * @param string $reqEncoding
      * @return Response|\PhpXmlRpc\Response
-     *
      * @throws \Exception
      *
      * @internal this function will become protected in the future
@@ -278,7 +276,20 @@ class Server extends BaseServer
     public function parseRequest($data, $reqEncoding = '')
     {
         $parser = $this->getParser();
-        $ok = $parser->parseRequest($data, $this->functions_parameters_type == 'phpvals' || $this->functions_parameters_type == 'epivals', $reqEncoding);
+
+        $options = array('target_charset' => PhpXmlRpc::$xmlrpc_internalencoding);
+        if ($reqEncoding != '') {
+            $options['source_charset'] = $reqEncoding;
+        }
+        // register a callback with the xml parser for when it finds the method name
+        $options['methodname_callback'] = array($this, 'methodNameCallback');
+
+        try {
+            $ok = $parser->parseRequest($data, $this->functions_parameters_type, $options);
+        } catch (NoSuchMethodException $e) {
+            return new static::$responseClass(0, $e->getCode(), $e->getMessage());
+        }
+
         // BC we now get false|array, we did use to get true/false
         if (is_array($ok)) {
             $_xh = $ok;
@@ -319,7 +330,32 @@ class Server extends BaseServer
     }
 
     /**
+     * @param string $methodName
+     * @param Parser $xmlParser
+     * @param null $parser
+     * @return void
+     * @throws NoSuchMethodException
+     */
+    public function methodNameCallback($methodName, $xmlParser, $parser = null)
+    {
+        $sysCall = $this->isSyscall($methodName);
+        $dmap = $sysCall ? $this->getSystemDispatchMap() : $this->dmap;
+
+        if (!isset($dmap[$methodName]['function'])) {
+            // No such method
+            throw new NoSuchMethodException(PhpXmlRpc::$xmlrpcstr['unknown_method'], PhpXmlRpc::$xmlrpcerr['unknown_method']);
+        }
+
+        // alter on-the-fly the config of the json parser if needed
+        if (isset($dmap[$methodName]['parameters_type']) &&
+            $dmap[$methodName]['parameters_type'] != $this->functions_parameters_type) {
+            $xmlParser->forceReturnType($dmap[$methodName]['parameters_type']);
+        }
+    }
+
+    /**
      * @return array[]
+     *
      * @todo if building json-rpc-only webservers, you should at least undeclare the xmlrpc capability:
      *        unset($outAr['xmlrpc']);
      */
@@ -345,6 +381,7 @@ class Server extends BaseServer
     /**
      * No xml header generated by the server, since we are sending json.
      * @deprecated this method was moved to the Response class
+     *
      * @param string $charsetEncoding
      * @return string
      */

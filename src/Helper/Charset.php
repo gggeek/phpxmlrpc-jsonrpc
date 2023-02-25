@@ -32,7 +32,7 @@ class Charset
     }
 
     /**
-     * Force usage as singleton
+     * Force usage as singleton.
      */
     protected function __construct()
     {
@@ -62,7 +62,8 @@ class Charset
 
     /**
      * Encode php strings to valid JSON unicode representation.
-     * All chars outside ASCII range are converted to \uXXXX for maximum portability.
+     * All chars outside ASCII range are converted to \uXXXX for maximum portability by default.
+     *
      * @param string $data
      * @param string $srcEncoding charset of source string, defaults to PhpXmlRpc::$xmlrpc_internalencoding
      * @param string $destEncoding charset of the encoded string, defaults to ASCII for maximum interoperability

@@ -15,8 +15,7 @@ class Encoder
 
     /**
      * Takes a json-rpc value in object format and translates it into native PHP types.
-     *
-     * Works with xml-rpc objects as input, too.
+     * Works with xml-rpc value objects as input, too.
      *
      * @param \PhpXmlRpc\Value|Request $jsonrpcVal
      * @param array $options if 'decode_php_objs' is set in the options array, json-rpc objects can be decoded into php objects

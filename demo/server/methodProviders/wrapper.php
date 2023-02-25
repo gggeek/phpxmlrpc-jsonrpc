@@ -34,7 +34,7 @@ function plain_findstate($stateNo)
     }
 }
 
-$wrapper = new PhpXmlRpc\Wrapper();
+$wrapper = new PhpXmlRpc\JsonRpc\Wrapper();
 
 $findstate2_sig = $wrapper->wrapPhpFunction('plain_findstate');
 
