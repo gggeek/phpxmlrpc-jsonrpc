@@ -6,6 +6,7 @@ use PhpXmlRpc\JsonRpc\Client;
 use PhpXmlRpc\JsonRpc\Encoder;
 use PhpXmlRpc\JsonRpc\Request;
 use PhpXmlRpc\JsonRpc\Value;
+use PhpXmlRpc\JsonRpc\Wrapper;
 
 /**
  * Tests which involve interaction with the server - carried out via the client.
@@ -658,7 +659,7 @@ And turned it into nylon';
         $v = $this->send($m, array(\PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['incorrect_params']));
     }
 
-/*
+    /*
     public function testCodeInjectionServerSide()
     {
         $m = new Request('system.MethodHelp');
@@ -668,6 +669,7 @@ And turned it into nylon';
             $this->assertEquals(0, $v->structsize());
         }
     }
+    */
 
     public function testServerWrappedFunction()
     {
@@ -805,23 +807,26 @@ And turned it into nylon';
 
     public function testWrapInexistentMethod()
     {
+        $w = new Wrapper();
         // make a 'deep client copy' as the original one might have many properties set
-        $func = wrap_xmlrpc_method($this->client, 'examples.getStateName.notexisting', array('simple_client_copy' => 0));
+        $func = $w->wrapXmlrpcMethod($this->client, 'examples.getStateName.notexisting', array('simple_client_copy' => 0));
         $this->assertEquals(false, $func);
     }
 
     public function testWrapInexistentUrl()
     {
         $this->client->path = '/notexisting';
+        $w = new Wrapper();
         // make a 'deep client copy' as the original one might have many properties set
-        $func = wrap_xmlrpc_method($this->client, 'examples.getStateName', array('simple_client_copy' => 0));
+        $func = $w->wrapXmlrpcMethod($this->client, 'examples.getStateName', array('simple_client_copy' => 0));
         $this->assertEquals(false, $func);
     }
 
     public function testWrappedMethod()
     {
+        $w = new Wrapper();
         // make a 'deep client copy' as the original one might have many properties set
-        $func = wrap_xmlrpc_method($this->client, 'examples.getStateName', array('simple_client_copy' => 0));
+        $func = $w->wrapXmlrpcMethod($this->client, 'examples.getStateName', array('simple_client_copy' => 0));
         if ($func == false) {
             $this->fail('Registration of examples.getStateName failed');
         } else {
@@ -829,15 +834,16 @@ And turned it into nylon';
             // work around bug in current (or old?) version of phpunit when reporting the error
             /*if (is_object($v)) {
                 $v = var_export($v, true);
-            }* /
+            }*/
             $this->assertEquals('Michigan', $v);
         }
     }
 
     public function testWrappedMethodAsSource()
     {
+        $w = new Wrapper();
         // make a 'deep client copy' as the original one might have many properties set
-        $func = wrap_xmlrpc_method($this->client, 'examples.getStateName', array('simple_client_copy' => 0, 'return_source' => true));
+        $func = $w->wrapXmlrpcMethod($this->client, 'examples.getStateName', array('simple_client_copy' => 0, 'return_source' => true));
         if ($func == false) {
             $this->fail('Registration of examples.getStateName failed');
         } else {
@@ -847,16 +853,17 @@ And turned it into nylon';
             // work around bug in current (or old?) version of phpunit when reporting the error
             /*if (is_object($v)) {
                 $v = var_export($v, true);
-            }* /
+            }*/
             $this->assertEquals('Michigan', $v);
         }
     }
 
     public function testWrappedClass()
     {
+        $w = new Wrapper();
         // make a 'deep client copy' as the original one might have many properties set
         // also for speed only wrap one method of the whole server
-        $class = wrap_xmlrpc_server($this->client, array('simple_client_copy' => 0, 'method_filter' => '/examples\.getStateName/' ));
+        $class = $w->wrapXmlrpcServer($this->client, array('simple_client_copy' => 0, 'method_filter' => '/examples\.getStateName/' ));
         if ($class == '') {
             $this->fail('Registration of remote server failed');
         } else {
@@ -868,12 +875,13 @@ And turned it into nylon';
                 // work around bug in current (or old?) version of phpunit when reporting the error
                 /*if (is_object($v)) {
                     $v = var_export($v, true);
-                }* /
+                }*/
                 $this->assertEquals('Michigan', $v);
             }
         }
     }
 
+/*
     public function testTransferOfObjectViaWrapping()
     {
         // make a 'deep client copy' as the original one might have many properties set
@@ -970,15 +978,15 @@ And turned it into nylon';
         }
     }
 
-    /*public function testServerComments()
+    public function testServerComments()
     {
         $m = new Request('tests.handlersContainer.debugMessageGenerator', array(
             new Value('hello world', 'string'),
         ));
-
+        $this->addQueryParams(array('FORCE_DEBUG' => 3));
         $r = $this->send($m, 0, true);
         $this->assertStringContainsString('hello world', $r->raw_data);
-    }*/
+    }
 
     public function testSendTwiceSameMsg()
     {

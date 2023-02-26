@@ -8,15 +8,31 @@
 - there is support for extra character sets than UTF-8/ISO-8859-1/ASCII when the php `mbstring` extension is installed,
   both as internal application charset and as received payload
 
+- fixed: a "null" value was not considered a valid response
+
+- fixed generation of comments server-side and parsing them client-side
+
+- added method `PhpJsonRpc::setLogger` to allow overtaking the logger for all JsonRpc classes
+
 - made all error messages go through the Logger facility instead of calling directly `error_log`
+
+- made sure php warnings in method handlers do not disrupt the server even when it has debug level 0 and 1
+
+- multiple fixes to accommodate changes in the phpxmlrpc to 4.10 API, including support for server-side per-method-handler
+  parameter-types declarations and adding `httpResponse` data to parsed Responses
 
 - fixed one warning with php 8.2 when running a Server
 
 - fixed encoding of DateTime objects with php 5.4 in `Encoder::encode`
 
+- prefer emitting "Content-type: application/json" to "Content-type: application/json; charset=UTF-8", as per the current RFCs
+
+- fixes to demo files and benchmark.php
+
 - BC notes:
 
-  - the `Parser::parseRequest` and `Parser::parseResponse` now return an array instead of `true` upon success
+  - the `Parser::parseRequest` and `Parser::parseResponse` now accept (and are called with) a different set of arguments;
+    they also return an array instead of `true` upon success
 
 
 ## JSON-RPC for PHP version 1.0-beta1 - 2022/12/20
