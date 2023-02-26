@@ -19,11 +19,10 @@ abstract class PhpJsonRpc_LoggerAwareTestCase extends PhpXmlRpc_PolyfillTestCase
     protected function set_up()
     {
         $this->args = JsonrpcArgParser::getArgs();
-
         if ($this->args['DEBUG'] == 0) {
             $this->debugBuffer = '';
             $this->errorBuffer = '';
-            \PhpXmlRpc\PhpXmlRpc::setLogger($this);
+            \PhpXmlRpc\JsonRpc\PhpJsonRpc::setLogger($this);
         }
     }
 
