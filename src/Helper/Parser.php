@@ -150,7 +150,7 @@ class Parser
         }
 
         if (!is_array($ok) || !array_key_exists('result', $ok) || !array_key_exists('error', $ok) || !array_key_exists('id', $ok)
-            || !($ok['error'] === null xor $ok['result'] === null)
+            || ($ok['error'] !== null && $ok['result'] !== null)
         ) {
             $this->_xh['isf'] = 2;
             $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 response object';
