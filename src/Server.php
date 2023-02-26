@@ -60,7 +60,7 @@ class Server extends BaseServer
         }
         if (static::$_xmlrpc_debuginfo != '') {
             // make sure the user's comments can not break the JS comment
-            $out .= "/* DEBUG INFO:\n\n" . str_replace('*/', '*\u002f', Charset::instance()->encodeEntities(static::$_xmlrpc_debuginfo, PhpXmlRpc::$xmlrpc_internalencoding, $charsetEncoding) . "\n*/\n");
+            $out .= "/* DEBUG INFO:\n\n" . str_replace('*/', '*\u002f', Charset::instance()->encodeEntities(static::$_xmlrpc_debuginfo, PhpXmlRpc::$xmlrpc_internalencoding, $charsetEncoding)) . "\n*/\n";
         }
         return $out;
     }

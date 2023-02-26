@@ -131,10 +131,9 @@ class Request extends BaseRequest
             $start = strlen('/* SERVER DEBUG INFO (BASE64 ENCODED):');
             $end = strpos($data, '*/', $start);
             $serverComments = substr($data, $start, $end - $start);
-            $data = substr($data, $end + 2);
-
+            $data = ltrim(substr($data, $end + 2));
         }
-        if (strpos($data, '/* SERVER DEBUG INFO:') === 0) {
+        if (strpos($data, '/* DEBUG INFO:') === 0) {
             $start = strlen('/* DEBUG INFO:');
             $end = strpos($data, '*/', $start);
             $userComments = substr($data, $start, $end - $start);
