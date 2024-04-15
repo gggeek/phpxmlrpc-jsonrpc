@@ -21,9 +21,9 @@ Main features
 Requirements
 ------------
 
-* PHP >= 5.3
+* PHP >= 5.4.0
 * PHP Json extension
-* phpxmlrpc/phpxmlrpc >= 4.9.2
+* phpxmlrpc/phpxmlrpc >= 4.10.1
 
 Installation
 ------------
