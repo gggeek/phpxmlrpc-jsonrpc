@@ -9,7 +9,7 @@ use PhpXmlRpc\PhpXmlRpc;
 class PhpJsonRpc
 {
     public static $jsonrpcName = "JSON-RPC for PHP";
-    public static $jsonrpcVersion = "1.0.0-beta1";
+    public static $jsonrpcVersion = "1.0.0-beta2";
 
     public static $json_decode_flags = 0;
     public static $json_decode_depth = 512;

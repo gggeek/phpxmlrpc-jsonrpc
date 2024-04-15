@@ -1,4 +1,4 @@
-## JSON-RPC for PHP version XXX - unreleased
+## JSON-RPC for PHP version 1.0-beta2 - 2024/4/15
 
 - bumped the minimum required version of php to 5.4
 
@@ -28,6 +28,8 @@
 - prefer emitting "Content-type: application/json" to "Content-type: application/json; charset=UTF-8", as per the current RFCs
 
 - fixes to demo files and benchmark.php
+
+- run CI tests also on php 8.3
 
 - BC notes:
 
