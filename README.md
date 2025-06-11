@@ -38,5 +38,5 @@ Use of this software is subject to the terms in the [license.txt](license.txt) f
 [![Latest Stable Version](https://poser.pugx.org/phpxmlrpc/jsonrpc/v/stable)](https://packagist.org/packages/phpxmlrpc/jsonrpc)
 [![Total Downloads](https://poser.pugx.org/phpxmlrpc/jsonrpc/downloads)](https://packagist.org/packages/phpxmlrpc/jsonrpc)
 
-[![Build Status](https://github.com/gggeek/phpxmlrpc-jsonrpc/actions/workflows/ci.yaml/badge.svg)](https://github.com/gggeek/phpxmlrpc-jsonrpc/actions/workflows/ci.yml)
+[![Build Status](https://github.com/gggeek/phpxmlrpc-jsonrpc/actions/workflows/ci.yaml/badge.svg)](https://github.com/gggeek/phpxmlrpc-jsonrpc/actions/workflows/ci.yaml)
 [![Code Coverage](https://codecov.io/gh/gggeek/phpxmlrpc-jsonrpc/branch/master/graph/badge.svg)](https://app.codecov.io/gh/gggeek/phpxmlrpc-jsonrpc)
