@@ -6,14 +6,15 @@ set -e
 
 ACTION="${1}"
 
-# Valid values: 'default', 5.6, 7.0 .. 7.4, 8.0 .. 8.1
+# Valid values: 'default', 5.6, 7.0 .. 7.4, 8.0 .. 8.4
 export PHP_VERSION=${PHP_VERSION:-default}
-# Valid values: precise (12), trusty (14), xenial (16), bionic (18), focal (20), jammy (22)
-export UBUNTU_VERSION=${UBUNTU_VERSION:-focal}
+# Valid values: precise (12), trusty (14), xenial (16), bionic (18), focal (20), jammy (22), noble (24)
+export UBUNTU_VERSION=${UBUNTU_VERSION:-jammy}
 
 CONTAINER_USER=docker
 CONTAINER_WORKSPACE_DIR="/home/${CONTAINER_USER}/workspace"
 ROOT_DIR="$(dirname -- "$(dirname -- "$(dirname -- "$(readlink -f "$0")")")")"
+# @todo (low priority) allow passing in a custom prefix for image name, container name
 IMAGE_NAME=phpjsonrpc:${UBUNTU_VERSION}-${PHP_VERSION}
 CONTAINER_NAME=phpjsonrpc_${UBUNTU_VERSION}_${PHP_VERSION}
 
@@ -41,8 +42,8 @@ Options:
     -h                print help
 
 Environment variables: to be set before the 'build' action
-    PHP_VERSION       default value: 'default', ie. the stock php version from the Ubuntu version in use. Other possible values: 7.0 .. 8.1
-    UBUNTU_VERSION    default value: focal. Other possible values: xenial, bionic, jammy
+    PHP_VERSION       default value: 'default', ie. the stock php version from the Ubuntu version in use. Other possible values: 5.6, 7.0 .. 7.4, 8.0 .. 8.4
+    UBUNTU_VERSION    default value: jammy. Other possible values: xenial, bionic, focal, noble
 "
 }
 
@@ -73,8 +74,8 @@ build() {
     docker run -d \
         -p 80:80 -p 443:443 -p 8080:8080 \
         --name "${CONTAINER_NAME}" \
-        --env CONTAINER_USER_UID=$(id -u) --env CONTAINER_USER_GID=$(id -g) \
-        --env TESTS_ROOT_DIR=${CONTAINER_WORKSPACE_DIR} \
+        --env "CONTAINER_USER_UID=$(id -u)" --env "CONTAINER_USER_GID=$(id -g)" \
+        --env "TESTS_ROOT_DIR=${CONTAINER_WORKSPACE_DIR}" \
         --env HTTPSERVER=localhost \
         --env HTTPURI=/tests/index.php?demo=server/server.php \
         --env HTTPSSERVER=localhost \
