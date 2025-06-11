@@ -7,7 +7,7 @@
  * http://json-rpc.org/
  *
  * @author Gaetano Giunta
- * @copyright (c) 2005-2023 G. Giunta
+ * @copyright (c) 2005-2025 G. Giunta
  * @license code licensed under the BSD License: see license.txt
  **/
 

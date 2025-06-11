@@ -20,6 +20,10 @@ clean_up() {
     echo "[$(date)] Stopping FPM"
     service php-fpm stop
 
+    if [ -f "${TESTS_ROOT_DIR}/tests/ci/var/bootstrap_ok" ]; then
+        rm "${TESTS_ROOT_DIR}/tests/ci/var/bootstrap_ok"
+    fi
+
     echo "[$(date)] Exiting"
     exit
 }

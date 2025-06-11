@@ -3,7 +3,7 @@
  * Benchmarking suite
  *
  * @author Gaetano Giunta
- * @copyright (c) 2006-2023 G. Giunta
+ * @copyright (c) 2006-2025 G. Giunta
  * @license code licensed under the BSD License: see license.txt
  **/
 
