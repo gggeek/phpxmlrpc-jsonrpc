@@ -1,3 +1,8 @@
+## JSON-RPC for PHP version XX (unreleased)
+
+- improved: added CI testing on php 8.4. Default the local testing container to using PHP 8.1 on Ubuntu Jammy
+
+
 ## JSON-RPC for PHP version 1.0-beta2 - 2024/4/15
 
 - bumped the minimum required version of php to 5.4
