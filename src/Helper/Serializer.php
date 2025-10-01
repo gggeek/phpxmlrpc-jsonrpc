@@ -135,7 +135,7 @@ class Serializer
         $result = "{\n\"method\": \"" . $this->getCharsetEncoder()->encodeEntities($req->method(), '', $charsetEncoding) . "\",\n";
 
         if (is_callable([$req, 'getJsonRpcVersion'])) {
-            $jsonRpcVersion = $req->getJsonRpcVersion;
+            $jsonRpcVersion = $req->getJsonRpcVersion();
         } else {
             $jsonRpcVersion = self::$defaultJsonrpcVersion;
         }
