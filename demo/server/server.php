@@ -52,43 +52,10 @@ if (defined('TESTMODE')) {
 $s = new Server($signatures, false);
 
 // Out-of-band information: let the client manipulate the server operations.
+// (the `preflight` function is defined in the same file defining the TESTMODE constant)
 // We do this to help the testsuite script: *** do not reproduce in production or public environments! ***
 if (defined('TESTMODE')) {
-    // NB: when enabling debug mode, the server prepends the response's Json payload with a javascript comment.
-    // This will be considered an invalid response by most json-rpc client found in the wild - except our client of course
-    if (isset($_GET['FORCE_DEBUG'])) {
-        $s->setDebug($_GET['FORCE_DEBUG']);
-    }
-    if (isset($_GET['RESPONSE_ENCODING'])) {
-        $s->setOption(Server::OPT_RESPONSE_CHARSET_ENCODING, $_GET['RESPONSE_ENCODING']);
-    }
-    if (isset($_GET['EXCEPTION_HANDLING'])) {
-        $s->setOption(Server::OPT_EXCEPTION_HANDLING, $_GET['EXCEPTION_HANDLING']);
-    }
-    if (isset($_GET['FORCE_AUTH'])) {
-        // We implement both  Basic and Digest auth in php to avoid having to set it up in a vhost.
-        // Code taken from php.net
-        // NB: we do NOT check for valid credentials!
-        if ($_GET['FORCE_AUTH'] == 'Basic') {
-            if (!isset($_SERVER['PHP_AUTH_USER']) && !isset($_SERVER['REMOTE_USER']) && !isset($_SERVER['REDIRECT_REMOTE_USER'])) {
-                header('HTTP/1.0 401 Unauthorized');
-                header('WWW-Authenticate: Basic realm="Phpjsonrpc Basic Realm"');
-                die('Text visible if user hits Cancel button');
-            }
-        } elseif ($_GET['FORCE_AUTH'] == 'Digest') {
-            if (empty($_SERVER['PHP_AUTH_DIGEST'])) {
-                header('HTTP/1.1 401 Unauthorized');
-                header('WWW-Authenticate: Digest realm="Phpxmlrpc Digest Realm",qop="auth",nonce="' . uniqid() . '",opaque="' . md5('Phpxmlrpc Digest Realm') . '"');
-                die('Text visible if user hits Cancel button');
-            }
-        }
-    }
-    if (isset($_GET['FORCE_REDIRECT'])) {
-        header('HTTP/1.0 302 Found');
-        unset($_GET['FORCE_REDIRECT']);
-        header('Location: ' . $_SERVER['REQUEST_URI'] . (count($_GET) ? '?' . http_build_query($_GET) : ''));
-        die();
-    }
+    preflight($s);
 }
 
 $s->service();
