@@ -134,16 +134,16 @@ class Serializer
         // @todo: verify if all chars are allowed for method names or can we just skip the js encoding on it?
         $result = "{\n\"method\": \"" . $this->getCharsetEncoder()->encodeEntities($req->method(), '', $charsetEncoding) . "\",\n";
 
-        if (is_callable([$res, 'getJsonRpcVersion'])) {
-            $jsonRpcVersion = $res->getJsonRpcVersion;
+        if (is_callable([$req, 'getJsonRpcVersion'])) {
+            $jsonRpcVersion = $req->getJsonRpcVersion;
         } else {
             $jsonRpcVersion = self::$defaultJsonrpcVersion;
         }
 
         $useNamedParameters = false;
-        if ($jsonRpcVersion == PhpJsonRpc::VERSION_2_0 && is_callable([$res, 'getParamNames'])) {
+        if ($jsonRpcVersion == PhpJsonRpc::VERSION_2_0 && is_callable([$req, 'getParamNames'])) {
             $useNamedParameters = true;
-            $paramNames = $res->getParamNames();
+            $paramNames = $req->getParamNames();
             foreach($paramNames as $paramName) {
                 if (!is_string($paramName)) {
                     $useNamedParameters = false;
