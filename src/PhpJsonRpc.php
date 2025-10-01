@@ -8,6 +8,9 @@ use PhpXmlRpc\PhpXmlRpc;
 
 class PhpJsonRpc
 {
+    const VERSION_1_0 = '1.0';
+    const VERSION_2_0 = '2.0';
+
     public static $jsonrpcName = "JSON-RPC for PHP";
     public static $jsonrpcVersion = "1.0.0-beta2";
 

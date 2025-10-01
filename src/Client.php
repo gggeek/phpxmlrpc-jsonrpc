@@ -3,6 +3,7 @@
 namespace PhpXmlRpc\JsonRpc;
 
 use PhpXmlRpc\Client as BaseClient;
+use PhpXmlRpc\Exception\ValueErrorException;
 use PhpXmlRpc\JsonRpc\Helper\Parser;
 use PhpXmlRpc\PhpXmlRpc;
 
@@ -14,6 +15,15 @@ class Client extends BaseClient
 {
     protected static $requestClass = '\\PhpXmlRpc\\JsonRpc\\Request';
     protected static $responseClass = '\\PhpXmlRpc\\JsonRpc\\Response';
+
+    const OPT_JSONRPC_VERSION = 'jsonrpc_version';
+
+    protected static $extra_options = array(
+        self::OPT_JSONRPC_VERSION,
+    );
+
+    /** @var string|null */
+    protected $jsonrpc_version = PhpJsonRpc::VERSION_2_0;
 
     // by default, no multicall exists for JSON-RPC, so do not try it
     public $no_multicall = true;
@@ -33,5 +43,50 @@ class Client extends BaseClient
         //$this->accepted_charset_encodings = array('UTF-16', 'UTF-8', 'ISO-8859-1', 'US-ASCII');
 
         $this->user_agent =  PhpJsonRpc::$jsonrpcName . ' ' . PhpJsonRpc::$jsonrpcVersion . ' (' . PhpXmlRpc::$xmlrpcName . ' ' . PhpXmlRpc::$xmlrpcVersion . ')';
+    }
+
+    public function setOption($name, $value)
+    {
+        if (in_array($name, static::$options) || in_array($name, static::$extra_options)) {
+            $this->$name = $value;
+            return $this;
+        }
+
+        throw new ValueErrorException("Unsupported option '$name'");
+    }
+
+    /**
+     * @param string $name see all the OPT_ constants
+     * @return mixed
+     * @throws ValueErrorException on unsupported option
+     */
+    public function getOption($name)
+    {
+        if (in_array($name, static::$options) || in_array($name, static::$extra_options)) {
+            return $this->$name;
+        }
+
+        throw new ValueErrorException("Unsupported option '$name'");
+    }
+
+    /**
+     * @param \PhpXmlRpc\JsonRpc\Request|\PhpXmlRpc\JsonRpc\Request[]|string $req
+     * @param int $timeout deprecated
+     * @param string $method deprecated
+     * @return \PhpXmlRpc\JsonRpc\Response|\PhpXmlRpc\JsonRpc\Response[]
+     */
+    public function send($req, $timeout = 0, $method = '')
+    {
+        if ($this->jsonrpc_version != '') {
+            if (is_array($req)) {
+                foreach ($req as $i => $r) {
+                    $req[$i]->setJsonRpcVersion($this->jsonrpc_version);
+                }
+            } elseif (!is_string($req)) {
+                $req->setJsonRpcVersion($this->jsonrpc_version);
+            }
+        }
+
+        return parent::send($req, $timeout, $method);
     }
 }

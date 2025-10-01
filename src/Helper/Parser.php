@@ -11,9 +11,8 @@ use PhpXmlRpc\JsonRpc\Value;
 use PhpXmlRpc\Traits\LoggerAware;
 
 /**
- * @see https://www.jsonrpc.org/specification_v1
+ * @see https://www.jsonrpc.org/specification_v1, https://www.jsonrpc.org/specification
  * @todo add support for __jsonclass__
- * @todo add support for json-rpc 2.0 - see https://www.jsonrpc.org/specification
  * @todo add support for json-rpc 1.1 ? see: https://jsonrpc.org/historical/json-rpc-1-1-wd.html and
  *       https://jsonrpc.org/historical/json-rpc-1-1-alt.html
  *
@@ -41,6 +40,7 @@ class Parser
         'params' => array(),
         'pt' => array(),
         'id' => null,
+        'jsonrpc_version' => PhpJsonRpc::VERSION_1_0
     );
 
     protected $returnTypeOverride = null;
@@ -114,6 +114,9 @@ class Parser
         $this->_xh['method'] = $ok['method'];
         $this->_xh['params'] = $ok['params'];
         $this->_xh['id'] = $ok['id'];
+        if (isset($ok['jsonrpc'])) {
+            $this->_xh['jsonrpc_version'] = $ok['jsonrpc'];
+        }
 
         return $this->_xh;
     }
@@ -195,7 +198,11 @@ class Parser
         }
 
         /// @todo should we encode Id as well ?
-        $this->_xh['id'] = $ok['id'];
+        $this->_xh['id'] = isset($ok['id']) ? $ok['id'] : null;
+
+        if (isset($ok['jsonrpc'])) {
+            $this->_xh['jsonrpc_version'] = $ok['jsonrpc'];
+        }
 
         return $this->_xh;
     }

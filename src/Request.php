@@ -16,6 +16,10 @@ class Request extends BaseRequest
     public $id = null; // used to store request ID internally
     public $content_type = 'application/json';
 
+    /** @var string */
+    protected $jsonrpc_version = PhpJsonRpc::VERSION_2_0;
+    protected $paramnames = array();
+
     /**
      * @param string $methodName the name of the method to invoke
      * @param \PhpXmlRpc\Value[] $params array of parameters to be passed to the method (xmlrpcval objects)
@@ -28,6 +32,46 @@ class Request extends BaseRequest
     {
         $this->id = $id;
         parent::__construct($methodName, $params);
+    }
+
+    /**
+     * @param string $jsonrpcVersion
+     * @return void
+     */
+    public function setJsonRpcVersion($jsonrpcVersion)
+    {
+        $this->jsonrpc_version = $jsonrpcVersion;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJsonRpcVersion()
+    {
+        return $this->jsonrpc_version;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getParamNames()
+    {
+        return $this->getParamNames();
+    }
+
+    /**
+     * @param $param
+     * @param string|null $name
+     * @return boolvoid
+     */
+    public function addParam($param, $name=null)
+    {
+        $this->paramnames[] = $name;
+        $ok = parent::addParam($param);
+        if ($ok) {
+            $this->paramnames[] = $name;
+        }
+        return $ok;
     }
 
     /**
@@ -240,7 +284,13 @@ class Request extends BaseRequest
                 $r = new Response($v, 0, '', $returnType, null, $httpResponse);
             }
 
+            /// @todo check that received id is the same as the sent one
+            /// @todo for jsonrpc 2.0, a null id should be treated as error
             $r->id = $_xh['id'];
+        }
+
+        if (isset($_xh['jsonrpc_version'])) {
+            $r->setJsonRpcVersion($_xh['jsonrpc_version']);
         }
 
         return $r;

@@ -202,9 +202,8 @@ class Server extends BaseServer
                 // Dirty trick!!!
                 // User has given us back an xmlrpc response, since he had an existing xmlrpc server with boatloads of code.
                 // Be nice to him, and serialize the xmlrpc stuff into JSON.
-                // We also override the content_type of the xmlrpc response, but lack knowledge of intended response
-                // charset...
-                $r->setPayload($this->getSerializer()->serializeResponse($r, $msgID), 'application/json');
+                // was: $r->setPayload($this->getSerializer()->serializeResponse($r, $msgID), 'application/json');
+                $r = new static::$responseClass($r->value(), $r->faultCode(), $r->faultString(), $r->valueType(), $msgID, $r->httpResponse());
             } else {
                 $r->id = $msgID;
             }
@@ -325,6 +324,9 @@ class Server extends BaseServer
 
                 $r = $this->execute($m);
             }
+        }
+        if (isset($_xh['jsonrpc_version'])) {
+            $r->setJsonRpcVersion($_xh['jsonrpc_version']);
         }
         return $r;
     }

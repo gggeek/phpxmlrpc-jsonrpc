@@ -13,13 +13,15 @@ class Response extends BaseResponse
     /// @todo make this protected, allowing access via __get and co
     public $id = null;
 
+    protected $jsonrpc_version = PhpJsonRpc::VERSION_2_0;
+
     public function __construct($val, $fCode = 0, $fString = '', $valType = '', $id = null, $httpResponse = null)
     {
         $this->id = $id;
 
-        /// @todo throw exception if $valType is xml or xmlrpcvals ?
         parent::__construct($val, $fCode, $fString, $valType, $httpResponse);
 
+        /// @todo throw exception if $valType is xml or xmlrpcvals ? Esp. valid for xml strings
         switch ($this->valtyp) {
             case 'xml':
                 $this->valtyp = 'json';
@@ -28,6 +30,23 @@ class Response extends BaseResponse
                 $this->valtyp = 'jsonrpcvals';
                 break;
         }
+    }
+
+    /**
+     * @param string $jsonrpcVersion
+     * @return void
+     */
+    public function setJsonRpcVersion($jsonrpcVersion)
+    {
+        $this->jsonrpc_version = $jsonrpcVersion;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJsonRpcVersion()
+    {
+        return $this->jsonrpc_version;
     }
 
     /**

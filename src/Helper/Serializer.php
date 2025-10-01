@@ -4,6 +4,7 @@ namespace PhpXmlRpc\JsonRpc\Helper;
 
 use PhpXmlRpc\Exception\StateErrorException;
 use PhpXmlRpc\JsonRpc\Encoder;
+use PhpXmlRpc\JsonRpc\PhpJsonRpc;
 use PhpXmlRpc\JsonRpc\Value;
 
 /**
@@ -12,6 +13,8 @@ use PhpXmlRpc\JsonRpc\Value;
 class Serializer
 {
     protected static $charsetEncoder;
+
+    public static $defaultJsonrpcVersion = PhpJsonRpc::VERSION_2_0;
 
     public function getCharsetEncoder()
     {
@@ -129,30 +132,78 @@ class Serializer
     public function serializeRequest($req, $id = null, $charsetEncoding = '')
     {
         // @todo: verify if all chars are allowed for method names or can we just skip the js encoding on it?
-        $result = "{\n\"method\": \"" . $this->getCharsetEncoder()->encodeEntities($req->method(), '', $charsetEncoding) . "\",\n\"params\": [ ";
-        for ($i = 0; $i < $req->getNumParams(); $i++) {
-            $p = $req->getParam($i);
-            // NB: we try to force serialization as json even though the object
-            // param might be a plain xmlrpcval object.
-            // This way we do not need to override addParam, aren't we lazy?
-            $result .= "\n  " . $this->serializeValue($p, $charsetEncoding) .
-                ",";
+        $result = "{\n\"method\": \"" . $this->getCharsetEncoder()->encodeEntities($req->method(), '', $charsetEncoding) . "\",\n";
+
+        if (is_callable([$res, 'getJsonRpcVersion'])) {
+            $jsonRpcVersion = $res->getJsonRpcVersion;
+        } else {
+            $jsonRpcVersion = self::$defaultJsonrpcVersion;
         }
-        $result = substr($result, 0, -1) . "\n],\n\"id\": ";
-        switch (true) {
-            case $id === null:
-                $result .= 'null';
+
+        $useNamedParameters = false;
+        if ($jsonRpcVersion == PhpJsonRpc::VERSION_2_0 && is_callable([$res, 'getParamNames'])) {
+            $useNamedParameters = true;
+            $paramNames = $res->getParamNames();
+            foreach($paramNames as $paramName) {
+                if (!is_string($paramName)) {
+                    $useNamedParameters = false;
+                    break;
+                }
+            }
+        }
+
+        if ($useNamedParameters) {
+            $result .= "\"params\": {";
+            for ($i = 0; $i < $req->getNumParams(); $i++) {
+                $p = $req->getParam($i);
+                // NB: we try to force serialization as json even though the object param might be a plain xmlrpcval object.
+                // This way we do not need to override addParam, aren't we lazy?
+                $result .= "\n  \"" . $this->getCharsetEncoder()->encodeEntities($paramNames[$i], null, $charsetEncoding) . "\": " . $this->serializeValue($p, $charsetEncoding) . ",";
+            }
+            $result = substr($result, 0, -1) . "\n},\n";
+        } else {
+            $result .= "\"params\": [";
+            for ($i = 0; $i < $req->getNumParams(); $i++) {
+                $p = $req->getParam($i);
+                // NB: we try to force serialization as json even though the object param might be a plain xmlrpcval object.
+                // This way we do not need to override addParam, aren't we lazy?
+                $result .= "\n  " . $this->serializeValue($p, $charsetEncoding) . ",";
+            }
+            $result = substr($result, 0, -1) . "\n],\n";
+        }
+
+        // In jsonrpc 2.0 null ids are omitted. In 1.0, they are not
+        if ($id !== null || $jsonRpcVersion != PhpJsonRpc::VERSION_2_0) {
+            $result .= "\"id\": ";
+            switch (true) {
+                case $id === null:
+                    $result .= 'null' . "\n";
+                    break;
+                case is_string($id):
+                    $result .= '"' . $this->getCharsetEncoder()->encodeEntities($id, '', $charsetEncoding) . '"' . "\n";
+                    break;
+                case is_bool($id):
+                    $result .= ($id ? 'true' : 'false') . "\n";
+                    break;
+                default:
+                    // integer
+                    /// @todo handle specially: object, resource
+                    $result .= $id . "\n";
+            }
+        }
+
+        switch ($jsonRpcVersion) {
+            case PhpJsonRpc::VERSION_1_0:
                 break;
-            case is_string($id):
-                $result .= '"' . $this->getCharsetEncoder()->encodeEntities($id, '', $charsetEncoding) . '"';
-                break;
-            case is_bool($id):
-                $result .= ($id ? 'true' : 'false');
+            case PhpJsonRpc::VERSION_2_0:
+                $result .= "\"jsonrpc\": \"2.0\"\n";
                 break;
             default:
-                $result .= $id;
+                /// @todo throw
+                break;
         }
-        $result .= "\n}\n";
+
+        $result .= "}\n";
 
         return $result;
     }
@@ -169,7 +220,16 @@ class Serializer
      */
     public function serializeResponse($resp, $id = null, $charsetEncoding = '')
     {
-        $result = "{\n\"id\": ";
+        if (is_callable([$resp, 'getJsonRpcVersion'])) {
+            $jsonRpcVersion = $resp->getJsonRpcVersion();
+        } else {
+            $jsonRpcVersion = self::$defaultJsonrpcVersion;
+        }
+
+        $result = "{\n";
+
+        // NB: NULL id has different meaning in jsonrpc 1.0 vs 2.0
+        $result .= "\"id\": ";
         switch (true) {
             case $id === null:
                 $result .= 'null';
@@ -183,26 +243,47 @@ class Serializer
             default:
                 $result .= $id;
         }
-        $result .= ", ";
+        $result .= ",\n";
+
         if ($resp->faultCode()) {
             // let non-ASCII response messages be tolerated by clients by encoding non ascii chars
-            $result .= "\"error\": { \"faultCode\": " . $resp->faultCode() . ", \"faultString\": \"" . $this->getCharsetEncoder()->encodeEntities($resp->errstr, null, $charsetEncoding) . "\" }, \"result\": null";
+            if ($jsonRpcVersion == PhpJsonRpc::VERSION_2_0) {
+                $result .= "\"error\": { \"code\": " . $resp->faultCode() . ", \"message\": \"" . $this->getCharsetEncoder()->encodeEntities($resp->errstr, null, $charsetEncoding) . "\" },\n";
+            } else {
+                $result .= "\"error\": { \"faultCode\": " . $resp->faultCode() . ", \"faultString\": \"" . $this->getCharsetEncoder()->encodeEntities($resp->errstr, null, $charsetEncoding) . "\" },\n";
+                $result .= "\"result\": null\n";
+            }
         } else {
+            $result .= "\"result\": ";
             $val = $resp->value();
             if (is_object($val) && is_a($val, 'PhpXmlRpc\Value')) {
-                $result .= "\"error\": null, \"result\": " .
-                    $this->serializeValue($val, $charsetEncoding);
+                $result .= $this->serializeValue($val, $charsetEncoding) . "\n";
             } else if (is_string($val) && $resp->valueType() == 'json') {
-                $result .= "\"error\": null, \"result\": " . $val;
+                $result .= $val . "\n";
             } else if ($resp->valueType() == 'phpvals') {
                 $encoder = new Encoder();
                 $val = $encoder->encode($val);
-                $result .= "\"error\": null, \"result\": " . $val->serialize($charsetEncoding);
+                $result .= $val->serialize($charsetEncoding) . "\n";
             } else {
                 throw new StateErrorException('cannot serialize jsonrpcresp objects whose content is native php values');
             }
+            if ($jsonRpcVersion != PhpJsonRpc::VERSION_2_0) {
+                $result .= "\"error\": null\n";
+            }
         }
-        $result .= "\n}";
+
+        switch ($jsonRpcVersion) {
+            case PhpJsonRpc::VERSION_1_0:
+                break;
+            case PhpJsonRpc::VERSION_2_0:
+                $result .= "\"jsonrpc\": \"2.0\"\n";
+                break;
+            default:
+                /// @todo throw
+                break;
+        }
+
+        $result .= "}";
 
         return $result;
     }
