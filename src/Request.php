@@ -56,13 +56,13 @@ class Request extends BaseRequest
      */
     public function getParamNames()
     {
-        return $this->getParamNames();
+        return $this->paramnames;
     }
 
     /**
      * @param $param
      * @param string|null $name
-     * @return boolvoid
+     * @return bool
      */
     public function addParam($param, $name=null)
     {
