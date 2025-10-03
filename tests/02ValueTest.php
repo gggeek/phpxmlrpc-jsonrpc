@@ -86,17 +86,22 @@ class ValueTest extends PhpJsonRpc_LoggerAwareTestCase
         $locale = setlocale(LC_NUMERIC, 0);
         /// @todo on php 5.3/win, possibly later versions, setting locale to german does not seem to set decimal separator to comma...
         if (setlocale(LC_NUMERIC, 'deu', 'de_DE@euro', 'de_DE', 'de', 'ge') !== false) {
-            $v = new Value(1.1, 'double');
-            if (strpos($v->scalarVal(), ',') == 1) {
+            $v = new xmlrpcval(1.1, 'double');
+            if (version_compare(PHP_VERSION, '8.0', '>=')) {
+                $str = sprintf("%f", $v->scalarval());
+            } else {
+                $str = (string)$v->scalarval();
+            }
+            if (strpos($str, ',') == 1) {
                 $r = $v->serialize();
-                $this->assertEquals(false, strpos($r, ','));
+                $this->assertequals(false, strpos($r, ','));
                 setlocale(LC_NUMERIC, $locale);
             } else {
                 setlocale(LC_NUMERIC, $locale);
-                $this->markTestSkipped('did not find a locale which sets decimal separator to comma');
+                $this->markTestSkipped('Did not find a locale which sets decimal separator to comma');
             }
         } else {
-            $this->markTestSkipped('did not find a locale which sets decimal separator to comma');
+            $this->markTestSkipped('Did not find a locale which sets decimal separator to comma');
         }
     }
 
