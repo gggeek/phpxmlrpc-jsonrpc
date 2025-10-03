@@ -75,13 +75,29 @@ class Parser
             return false;
         }
 
-        if (!is_array($ok) || !array_key_exists('method', $ok) || !is_string($ok['method']) ||
-            !array_key_exists('params', $ok) || !is_array($ok['params']) ||
-            !array_key_exists('id', $ok)
-        ) {
+        if (!is_array($ok)) {
             $this->_xh['isf'] = 2;
-            $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 request object';
+            $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc response object';
             return false;
+        }
+        if (array_key_exists('jsonrpc', $ok) && $ok['jsonrpc'] === '2.0') {
+            if (!array_key_exists('method', $ok) || !is_string($ok['method']) ||
+                (array_key_exists('params', $ok) && !is_array($ok['params'])) ||
+                (array_key_exists('id', $ok) && is_array($ok['id']))
+            ) {
+                $this->_xh['isf'] = 2;
+                $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 2.0 request object';
+                return false;
+            }
+        } else {
+            if (!array_key_exists('method', $ok) || !is_string($ok['method']) ||
+                !array_key_exists('params', $ok) || !is_array($ok['params']) ||
+                !array_key_exists('id', $ok)
+            ) {
+                $this->_xh['isf'] = 2;
+                $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 request object';
+                return false;
+            }
         }
 
         $this->returnTypeOverride = null;
@@ -152,23 +168,39 @@ class Parser
             return false;
         }
 
-        if (!is_array($ok) || !array_key_exists('result', $ok) || !array_key_exists('error', $ok) || !array_key_exists('id', $ok)
-            || ($ok['error'] !== null && $ok['result'] !== null)
-        ) {
+        if (!is_array($ok)) {
             $this->_xh['isf'] = 2;
-            $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 response object';
+            $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc response object';
             return false;
+        }
+        if (array_key_exists('jsonrpc', $ok) && $ok['jsonrpc'] === '2.0') {
+            if (!array_key_exists('id', $ok) || (!array_key_exists('result', $ok) && !array_key_exists('error', $ok))
+                || (array_key_exists('result', $ok) && array_key_exists('error', $ok)) ||
+                (array_key_exists('error', $ok) && !is_array($ok['error']))
+            ) {
+                $this->_xh['isf'] = 2;
+                $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 2.0 response object';
+                return false;
+            }
+        } else {
+            if (!array_key_exists('id', $ok) || !array_key_exists('result', $ok) || !array_key_exists('error', $ok)
+                || ($ok['error'] !== null && $ok['result'] !== null)
+            ) {
+                $this->_xh['isf'] = 2;
+                $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 response object';
+                return false;
+            }
         }
 
         if ($returnType != self::RETURN_PHP) {
             $encoder = $this->getEncoder();
             /// @todo what should be the default encoding options?
-            if ($ok['error'] === null ) {
+            if (!isset($ok['error']) || $ok['error'] === null) {
                 $ok['result'] = $encoder->encode($ok['result']);
             }
         }
 
-        if ($ok['error'] !== null) {
+        if (isset($ok['error']) && $ok['error'] !== null) {
             $this->_xh['isf'] = 1;
 
             if (is_array($ok['error']) && array_key_exists('faultCode', $ok['error'])

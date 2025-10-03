@@ -177,26 +177,27 @@ class Serializer
             $result .= "\"id\": ";
             switch (true) {
                 case $id === null:
-                    $result .= 'null' . "\n";
+                    $result .= 'null';
                     break;
                 case is_string($id):
-                    $result .= '"' . $this->getCharsetEncoder()->encodeEntities($id, '', $charsetEncoding) . '"' . "\n";
+                    $result .= '"' . $this->getCharsetEncoder()->encodeEntities($id, '', $charsetEncoding) . '"';
                     break;
                 case is_bool($id):
-                    $result .= ($id ? 'true' : 'false') . "\n";
+                    $result .= ($id ? 'true' : 'false');
                     break;
                 default:
                     // integer
                     /// @todo handle specially: object, resource
-                    $result .= $id . "\n";
+                    $result .= $id;
             }
         }
 
         switch ($jsonRpcVersion) {
             case PhpJsonRpc::VERSION_1_0:
+                $result .= "\n";
                 break;
             case PhpJsonRpc::VERSION_2_0:
-                $result .= "\"jsonrpc\": \"2.0\"\n";
+                $result .= ",\n\"jsonrpc\": \"2.0\"\n";
                 break;
             default:
                 /// @todo throw
@@ -248,35 +249,36 @@ class Serializer
         if ($resp->faultCode()) {
             // let non-ASCII response messages be tolerated by clients by encoding non ascii chars
             if ($jsonRpcVersion == PhpJsonRpc::VERSION_2_0) {
-                $result .= "\"error\": { \"code\": " . $resp->faultCode() . ", \"message\": \"" . $this->getCharsetEncoder()->encodeEntities($resp->errstr, null, $charsetEncoding) . "\" },\n";
+                $result .= "\"error\": { \"code\": " . $resp->faultCode() . ", \"message\": \"" . $this->getCharsetEncoder()->encodeEntities($resp->errstr, null, $charsetEncoding) . "\" }";
             } else {
-                $result .= "\"error\": { \"faultCode\": " . $resp->faultCode() . ", \"faultString\": \"" . $this->getCharsetEncoder()->encodeEntities($resp->errstr, null, $charsetEncoding) . "\" },\n";
-                $result .= "\"result\": null\n";
+                $result .= "\"error\": { \"faultCode\": " . $resp->faultCode() . ", \"faultString\": \"" . $this->getCharsetEncoder()->encodeEntities($resp->errstr, null, $charsetEncoding) . "\" },";
+                $result .= "\"result\": null";
             }
         } else {
             $result .= "\"result\": ";
             $val = $resp->value();
             if (is_object($val) && is_a($val, 'PhpXmlRpc\Value')) {
-                $result .= $this->serializeValue($val, $charsetEncoding) . "\n";
+                $result .= $this->serializeValue($val, $charsetEncoding);
             } else if (is_string($val) && $resp->valueType() == 'json') {
-                $result .= $val . "\n";
+                $result .= $val;
             } else if ($resp->valueType() == 'phpvals') {
                 $encoder = new Encoder();
                 $val = $encoder->encode($val);
-                $result .= $val->serialize($charsetEncoding) . "\n";
+                $result .= $val->serialize($charsetEncoding);
             } else {
                 throw new StateErrorException('cannot serialize jsonrpcresp objects whose content is native php values');
             }
             if ($jsonRpcVersion != PhpJsonRpc::VERSION_2_0) {
-                $result .= "\"error\": null\n";
+                $result .= ",\n\"error\": null";
             }
         }
 
         switch ($jsonRpcVersion) {
             case PhpJsonRpc::VERSION_1_0:
+                $result .= "\n";
                 break;
             case PhpJsonRpc::VERSION_2_0:
-                $result .= "\"jsonrpc\": \"2.0\"\n";
+                $result .= ",\n\"jsonrpc\": \"2.0\"\n";
                 break;
             default:
                 /// @todo throw
