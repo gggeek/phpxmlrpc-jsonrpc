@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Installs Composer (latest version, to avoid relying on old ones bundled with the OS)
-# @todo allow users to lock down to Composer v1 if needed
+# @todo allow users to lock down to Composer v1 or v2.2 if needed
 
 echo "Installing Composer..."
 
@@ -29,7 +29,7 @@ rm composer-setup.php
 
 ###
 
-if [ -f /usr/local/bin/composer.phar -a "$RESULT" = 0 ]; then
+if [ -f /usr/local/bin/composer.phar ] && [ "$RESULT" = 0 ]; then
     mv /usr/local/bin/composer.phar /usr/local/bin/composer && chmod 755 /usr/local/bin/composer
 fi
 

@@ -1,16 +1,20 @@
 #!/bin/sh
 
-# Has to be run as admin
+# Has to be run as root
 
 # @todo make it optional to install xdebug. It is fe. missing in sury's ppa for Xenial
-# @todo make it optional to install fpm.
+# @todo make it optional to install fpm. It is not needed for the cd workflow
 # @todo make it optional to disable xdebug ?
+# @todo set the list of required php extensions in a variable, allow it to be overridden
+# @todo allow to force usage of shivammatur or ondrej repos regardless of php version in use
 
 set -e
 
 echo "Installing PHP version '${1}'..."
 
 SCRIPT_DIR="$(dirname -- "$(readlink -f "$0")")"
+
+export DEBIAN_FRONTEND=noninteractive
 
 configure_php_ini() {
     # note: these settings are not required for cli config
@@ -21,41 +25,209 @@ configure_php_ini() {
     # @todo make this optional
     if which phpdismod >/dev/null 2>/dev/null; then
         phpdismod xdebug
-    elif [ -f /usr/local/php/$PHP_VERSION/etc/conf.d/20-xdebug.ini ]; then
-        mv /usr/local/php/$PHP_VERSION/etc/conf.d/20-xdebug.ini /usr/local/php/$PHP_VERSION/etc/conf.d/20-xdebug.ini.bak
+    elif [ -f "/etc/php/$PHP_VERSION/mods-available/xdebug.ini" ]; then
+        mv "/etc/php/$PHP_VERSION/mods-available/xdebug.ini" "/etc/php/$PHP_VERSION/mods-available/xdebug.ini.bak"
+    elif [ -f "/usr/local/php/$PHP_VERSION/etc/conf.d/20-xdebug.ini" ]; then
+        mv "/usr/local/php/$PHP_VERSION/etc/conf.d/20-xdebug.ini" "/usr/local/php/$PHP_VERSION/etc/conf.d/20-xdebug.ini.bak"
+    else
+        echo "Could not disable loading of xdebug - xdebug.ini file not found" >&2
     fi
 }
 
-# install php
-PHP_VERSION="$1"
-# `lsb-release` is not necessarily onboard. We parse /etc/os-release instead
-DEBIAN_VERSION=$(cat /etc/os-release | grep 'VERSION_CODENAME=' | sed 's/VERSION_CODENAME=//')
-if [ -z "${DEBIAN_VERSION}" ]; then
-    # Example strings:
-    # VERSION="14.04.6 LTS, Trusty Tahr"
-    # VERSION="8 (jessie)"
-    DEBIAN_VERSION=$(cat /etc/os-release | grep 'VERSION=' | grep 'VERSION=' | sed 's/VERSION=//' | sed 's/"[0-9.]\+ *(\?//' | sed 's/)\?"//' | tr '[:upper:]' '[:lower:]' | sed 's/lts, *//' | sed 's/ \+tahr//')
-fi
-
-# @todo use native packages if requested for a specific version and that is the same as available in the os repos
-
-if [ "${PHP_VERSION}" = default ]; then
+install_native() {
     echo "Using native PHP packages..."
 
-    if [ "${DEBIAN_VERSION}" = jessie -o "${DEBIAN_VERSION}" = precise -o "${DEBIAN_VERSION}" = trusty ]; then
+    if [ "${DEBIAN_VERSION}" = jessie ] || [ "${DEBIAN_VERSION}" = precise ] || [ "${DEBIAN_VERSION}" = trusty ]; then
         PHPSUFFIX=5
     else
         PHPSUFFIX=
     fi
     # @todo check for mbstring presence in php5 (jessie) packages
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        php${PHPSUFFIX} \
-        php${PHPSUFFIX}-cli \
-        php${PHPSUFFIX}-dom \
-        php${PHPSUFFIX}-curl \
-        php${PHPSUFFIX}-fpm \
-        php${PHPSUFFIX}-mbstring \
-        php${PHPSUFFIX}-xdebug
+    apt-get install -y \
+        "php${PHPSUFFIX}" \
+        "php${PHPSUFFIX}-cli" \
+        "php${PHPSUFFIX}-dom" \
+        "php${PHPSUFFIX}-curl" \
+        "php${PHPSUFFIX}-fpm" \
+        "php${PHPSUFFIX}-mbstring" \
+        "php${PHPSUFFIX}-sqlite3" \
+        "php${PHPSUFFIX}-xdebug"
+}
+
+install_shivammatur() {
+    if [ ! -d /usr/include/php ]; then mkdir -p /usr/include/php; fi
+
+    # In case we will be using php5.x from shivammatur, it has a dependency on a lib missing from bionic
+    # `lsb-release` is not necessarily onboard. We parse /etc/os-release instead
+    if [ "$DEBIAN_VERSION" = bionic ]; then
+        wget https://launchpad.net/~ubuntu-security/+archive/ubuntu/ppa/+build/15108504/+files/libpng12-0_1.2.54-1ubuntu1.1_amd64.deb
+        dpkg --install libpng12-0_1.2.54-1ubuntu1.1_amd64.deb
+        rm libpng12-0_1.2.54-1ubuntu1.1_amd64.deb
+    fi
+
+    if [ "${PHP_VERSION}" = 5.3 ] || [ "${PHP_VERSION}" = 5.4 ] || [ "${PHP_VERSION}" = 5.5 ]; then
+
+        echo "Using PHP from shivammathur/php5-ubuntu..."
+        if [ "${DEBIAN_VERSION}" = jammy ] || [ "${DEBIAN_VERSION}" = noble ]; then
+            PACKAGES='enchant-2'
+        else
+            PACKAGES='enchant'
+        fi
+        # note: on ubuntu 24, libtinfo5 is missing, and libodbc1 is replaced by libodbc2
+        if [ "${DEBIAN_VERSION}" = noble ]; then
+            PACKAGES="$PACKAGES libodbc2"
+            # @todo is libtinfo required?
+            #wget https://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
+            #apt install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
+            #rm ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
+        else
+            PACKAGES="$PACKAGES libodbc1 libtinfo5"
+        fi
+        # @todo this set of packages has only been tested on Bionic, Focal, Jammy and Noble so far
+        apt-get install -y \
+            curl \
+            imagemagick \
+            libc-client2007e \
+            libcurl3-gnutls \
+            libmcrypt4 \
+            libpq5 \
+            libqdbm14 \
+            libxpm4 \
+            libxslt1.1 \
+            mysql-common \
+            zstd $PACKAGES
+
+        set +e
+        curl -sSL https://github.com/shivammathur/php5-ubuntu/releases/latest/download/install.sh | bash -s "${PHP_VERSION}"
+        set -e
+
+        # @todo check which php extensions are enabled, and disable all except the desired ones
+    else
+
+        # @todo check if this script works with all php versions from 5.6 onwards
+        # @todo the amount of cleanup and hacks required to get shivammathur/php-ubuntu working is huge. Can we find a better installer?
+        echo "Using PHP from shivammathur/php-ubuntu..."
+
+        # Some of these packages create issues on GHA ubuntu containers...
+        if [ -z "${GITHUB_ACTIONS}" ]; then
+            # @todo this set of packages has only been tested on Noble so far (it should work on Jammy too)
+            if [ "${DEBIAN_VERSION}" = noble ]; then
+                PACKAGES="gir1.2-girepository-2.0 libelf1t64 libglib2.0-0t64"
+            else
+                # @todo add also gir1.2-girepository-2.0 - check if name/availability is the same as on noble.
+                PACKAGES="libelf1 libglib2.0-0"
+            fi
+            # Most of these tools are used by the `sudo update-alternatives` part in the install.sh script, and
+            # will be downloaded at that time, along with some ominous warnings.
+            # We are just as good preinstalling them anyway.
+            apt-get install -y \
+                autoconf \
+                automake \
+                autotools-dev \
+                build-essential \
+                  curl \
+                icu-devtools \
+                  libargon2-1 \
+                libgirepository-1.0-1 \
+                libicu-dev \
+                libltdl7 \
+                  libonig5 \
+                  libsodium23 \
+                libxml2-dev \
+                pkg-config \
+                python3 \
+                python3-apt \
+                  systemd-standalone-tmpfiles \
+                zlib1g-dev \
+                  zstd $PACKAGES
+        fi
+
+        set +e
+        curl -sSL https://github.com/shivammathur/php-ubuntu/releases/latest/download/install.sh | bash -s "${PHP_VERSION}"
+        set -e
+
+        # sadly, the above seems to remove these 3 libs. Force reinstalling them
+        apt-get install -y libargon2-1 libonig5 libsodium23
+
+        # it also resets apache config. So we force it again
+        "${SCRIPT_DIR}/setup_apache.sh"
+
+        # Disable all php extensions, as there are too many enabled. Many of these require .so libs which we did not install
+        for DIR in apache2 cgi cli embed fpm phpdbg; do
+            if [ -d "/etc/php/${PHP_VERSION}/${DIR}/conf.d" ]; then
+                rm -rf "/etc/php/${PHP_VERSION}/${DIR}/conf.d/"*.ini
+                # this list includes the php exts required by composer, phpxmlrpc as well as phpunit
+                for EXT in ctype dom curl mbstring phar sqlite3 tokenizer xml xmlwriter; do
+                    ln -s "/etc/php/${PHP_VERSION}/mods-available/${EXT}.ini" "/etc/php/${PHP_VERSION}/${DIR}/conf.d/20-${EXT}.ini"
+                done
+            fi
+        done
+    fi
+
+    # we have to do this as the init script we get for starting/stopping php-fpm seems to be faulty...
+    if [ -n "$(ps auxwww | grep php-fpm | grep -v ' grep ')" ]; then pkill php-fpm; fi
+
+    # @todo at least for jammy and noble, /var/run/ is a symlink to /run. Check on older os version, and use /run/php?
+    if [ -d "/var/run/php" ] && [ -d "/usr/local/php/" ]; then
+        if [ -d "/usr/local/php/${PHP_VERSION}/var/run" ]; then rm -rf "/usr/local/php/${PHP_VERSION}/var/run"; fi
+        if [ ! -d "/usr/local/php/${PHP_VERSION}/var/" ]; then mkdir -p "/usr/local/php/${PHP_VERSION}/var/"; fi
+        ln -s "/var/run/php" "/usr/local/php/${PHP_VERSION}/var/run"
+    fi
+
+    CONFIG_FILE=
+    for FILE in "/etc/php/${PHP_VERSION}/fpm/php-fpm.conf" "/usr/local/php/${PHP_VERSION}/etc/php-fpm.conf"; do
+        if [ -f "$FILE" ]; then
+            CONFIG_FILE="$FILE"
+            break
+        fi
+    done
+    if [ -n "$CONFIG_FILE" ]; then
+        # set up the minimal php-fpm config we need
+        echo 'listen = /run/php/php-fpm.sock' >> "$CONFIG_FILE"
+        # the user running apache will be different in GHA and local VMS. We just open fully perms on the fpm socket
+        echo 'listen.mode = 0666' >> "$CONFIG_FILE"
+        # as well as the conf to enable php-fpm in apache
+        cp "$SCRIPT_DIR/../config/apache_phpfpm_proxyfcgi" "/etc/apache2/conf-available/php${PHP_VERSION}-fpm.conf"
+    else
+        echo "Not enabling fcgi in apache as php-fpm config file not found" >&2
+    fi
+}
+
+install_ondrej() {
+    echo "Using PHP packages from ondrej/php..."
+
+    apt-get install -y language-pack-en-base software-properties-common
+    LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php
+    apt-get update
+
+    PHP_PACKAGES="php${PHP_VERSION} \
+        php${PHP_VERSION}-cli \
+        php${PHP_VERSION}-dom \
+        php${PHP_VERSION}-curl \
+        php${PHP_VERSION}-fpm \
+        php${PHP_VERSION}-mbstring \
+        php${PHPSUFFIX}-sqlite3 \
+        php${PHP_VERSION}-xdebug"
+    apt-get install -y ${PHP_PACKAGES}
+
+    update-alternatives --set php "/usr/bin/php${PHP_VERSION}"
+}
+
+# install php
+PHP_VERSION="$1"
+# `lsb-release` is not necessarily onboard. We parse /etc/os-release instead
+DEBIAN_VERSION=$(grep 'VERSION_CODENAME=' /etc/os-release | sed 's/VERSION_CODENAME=//')
+if [ -z "${DEBIAN_VERSION}" ]; then
+    # Example strings:
+    # VERSION="14.04.6 LTS, Trusty Tahr"
+    # VERSION="8 (jessie)"
+    DEBIAN_VERSION=$(grep 'VERSION=' /etc/os-release | grep 'VERSION=' | sed 's/VERSION=//' | sed 's/"[0-9.]\+ *(\?//' | sed 's/)\?"//' | tr '[:upper:]' '[:lower:]' | sed 's/lts, *//' | sed 's/ \+tahr//')
+fi
+
+# @todo use native packages if requested for a specific version and that is the same as available in the os repos
+
+if [ "${PHP_VERSION}" = default ]; then
+    install_native
 else
     # on GHA runners ubuntu version, php 7.4 and 8.0 seem to be preinstalled. Remove them if found
     for PHP_CURRENT in $(dpkg -l | grep -E 'php.+-common' | awk '{print $2}'); do
@@ -64,77 +236,29 @@ else
         fi
     done
 
-    if [ "${PHP_VERSION}" = 5.3 -o "${PHP_VERSION}" = 5.4 -o "${PHP_VERSION}" = 5.5 ]; then
-        echo "Using PHP from shivammathur/php5-ubuntu..."
-
-        # @todo this set of packages has only been tested on Bionic, Focal and Jammy so far
-        if [ "${DEBIAN_VERSION}" = jammy -o "${DEBIAN_VERSION}" = noble ]; then
-            ENCHANTSUFFIX='-2'
-        fi
-        DEBIAN_FRONTEND=noninteractive apt-get install -y \
-            curl \
-            enchant${ENCHANTSUFFIX} \
-            imagemagick \
-            libc-client2007e \
-            libcurl3-gnutls \
-            libmcrypt4 \
-            libodbc1 \
-            libpq5 \
-            libqdbm14 \
-            libtinfo5 \
-            libxpm4 \
-            libxslt1.1 \
-            mysql-common \
-            zstd
-
-        if [ ! -d /usr/include/php ]; then mkdir -p /usr/include/php; fi
-
-        set +e
-        curl -sSL https://github.com/shivammathur/php5-ubuntu/releases/latest/download/install.sh | bash -s "${PHP_VERSION}"
-        set -e
-
-        # we have to do this as the init script we get for starting/stopping php-fpm seems to be faulty...
-        pkill php-fpm
-        rm -rf "/usr/local/php/${PHP_VERSION}/var/run"
-        ln -s "/var/run/php" "/usr/local/php/${PHP_VERSION}/var/run"
-        # set up the minimal php-fpm config we need
-        echo 'listen = /run/php/php-fpm.sock' >> "/usr/local/php/${PHP_VERSION}/etc/php-fpm.conf"
-        # the user running apache will be different in GHA and local VMS. We just open fully perms on the fpm socket
-        echo 'listen.mode = 0666' >> "/usr/local/php/${PHP_VERSION}/etc/php-fpm.conf"
-        # as well as the conf to enable php-fpm in apache
-        cp "$SCRIPT_DIR/../config/apache_phpfpm_proxyfcgi" "/etc/apache2/conf-available/php${PHP_VERSION}-fpm.conf"
+    # @todo use ondrej packages for php 8.5 when they are available
+    # @todo also use shivammatur packages for os versions for which the ondrej repos are not available any more.
+    #       Test eg. on focal
+    # @todo move this to looping over an array
+    if [ "${PHP_VERSION}" = 5.3 ] || [ "${PHP_VERSION}" = 5.4 ] || [ "${PHP_VERSION}" = 5.5 ] || [ "${PHP_VERSION}" = 8.5 ]; then
+        install_shivammatur
     else
-        echo "Using PHP packages from ondrej/php..."
-
-        DEBIAN_FRONTEND=noninteractive apt-get install -y language-pack-en-base software-properties-common
-        LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php
-        apt-get update
-
-        PHP_PACKAGES="php${PHP_VERSION} \
-            php${PHP_VERSION}-cli \
-            php${PHP_VERSION}-dom \
-            php${PHP_VERSION}-curl \
-            php${PHP_VERSION}-fpm \
-            php${PHP_VERSION}-mbstring"
-        # @todo remove this IF once xdebug is compatible and available
-        if [ "${PHP_VERSION}" != 8.4 ]; then
-            PHP_PACKAGES="${PHP_PACKAGES} php${PHP_VERSION}-xdebug"
-        fi
-        DEBIAN_FRONTEND=noninteractive apt-get install -y ${PHP_PACKAGES}
-
-        update-alternatives --set php /usr/bin/php${PHP_VERSION}
+        install_ondrej
     fi
 fi
+
 
 PHPVER=$(php -r 'echo implode(".",array_slice(explode(".",PHP_VERSION),0,2));' 2>/dev/null)
 
 service "php${PHPVER}-fpm" stop || true
 
-if [ -d /etc/php/${PHPVER}/fpm ]; then
-    configure_php_ini /etc/php/${PHPVER}/fpm/php.ini
-elif [ -f /usr/local/php/${PHPVER}/etc/php.ini ]; then
-    configure_php_ini /usr/local/php/${PHPVER}/etc/php.ini
+if [ -d "/etc/php/${PHPVER}/fpm" ]; then
+    configure_php_ini "/etc/php/${PHPVER}/fpm/php.ini"
+elif [ -f "/usr/local/php/${PHPVER}/etc/php.ini" ]; then
+    configure_php_ini "/usr/local/php/${PHPVER}/etc/php.ini"
 fi
+
+# @todo shall we configure php-fpm?
 
 # use a nice name for the php-fpm service, so that it does not depend on php version running. Try to make that work
 # both for docker and VMs
@@ -147,8 +271,6 @@ if [ -f "/lib/systemd/system/php${PHPVER}-fpm.service" ]; then
         systemctl daemon-reload
     fi
 fi
-
-# @todo shall we configure php-fpm?
 
 service php-fpm start
 

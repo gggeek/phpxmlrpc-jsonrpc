@@ -40,7 +40,7 @@ abstract class PhpXmlRpc_WebTestCase extends PhpJsonRpc_ServerAwareTestCase
             curl_setopt($ch, CURLOPT_VERBOSE, 1);
         }
         $page = curl_exec($ch);
-        curl_close($ch);
+        if (PHP_MAJOR_VERSION < 8) @curl_close($ch);
 
         $this->assertNotFalse($page);
         if (!$emptyPageOk) {
