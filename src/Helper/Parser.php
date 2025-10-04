@@ -203,7 +203,20 @@ class Parser
         if (isset($ok['error']) && $ok['error'] !== null) {
             $this->_xh['isf'] = 1;
 
-            if (is_array($ok['error']) && array_key_exists('faultCode', $ok['error'])
+            if (is_array($ok['error']) && array_key_exists('code', $ok['error'])
+                && array_key_exists('message', $ok['error'])
+            ) {
+                // copy the jsonrpc 2.0 error structure into the one we later handle
+                $ok['error']['faultCode'] = $ok['error']['code'];
+                $ok['error']['faultString'] = $ok['error']['message'];
+                if ($ok['error']['faultCode'] == 0) {
+                    // FAULT returned, errno needs to reflect that
+                    /// @todo use a constant for this error code
+                    $ok['error']['faultCode'] = -1;
+                }
+                $this->_xh['value'] = $ok['error'];
+            }
+            elseif (is_array($ok['error']) && array_key_exists('faultCode', $ok['error'])
                 && array_key_exists('faultString', $ok['error'])
             ) {
                 if ($ok['error']['faultCode'] == 0) {

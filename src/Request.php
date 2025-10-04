@@ -274,7 +274,7 @@ class Request extends BaseRequest
                 if ($v['faultCode'] == 0) {
                     // FAULT returned, errno needs to reflect that
                     /// @todo feature creep - add this code to PhpXmlRpc::$xmlrpcerr
-                    $this->getLogger()->error('XML-RPC: ' . __METHOD__ . ': fault response received with faultCode 0 or null. Converted it to -1');
+                    $this->getLogger()->error('JSON-RPC: ' . __METHOD__ . ': fault response received with faultCode 0 or null. Converted it to -1');
                     $v['faultCode'] = -1;
                 }
 

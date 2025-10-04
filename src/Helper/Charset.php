@@ -205,7 +205,7 @@ class Charset
                     }
                     if ($data === false) {
                         $escapedData = '';
-                        $this->getLogger()->error('XML-RPC: ' . __METHOD__ . ": Converting from $srcEncoding to $destEncoding via mbstring: failed...");
+                        $this->getLogger()->error('JSON-RPC: ' . __METHOD__ . ": Converting from $srcEncoding to $destEncoding via mbstring: failed...");
                     } else {
                         if ($srcEncoding === 'UTF-8') {
                             $escapedData = $data;
@@ -220,7 +220,7 @@ class Charset
                     }
                 } else {
                     $escapedData = '';
-                    $this->getLogger()->error('XML-RPC: ' . __METHOD__ . ": Converting from $srcEncoding to $destEncoding: not supported...");
+                    $this->getLogger()->error('JSON-RPC: ' . __METHOD__ . ": Converting from $srcEncoding to $destEncoding: not supported...");
                 }
         } // switch
 
