@@ -129,7 +129,7 @@ class Parser
 
         $this->_xh['method'] = $ok['method'];
         $this->_xh['params'] = $ok['params'];
-        $this->_xh['id'] = $ok['id'];
+        $this->_xh['id'] = isset($ok['id']) ? $ok['id'] : null;
         if (isset($ok['jsonrpc'])) {
             $this->_xh['jsonrpc_version'] = $ok['jsonrpc'];
         }

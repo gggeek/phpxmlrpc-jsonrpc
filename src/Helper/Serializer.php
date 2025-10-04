@@ -132,13 +132,26 @@ class Serializer
     public function serializeRequest($req, $id = null, $charsetEncoding = '')
     {
         // @todo: verify if all chars are allowed for method names or can we just skip the js encoding on it?
-        $result = "{\n\"method\": \"" . $this->getCharsetEncoder()->encodeEntities($req->method(), '', $charsetEncoding) . "\",\n";
+        $result = "{\n";
 
         if (is_callable([$req, 'getJsonRpcVersion'])) {
             $jsonRpcVersion = $req->getJsonRpcVersion();
         } else {
             $jsonRpcVersion = self::$defaultJsonrpcVersion;
         }
+
+        switch ($jsonRpcVersion) {
+            case PhpJsonRpc::VERSION_1_0:
+                break;
+            case PhpJsonRpc::VERSION_2_0:
+                $result .= "\"jsonrpc\": \"2.0\",\n";
+                break;
+            default:
+                /// @todo throw
+                break;
+        }
+
+        $result .= "\"method\": \"" . $this->getCharsetEncoder()->encodeEntities($req->method(), '', $charsetEncoding) . "\",\n";
 
         $useNamedParameters = false;
         if ($jsonRpcVersion == PhpJsonRpc::VERSION_2_0 && is_callable([$req, 'getParamNames'])) {
@@ -160,7 +173,7 @@ class Serializer
                 // This way we do not need to override addParam, aren't we lazy?
                 $result .= "\n  \"" . $this->getCharsetEncoder()->encodeEntities($paramNames[$i], null, $charsetEncoding) . "\": " . $this->serializeValue($p, $charsetEncoding) . ",";
             }
-            $result = substr($result, 0, -1) . "\n},\n";
+            $result = substr($result, 0, -1) . "\n}";
         } else {
             $result .= "\"params\": [";
             for ($i = 0; $i < $req->getNumParams(); $i++) {
@@ -169,12 +182,12 @@ class Serializer
                 // This way we do not need to override addParam, aren't we lazy?
                 $result .= "\n  " . $this->serializeValue($p, $charsetEncoding) . ",";
             }
-            $result = substr($result, 0, -1) . "\n],\n";
+            $result = substr($result, 0, -1) . "\n]";
         }
 
         // In jsonrpc 2.0 null ids are omitted. In 1.0, they are not
         if ($id !== null || $jsonRpcVersion != PhpJsonRpc::VERSION_2_0) {
-            $result .= "\"id\": ";
+            $result .= ",\n\"id\": ";
             switch (true) {
                 case $id === null:
                     $result .= 'null';
@@ -192,19 +205,7 @@ class Serializer
             }
         }
 
-        switch ($jsonRpcVersion) {
-            case PhpJsonRpc::VERSION_1_0:
-                $result .= "\n";
-                break;
-            case PhpJsonRpc::VERSION_2_0:
-                $result .= ",\n\"jsonrpc\": \"2.0\"\n";
-                break;
-            default:
-                /// @todo throw
-                break;
-        }
-
-        $result .= "}\n";
+        $result .= "\n}\n";
 
         return $result;
     }
@@ -228,6 +229,17 @@ class Serializer
         }
 
         $result = "{\n";
+
+        switch ($jsonRpcVersion) {
+            case PhpJsonRpc::VERSION_1_0:
+                break;
+            case PhpJsonRpc::VERSION_2_0:
+                $result .= "\"jsonrpc\": \"2.0\",\n";
+                break;
+            default:
+                /// @todo throw
+                break;
+        }
 
         // NB: NULL id has different meaning in jsonrpc 1.0 vs 2.0
         $result .= "\"id\": ";
@@ -273,19 +285,7 @@ class Serializer
             }
         }
 
-        switch ($jsonRpcVersion) {
-            case PhpJsonRpc::VERSION_1_0:
-                $result .= "\n";
-                break;
-            case PhpJsonRpc::VERSION_2_0:
-                $result .= ",\n\"jsonrpc\": \"2.0\"\n";
-                break;
-            default:
-                /// @todo throw
-                break;
-        }
-
-        $result .= "}";
+        $result .= "\n}";
 
         return $result;
     }

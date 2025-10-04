@@ -14,7 +14,6 @@ class ParsingTest extends PhpJsonRpc_LoggerAwareTestCase
      */
     public function testBigJson()
     {
-        // nb: make sure that  the serialized xml corresponding to this is > 10MB in size
         $data = array();
         for ($i = 0; $i < 500000; $i++ ) {
             $data[] = 'hello world';
