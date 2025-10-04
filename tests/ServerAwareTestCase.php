@@ -82,4 +82,40 @@ abstract class PhpJsonRpc_ServerAwareTestCase extends PhpJsonRpc_LoggerAwareTest
         $this->baseUrl = 'http://' . $this->args['HTTPSERVER'] . preg_replace('|\?.+|', '', $this->args['HTTPURI']);
         $this->coverageScriptUrl = 'http://' . $this->args['HTTPSERVER'] . preg_replace('|/tests/index\.php(\?.*)?|', '/tests/phpunit_coverage.php', $this->args['HTTPURI']);
     }
+
+    protected function getClient()
+    {
+        $server = explode(':', $this->args['HTTPSERVER']);
+        /// @todo use the non-legacy API calling convention, except in a dedicated test
+        if (count($server) > 1) {
+            $client = new \PhpXmlRpc\JsonRpc\Client($this->args['HTTPURI'], $server[0], $server[1]);
+        } else {
+            $client = new \PhpXmlRpc\JsonRpc\Client($this->args['HTTPURI'], $this->args['HTTPSERVER']);
+        }
+
+        $client->setDebug($this->args['DEBUG']);
+
+        $client->setCookie('PHPUNIT_RANDOM_TEST_ID', static::$randId);
+
+        if ($this->collectCodeCoverageInformation) {
+            $client->setCookie('PHPUNIT_SELENIUM_TEST_ID', $this->testId);
+        }
+
+        return $client;
+    }
+
+    /**
+     * Dataprovider method: generates the list of test cases for tests which have to be run on curl vs. socket
+     * @return array[]
+     */
+    public function getAvailableUseCurlOptions()
+    {
+        $opts = array(array(\PhpXmlRpc\Client::USE_CURL_NEVER));
+        if (function_exists('curl_init'))
+        {
+            $opts[] = array(\PhpXmlRpc\Client::USE_CURL_ALWAYS);
+        }
+
+        return $opts;
+    }
 }

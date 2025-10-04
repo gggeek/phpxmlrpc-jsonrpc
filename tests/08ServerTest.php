@@ -31,7 +31,7 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
     {
         // save in a static var that this particular test has failed
         // (but only if not called from subclass objects / multitests)
-        if (function_exists('debug_backtrace') && strtolower(get_called_class()) == 'localhosttests') {
+        if (function_exists('debug_backtrace') && strtolower(get_called_class()) == 'servertest') {
             $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             for ($i = 0; $i < count($trace); $i++) {
                 if (strpos($trace[$i]['function'], 'test') === 0) {
@@ -48,22 +48,15 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
     {
         parent::set_up();
 
-        $server = explode(':', $this->args['HTTPSERVER']);
-        if (count($server) > 1) {
-            $this->client = new Client($this->args['HTTPURI'], $server[0], $server[1]);
-        } else {
-            $this->client = new Client($this->args['HTTPURI'], $this->args['HTTPSERVER']);
-        }
+        // these 2 values are injected into the client when calling `send`, and are modified by some tests - reset them
+        $this->timeout = 10;
+        $this->method = 'http';
 
-        $this->client->setDebug($this->args['DEBUG']);
-        $this->client->setOption(Client::OPT_REQUEST_COMPRESSION, $this->request_compression);
-        $this->client->setOption(Client::OPT_ACCEPTED_COMPRESSION, $this->accepted_compression);
+        $this->client = $this->getClient();
 
-        $this->client->setCookie('PHPUNIT_RANDOM_TEST_ID', static::$randId);
-
-        if ($this->collectCodeCoverageInformation) {
-            $this->client->setCookie('PHPUNIT_SELENIUM_TEST_ID', $this->testId);
-        }
+        /// @todo replace with setOption when dropping the BC layer
+        $this->client->request_compression = $this->request_compression;
+        $this->client->accepted_compression = $this->accepted_compression;
     }
 
     /**
@@ -71,9 +64,11 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
      * @param int|array $errorCode expected error codes
      * @param bool $returnResponse
      * @return mixed|\PhpXmlRpc\JsonRpc\Response|\PhpXmlRpc\JsonRpc\Response[]|\PhpXmlRpc\JsonRpc\Value|string|null
+     * @todo allow callers to disable checking of faultCode
      */
     protected function send($msg, $errorCode = 0, $returnResponse = false)
     {
+        /// @todo move to injecting timeout and method into `getClient`, use the non-legacy API calling convention
         $r = $this->client->send($msg, $this->timeout, $this->method);
         // for multicall, return directly array of responses
         if (is_array($r)) {
@@ -146,7 +141,6 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         if ($v) {
             $this->assertEquals($sendString, $v->scalarval());
         }
-
     }
 
     // test wire encoding being set to non-utf8
@@ -155,7 +149,6 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         // note that we should disable this call also when mbstring is missing server-side
         if (!function_exists('mb_convert_encoding')) {
             $this->markTestSkipped('Miss mbstring extension to test exotic charsets');
-            return;
         }
 
         $sendString = 'κόσμε'; // Greek word 'kosme'
@@ -185,7 +178,6 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         // note that we should disable this call also when mbstring is missing server-side
         if (!function_exists('mb_convert_encoding')) {
             $this->markTestSkipped('Miss mbstring extension to test exotic charsets');
-            return;
         }
 
         $sendString = '安室奈美恵'; // Japanese name "Namie Amuro"
@@ -203,7 +195,6 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         // note that we should disable this call also when mbstring is missing server-side
         if (!function_exists('mb_convert_encoding')) {
             $this->markTestSkipped('Miss mbstring extension to test exotic charsets');
-            return;
         }
         // the warning suppression is due to utf8_decode being deprecated in php 8.2
         $sendString = @utf8_decode('élève');
@@ -615,7 +606,6 @@ And turned it into nylon';
         if (version_compare(PHP_VERSION, '7.0.0', '<'))
         {
             $this->markTestSkipped('cannot test php Error on php < 7.0');
-            return;
         }
 
         // these test for the different server error catching modes

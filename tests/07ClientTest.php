@@ -11,35 +11,40 @@ use PhpXmlRpc\JsonRpc\Value;
  */
 class ClientTest extends PhpJsonRpc_ServerAwareTestCase
 {
-    /** @var xmlrpc_client $client */
+    /** @var Client */
     public $client = null;
+    protected $timeout = 10;
 
     public function set_up()
     {
         parent::set_up();
 
-        $this->client = new Client('/NOTEXIST.php', $this->args['HTTPSERVER'], 80);
-        $this->client->setDebug($this->args['DEBUG']);
+        $this->client = $this->getClient();
     }
 
     public function test404()
     {
+        $this->client->path = '/NOTEXIST.php';
+
         $m = new Request('examples.echo', array(
             new Value('hello', 'string'),
         ));
-        $r = $this->client->send($m, 5);
+        $r = $this->client->send($m, $this->timeout);
         $this->assertEquals(5, $r->faultCode());
     }
 
     public function test404Interop()
     {
+        $this->client->path = '/NOTEXIST.php';
+
         $m = new Request('examples.echo', array(
             new Value('hello', 'string'),
         ));
         $orig = \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr;
         \PhpXmlRpc\PhpXmlRpc::useInteropFaults();
-        $r = $this->client->send($m, 5);
+        $r = $this->client->send($m, $this->timeout);
         $this->assertEquals(-32300, $r->faultCode());
+         /// @todo reset this via tear_down
         \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr = $orig;
     }
 
@@ -57,14 +62,14 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
 
     public function testSrvNotFound()
     {
-        $m = new Request('examples.echo', array(
-            new Value('hello', 'string'),
-        ));
         $this->client->server .= 'XXX';
         $dnsinfo = @dns_get_record($this->client->server);
         if ($dnsinfo) {
             $this->markTestSkipped('Seems like there is a catchall DNS in effect: host ' . $this->client->server . ' found');
         } else {
+            $m = new Request('examples.echo', array(
+                new Value('hello', 'string'),
+            ));
             $r = $this->client->send($m, 5);
             // make sure there's no freaking catchall DNS in effect
             $this->assertEquals(5, $r->faultCode());
@@ -75,16 +80,15 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
     {
         if (!function_exists('curl_init')) {
             $this->markTestSkipped('CURL missing: cannot test curl keepalive errors');
-
-            return;
         }
+
         $m = new Request('examples.stringecho', array(
             new Value('hello', 'string'),
         ));
         // test 2 calls w. keepalive: 1st time connection ko, second time ok
         $this->client->server .= 'XXX';
         $this->client->keepalive = true;
-        $r = $this->client->send($m, 5, 'http11');
+        $r = $this->client->send($m, $this->timeout, 'http11');
         // in case we have a "universal dns resolver" getting in the way, we might get a 302 instead of a 404
         $this->assertTrue($r->faultCode() === 8 || $r->faultCode() == 5);
 
@@ -94,14 +98,29 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
             $this->client->port = $server[1];
         }
         $this->client->server = $server[0];
-        $this->client->path = $this->args['HTTPURI'];
-        $this->client->setCookie('PHPUNIT_RANDOM_TEST_ID', static::$randId);
-        $r = $this->client->send($m, 5, 'http11');
+        //$this->client->path = $this->args['HTTPURI'];
+        //$this->client->setCookie('PHPUNIT_RANDOM_TEST_ID', static::$randId);
+        $r = $this->client->send($m, $this->timeout, 'http11');
         $this->assertEquals(0, $r->faultCode());
         $ro = $r->value();
         is_object($ro) && $this->assertEquals('hello', $ro->scalarVal());
     }
 
+    /**
+     * @dataProvider getAvailableUseCurlOptions
+     */
+    public function testCustomHeaders($curlOpt)
+    {
+        $this->client->setOption(\PhpXmlRpc\Client::OPT_USE_CURL, $curlOpt);
+        $this->client->setOption(\PhpXmlRpc\Client::OPT_EXTRA_HEADERS, array('X-PXR-Test: yes'));
+        $r = new Request('tests.getallheaders');
+        $r = $this->client->send($r);
+        $this->assertEquals(0, $r->faultCode());
+        $ro = $r->value();
+        $this->assertArrayHasKey('X-Pxr-Test', $ro->scalarVal(), "Testing with curl mode: $curlOpt");
+    }
+
+    /// @todo add more permutations, eg. check that PHP_URL_SCHEME is ok with http10, http11, h2 etc...
     public function testgetUrl()
     {
         $m = $this->client->getUrl(PHP_URL_SCHEME);

@@ -23,8 +23,9 @@ HOST_HTTPSPORT="${HOST_HTTPSPORT:-443}"
 HOST_PROXYPORT="${HOST_PROXYPORT:-8080}"
 
 CONTAINER_INSTALL_ON_START="${CONTAINER_INSTALL_ON_START:-false}"
-CONTAINER_NAME_PREFIX="${CONTAINER_NAME_PREFIX:-jsonrpc}"
-CONTAINER_IMAGE_PREFIX="${CONTAINER_IMAGE_PREFIX:-jsonrpc_}"
+CONTAINER_NAME_PREFIX="${CONTAINER_NAME_PREFIX:-phpjsonrpc}"
+CONTAINER_IMAGE_PREFIX="${CONTAINER_IMAGE_PREFIX:-phpjsonrpc_}"
+
 CONTAINER_USER=docker
 CONTAINER_WORKSPACE_DIR="/home/${CONTAINER_USER}/workspace"
 
@@ -93,6 +94,10 @@ start() {
         #       Doable using `docker container cp` to retrieve the /etc/build-info file...
         echo "${CONTAINER_NAME} already started..."
     else
+        # @todo we could allow cli flags to
+        #       1. not force a (re) build of the image
+        #       2. force a re-creation of the container
+        #       3. force a composer update on start (also, when running runtests)
         if docker inspect "${CONTAINER_NAME}" >/dev/null 2>/dev/null; then
             echo "starting existing container ${CONTAINER_NAME}..."
             # @todo we should check that the env vars have not changed since cont. creation, and give a warning if so.

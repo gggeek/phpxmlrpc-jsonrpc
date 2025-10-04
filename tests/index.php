@@ -25,7 +25,7 @@ const TESTMODE = true;
 // Out-of-band information: let the client manipulate the page operations
 if (isset($_COOKIE['PHPUNIT_SELENIUM_TEST_ID']) && extension_loaded('xdebug')) {
     // NB: this has to be kept in sync with phunit_coverage.php
-    $GLOBALS['PHPUNIT_COVERAGE_DATA_DIRECTORY'] = '/tmp/phpxmlrpc_coverage';
+    $GLOBALS['PHPUNIT_COVERAGE_DATA_DIRECTORY'] = '/tmp/phpjsonrpc_coverage';
     if (!is_dir($GLOBALS['PHPUNIT_COVERAGE_DATA_DIRECTORY'])) {
         mkdir($GLOBALS['PHPUNIT_COVERAGE_DATA_DIRECTORY']);
         chmod($GLOBALS['PHPUNIT_COVERAGE_DATA_DIRECTORY'], 0777);
@@ -63,13 +63,17 @@ if (isset($_COOKIE['PHPUNIT_SELENIUM_TEST_ID']) && extension_loaded('xdebug')) {
  */
 function preflight($s) {
     // NB: when enabling debug mode, the server prepends the response's Json payload with a javascript comment.
-    // This will be considered an invalid response by most json-rpc client found in the wild - except our client of course
+    // This will be considered an invalid response by most json-rpc client found in the wild - except our client of course (and clients using json5 parsers...)
     if (isset($_GET['FORCE_DEBUG'])) {
-        $s->setDebug($_GET['FORCE_DEBUG']);
+        $s->setOption(PhpXmlRpc\Server::OPT_DEBUG, $_GET['FORCE_DEBUG']);
     }
     if (isset($_GET['RESPONSE_ENCODING'])) {
         $s->setOption(PhpXmlRpc\Server::OPT_RESPONSE_CHARSET_ENCODING, $_GET['RESPONSE_ENCODING']);
     }
+    /// @todo add support for this
+    //if (isset($_GET['DETECT_ENCODINGS'])) {
+    //    PhpXmlRpc\PhpXmlRpc\JsonRpc::$jsonrpc_detectencodings = $_GET['DETECT_ENCODINGS'];
+    //}
     if (isset($_GET['EXCEPTION_HANDLING'])) {
         $s->setOption(PhpXmlRpc\Server::OPT_EXCEPTION_HANDLING, $_GET['EXCEPTION_HANDLING']);
     }
