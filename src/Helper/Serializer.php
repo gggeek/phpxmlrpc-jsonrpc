@@ -154,7 +154,7 @@ class Serializer
         $result .= "\"method\": \"" . $this->getCharsetEncoder()->encodeEntities($req->method(), '', $charsetEncoding) . "\",\n";
 
         $useNamedParameters = false;
-        if ($jsonRpcVersion == PhpJsonRpc::VERSION_2_0 && is_callable([$req, 'getParamNames'])) {
+        if ($jsonRpcVersion == PhpJsonRpc::VERSION_2_0 && is_callable([$req, 'getParamNames']) && $req->getNumParams() > 0) {
             $useNamedParameters = true;
             $paramNames = $req->getParamNames();
             foreach($paramNames as $paramName) {
@@ -166,7 +166,7 @@ class Serializer
         }
 
         if ($useNamedParameters) {
-            $result .= "\"params\": {";
+            $result .= "\"params\": { ";
             for ($i = 0; $i < $req->getNumParams(); $i++) {
                 $p = $req->getParam($i);
                 // NB: we try to force serialization as json even though the object param might be a plain xmlrpcval object.
@@ -175,7 +175,7 @@ class Serializer
             }
             $result = substr($result, 0, -1) . "\n}";
         } else {
-            $result .= "\"params\": [";
+            $result .= "\"params\": [ ";
             for ($i = 0; $i < $req->getNumParams(); $i++) {
                 $p = $req->getParam($i);
                 // NB: we try to force serialization as json even though the object param might be a plain xmlrpcval object.
