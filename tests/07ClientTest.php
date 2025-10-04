@@ -111,7 +111,7 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
      */
     public function testCustomHeaders($curlOpt)
     {
-        if (version_compare(\PhpXmlRpc\PhpXmlRpc::$xmlrpcVersion, '4.11.0', '<') {
+        if (version_compare(\PhpXmlRpc\PhpXmlRpc::$xmlrpcVersion, '4.11.0', '<')) {
             $this->markTestSkipped('OPT_EXTRA_HEADERS not defined before pxr 4.11.0')
         }
         $this->client->setOption(\PhpXmlRpc\Client::OPT_USE_CURL, $curlOpt);
