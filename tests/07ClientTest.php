@@ -115,12 +115,12 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
             $this->markTestSkipped('OPT_EXTRA_HEADERS not defined before pxr 4.11.0');
         }
         $this->client->setOption(\PhpXmlRpc\Client::OPT_USE_CURL, $curlOpt);
-        $this->client->setOption(\PhpXmlRpc\Client::OPT_EXTRA_HEADERS, array('X-PXR-Test: yes'));
+        $this->client->setOption(\PhpXmlRpc\Client::OPT_EXTRA_HEADERS, array('X-PJR-Test: yes'));
         $r = new Request('tests.getallheaders');
         $r = $this->client->send($r);
         $this->assertEquals(0, $r->faultCode());
         $ro = $r->value();
-        $this->assertArrayHasKey('X-Pxr-Test', $ro->scalarVal(), "Testing with curl mode: $curlOpt");
+        $this->assertArrayHasKey('X-Pjr-Test', $ro->scalarVal(), "Testing with curl mode: $curlOpt");
     }
 
     /// @todo add more permutations, eg. check that PHP_URL_SCHEME is ok with http10, http11, h2 etc...

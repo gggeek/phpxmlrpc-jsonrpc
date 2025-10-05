@@ -60,7 +60,7 @@ function i_whichToolkit($req)
 {
     $ret = array(
 /// @todo replace with JsonRpc info
-        "toolkitDocsUrl" => "http://phpxmlrpc.sourceforge.net/",
+        "toolkitDocsUrl" => "https://gggeek.github.io/phpxmlrpc/",
         "toolkitName" => PhpXmlRpc\PhpXmlRpc::$xmlrpcName,
         "toolkitVersion" => PhpXmlRpc\PhpXmlRpc::$xmlrpcVersion,
         "toolkitOperatingSystem" => $_SERVER['SERVER_SOFTWARE'],

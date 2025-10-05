@@ -17,22 +17,41 @@ $getallheaders_sig = array(array(Value::$xmlrpcStruct));
 $getallheaders_doc = 'Returns a struct containing all the HTTP headers received with the request. Provides limited functionality with IIS';
 function getAllHeaders_xmlrpc($req)
 {
-    $encoder = new Encoder();
-
     if (function_exists('getallheaders')) {
-        return new Response($encoder->encode(getallheaders()));
+        $headers = getallheaders();
     } else {
+        // poor man's version of getallheaders. Thanks ralouphie/getallheaders
         $headers = array();
-        // poor man's version of getallheaders
-        foreach ($_SERVER as $key => $val) {
-            if (strpos($key, 'HTTP_') === 0) {
-                $key = ucfirst(str_replace('_', '-', strtolower(substr($key, 5))));
-                $headers[$key] = $val;
+        $copy_server = array(
+            'CONTENT_TYPE'   => 'Content-Type',
+            'CONTENT_LENGTH' => 'Content-Length',
+            'CONTENT_MD5'    => 'Content-Md5',
+        );
+        foreach ($_SERVER as $key => $value) {
+            if (substr($key, 0, 5) === 'HTTP_') {
+                $key = substr($key, 5);
+                if (!isset($copy_server[$key]) || !isset($_SERVER[$key])) {
+                    $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', $key))));
+                    $headers[$key] = $value;
+                }
+            } elseif (isset($copy_server[$key])) {
+                $headers[$copy_server[$key]] = $value;
             }
         }
-
-        return new Response($encoder->encode($headers));
+        if (!isset($headers['Authorization'])) {
+            if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+                $headers['Authorization'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+            } elseif (isset($_SERVER['PHP_AUTH_USER'])) {
+                $basic_pass = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
+                $headers['Authorization'] = 'Basic ' . base64_encode($_SERVER['PHP_AUTH_USER'] . ':' . $basic_pass);
+            } elseif (isset($_SERVER['PHP_AUTH_DIGEST'])) {
+                $headers['Authorization'] = $_SERVER['PHP_AUTH_DIGEST'];
+            }
+        }
     }
+
+    $encoder = new Encoder();
+    return new Response($encoder->encode($headers));
 }
 
 // used to test mixed-convention calling
@@ -82,6 +101,22 @@ function findStateWithNulls($req)
         return new Response(new Value(plain_findstate($a->scalarval())));
 }
 
+$sleep_sig = array(array(Value::$xmlrpcInt, Value::$xmlrpcInt));
+$sleep_doc = 'Sleeps for the requested number of seconds (between 1 and 60), before sending back the response';
+function sleepSeconds($secs) {
+    if ($secs > 0 && $secs < 61) {
+        sleep($secs);
+    }
+    return $secs;
+}
+
+$hashttp2_sig = array(array(Value::$xmlrpcBoolean));
+$hashttp2_doc = 'Checks whether the server supports http2';
+function hasHTTP2() {
+    // NB: only works for apache2 on debian/ubuntu, that we know of...!
+    return is_file('/etc/apache2/mods-enabled/http2.load');
+}
+
 return array(
     "tests.getallheaders" => array(
         "function" => 'getAllHeaders_xmlrpc',
@@ -117,5 +152,19 @@ return array(
         "function" => "findStateWithNulls",
         "signature" => $findstate12_sig,
         "docstring" => exampleMethods::$findstate_doc,
+    ),
+
+    'tests.sleep' => array(
+        "function" => 'sleepSeconds',
+        "signature" => $sleep_sig,
+        "docstring" => $sleep_doc,
+        "parameters_type" => 'phpvals',
+    ),
+
+    'tests.hasHTTP2' => array(
+        "function" => 'hasHTTP2',
+        "signature" => $hashttp2_sig,
+        "docstring" => $hashttp2_doc,
+        "parameters_type" => 'phpvals',
     ),
 );
