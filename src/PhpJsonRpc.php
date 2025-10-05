@@ -12,7 +12,7 @@ class PhpJsonRpc
     const VERSION_2_0 = '2.0';
 
     public static $jsonrpcName = "JSON-RPC for PHP";
-    public static $jsonrpcVersion = "1.0.0-beta2";
+    public static $jsonrpcVersion = "1.0.0-beta3";
 
     public static $json_decode_flags = 0;
     public static $json_decode_depth = 512;
