@@ -10,13 +10,17 @@ class Response extends BaseResponse
     use SerializerAware;
 
     protected $content_type = 'application/json';
-    /// @todo make this protected, allowing access via __get and co
-    public $id = null;
-
+    protected $id = null;
     protected $jsonrpc_version = PhpJsonRpc::VERSION_2_0;
 
     public function __construct($val, $fCode = 0, $fString = '', $valType = '', $id = null, $httpResponse = null)
     {
+        // accommodate those methods which build a Response using the calling syntax of the PhpXmlRpc\Response class
+        if ($httpResponse === null && is_array($id) && isset($id['raw_data'])) {
+            $httpResponse = $id;
+            $id = null;
+        }
+
         $this->id = $id;
 
         parent::__construct($val, $fCode, $fString, $valType, $httpResponse);
@@ -30,6 +34,14 @@ class Response extends BaseResponse
                 $this->valtyp = 'jsonrpcvals';
                 break;
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function id()
+    {
+        return $this->id;
     }
 
     /**
@@ -75,5 +87,54 @@ class Response extends BaseResponse
     public function xml_header($charsetEncoding = '')
     {
         return '';
+    }
+
+    // *** BC layer ***
+
+    // we have to make this return by ref in order to allow calls such as `$resp->_cookies['name'] = ['value' => 'something'];`
+    public function &__get($name)
+    {
+        switch ($name) {
+            case 'id':
+                $this->logDeprecation('Getting property Response::' . $name . ' is deprecated');
+                return $this->$name;
+            default:
+                return parent::__get($name);
+        }
+    }
+
+    public function __set($name, $value)
+    {
+        switch ($name) {
+            case 'id':
+                $this->logDeprecation('Setting property Response::' . $name . ' is deprecated');
+                $this->$name = $value;
+                break;
+            default:
+                parent::__set($name, $value);
+        }
+    }
+
+    public function __isset($name)
+    {
+        switch ($name) {
+            case 'id':
+                $this->logDeprecation('Checking property Response::' . $name . ' is deprecated');
+                return isset($this->$name);
+            default:
+                return parent::__isset($name);
+        }
+    }
+
+    public function __unset($name)
+    {
+        switch ($name) {
+            case 'id':
+                $this->logDeprecation('Unsetting property Response::' . $name . ' is deprecated');
+                unset($this->$name);
+                break;
+            default:
+                parent::__unset($name);
+        }
     }
 }

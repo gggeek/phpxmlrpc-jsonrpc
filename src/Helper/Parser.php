@@ -305,7 +305,10 @@ class Parser
                 }
                 $resp = new Response(0, $err['faultCode'], $err['faultString']);
             }
+
+            /// @todo move to proper id injection
             $resp->id = $ok['id'];
+
             return $resp;
         }
     }

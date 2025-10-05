@@ -13,26 +13,37 @@ class Request extends BaseRequest
 {
     use SerializerAware;
 
-    public $id = null; // used to store request ID internally
+    protected $id = null; // used to store request ID internally
     public $content_type = 'application/json';
-
     /** @var string */
     protected $jsonrpc_version = PhpJsonRpc::VERSION_2_0;
     /** @var string[] */
     protected $paramnames = array();
 
+    protected static $currentIdCounter = 1;
+    protected static $currentIdPrefix = '';
+
     /**
      * @param string $methodName the name of the method to invoke
      * @param \PhpXmlRpc\Value[] $params array of parameters to be passed to the method (xmlrpcval objects)
-     * @param mixed $id the id of the json-rpc request. NB: a NULL id is allowed and has a very definite meaning!
-     *
-     * @todo if $id = null maybe we could assign it an incrementing unique-ish value, and allow another way to send
-     *       notification requests?
+     * @param mixed $id the id of the json-rpc request. NB: a NULL id is allowed, in which case an unique id will be
+     *                  generated. To send notifications, use the Notification class
      */
     public function __construct($methodName, $params = array(), $id = null)
     {
+        if ($id === null) {
+            $id = $this->generateId();
+        }
         $this->id = $id;
         parent::__construct($methodName, $params);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function id()
+    {
+        return $this->id;
     }
 
     /**
@@ -302,5 +313,18 @@ class Request extends BaseRequest
         }
 
         return $r;
+    }
+
+    protected function generateId()
+    {
+        $id = static::$currentIdPrefix . static::$currentIdCounter;
+        if (static::$currentIdCounter == PHP_INT_MAX) {
+            /// @todo use all hexadecimal letters
+            static::$currentIdPrefix = 'a' . static::$currentIdPrefix;
+            static::$currentIdCounter = 1;
+        } else {
+            static::$currentIdCounter++;
+        }
+        return $id;
     }
 }

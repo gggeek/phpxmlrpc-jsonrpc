@@ -83,7 +83,7 @@ class Server extends BaseServer
         if (is_object($req)) {
             /// @todo if $req is an xml-rpc request obj, this will raise a warning: no id member...
             $methodName = $req->method();
-            $msgID = $req->id;
+            $msgID = $req->id();
         } else {
             $methodName = $req;
         }
@@ -197,15 +197,16 @@ class Server extends BaseServer
                 }
             }
             // here $r is either an xmlrpc response or a json-rpc response
-            if (!is_a($r, 'PhpXmlRpc\JsonRpc\Response')) {
+            if (is_a($r, 'PhpXmlRpc\JsonRpc\Response')) {
+                /// @todo move to proper id injection
+                $r->id = $msgID;
+            } else {
 
                 // Dirty trick!!!
                 // User has given us back an xmlrpc response, since he had an existing xmlrpc server with boatloads of code.
                 // Be nice to him, and serialize the xmlrpc stuff into JSON.
                 // was: $r->setPayload($this->getSerializer()->serializeResponse($r, $msgID), 'application/json');
                 $r = new static::$responseClass($r->value(), $r->faultCode(), $r->faultString(), $r->valueType(), $msgID, $r->httpResponse());
-            } else {
-                $r->id = $msgID;
             }
         } catch (\Exception $e) {
             // (barring errors in the lib) an uncatched exception happened in the called function, we wrap it in a
