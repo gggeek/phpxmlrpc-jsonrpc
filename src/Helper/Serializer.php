@@ -51,7 +51,7 @@ class Serializer
                         break;
                     case Value::$xmlrpcInt:
                     case Value::$xmlrpcI4:
-                    case Value::$xmlrpcI8;
+                    case Value::$xmlrpcI8:
                         $rs .= (int)$val;
                         break;
                     case Value::$xmlrpcDateTime:
@@ -63,7 +63,7 @@ class Serializer
                     case Value::$xmlrpcDouble:
                         // add a .0 in case value is integer.
                         // This helps us to carry around floats in js, and keep them separated from ints
-                        $sval = strval((double)$val); // convert to string
+                        $sval = strval((float)$val); // convert to string
                         // fix usage of comma, in case of eg. german locale
                         $sval = str_replace(',', '.', $sval);
                         if (strpos($sval, '.') !== false || strpos($sval, 'e') !== false) {

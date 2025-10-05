@@ -6,7 +6,10 @@
   To manually create notifications, use the new `Notification` class instead.
   The "id" of both Request and Response objects  has been made protected. To access it, use the `id()` method.
 
+- fixed: removed warnings when running on php 8.5
+
 - improved: added CI testing on php 8.4 and 8.5. Default the local testing container to using PHP 8.1 on Ubuntu Jammy
+
 
 ## JSON-RPC for PHP version 1.0-beta2 - 2024/4/15
 
