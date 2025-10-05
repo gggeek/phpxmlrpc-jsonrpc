@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>JSON-RPC for PHP</title>
+<link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+<link rel="stylesheet" type="text/css" href="jsonrpc.css">
+</head>
+<body>
+<h1>JSON-RPC for PHP</h1>
+<div id="menu">
+<a href="#news">News</a> |
+<a href="#download">Download</a> |
+<a href="#features">Features</a> |
+<a href="#requirements">Requirements</a> |
+<a href="#documentation">Documentation</a> |
+<a href="#demoserver">Online demo server</a> |
+<a href="#debugger">Online json-rpc debugger</a> |
+<a href="#support">Support</a> |
+<a href="#development">Development</a> |
+<a href="#roadmap">Roadmap</a> |
+<a href="#history">History</a> |
+<a href="#license">License</a>
+</div>
+<div id="content">
+
+<h2>Introduction</h2>
+<p>Welcome to the homepage of "JSON-RPC for PHP". It is a library implementing the <a href="https://www.jsonrpc.org/">JSON-RPC</a>
+    protocol, written in <a href="http://www.php.net/">PHP</a>. It is also known as PHPJSONRPC.<br>
+    It is designed for ease of use, flexibility and completeness. High speed and reduced memory footprint are not the main
+    goals of the project.</p>
+<p>JSON-RPC is a format used for achieving remote procedure calls via JSON using HTTP as the transport. JSON-RPC has its
+    own website, <a href="https://www.jsonrpc.org/">https://www.jsonrpc.org/</a></p>
+
+<h2><a id="features">Main Features</a></h2>
+<ul>
+<li>Support for creating both json-rpc clients and servers</li>
+<li>Fully automated or fully manual, fine-grained encoding and decoding from PHP values to json-rpc</li>
+<li>Support for UTF8, Latin-1 and ASCII character encodings. With the PHP mbstring extension enabled, even more character
+    sets are supported</li>
+<li>Support for http features including compression of both requests and responses, cookies, proxies, basic and digest auth,
+    ntlm auth, https, http2, keepalives (some only with the PHP cURL extension)</li>
+<li>Possibility to register existing PHP function or class methods as webservices, extracting value-added information
+    from phpdoc comments, including code-generation capabilities</li>
+<li>Optional validation in the server of parameter types of incoming json-rpc request</li>
+<li>A web based visual debugger is included with the library. It is also available as self-contained Container from
+    <a href="https://github.com/gggeek/phpxmlrpc-debugger/pkgs/container/phpxmlrpc-debugger">https://github.com/gggeek/phpxmlrpc-debugger/</a></li>
+<li>Other cool features are delivered with extra packages, such as a <a href="https://github.com/gggeek/phpxmlrpc-extras">
+    json-rpc server</a> that automatically generates html documentation of exposed webservices</li>
+</ul>
+
+<h2><a id="requirements">Requirements</a></h2>
+<p>The library has been designed with goals of flexibility and backward compatibility. As such, it supports a wide range
+    of PHP installs. Note that not all features of the lib are available in every configuration.</p>
+<ul>
+<li>PHP 5.4.0 or later; 7.4 or later recommended</li>
+<li>the PHP "curl" extension is needed if you wish to use HTTPS, HTTP 1.1 or HTTP2 to communicate with remote servers or
+    to use NTLM/Digest authentication</li>
+<li>the PHP "mbstring" extension is needed to allow reception of requests/responses in character sets other than ASCII,
+    Latin-1, UTF-8</li>
+</ul>
+
+<h2><a id="download">Download</a></h2>
+<p>For the latest release, check out the <a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/releases">Releases page</a> on GitHub.</p>
+
+<h2><a id="license">License</a></h2>
+<p>Use of this software is subject to the terms in the <a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/blob/master/license.txt">license.txt</a> file (BSD License).</p>
+
+<h2><a id="news">News</a></h2>
+<p>The latest stable release is version <a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/releases/tag/1.0.0-beta2"><span class="evidence">1.0.0-beta2</span></a>
+    released on April. 15, 2024 (<a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/releases/tag/1.0.0-beta2">Release notes</a>)</p>
+
+<h2><a id="documentation">Documentation</a></h2>
+
+<h3>API manual</h3>
+    <p>Automatically generated <a href="doc/api/index.html">API docs</a> are available online.<br>
+    A good way to get started with API usage is to take a look at the <a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/tree/master/demo">demo source code</a>,
+    showcasing both Client and Server use cases.</p>
+
+<h3>Release Notes</h3>
+<p>The description of changes in each release is available as part of the distribution. It is also accessible
+    <a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/blob/master/NEWS.md">online</a>.</p>
+
+<h3>Changelogs</h3>
+<p>Detailed changelogs are available <a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/commits">on GitHub</a> for all releases
+    starting with 1.0-alpha.<br>
+
+<h2><a id="demoserver">Online demo server</a></h2>
+<p>TBD...</p>
+<!--<p>A demo server is active at the address <b>https://gggeek.altervista.org/sw/xmlrpc/demo/server/server.php</b>. It
+    exposes functions that can be used for interoperability testing (the full code for the server is included in the
+    Git version of the library).<br>
+    <!- -You can see the source code here:
+    <a href="https://gggeek.altervista.org/sw/xmlrpc/demo/server/server.php?showSource=TRUE">https://phpxmlrpc.sourceforge.net/server.php</a>
+    (the xml-rpc server will activate on POST requests, and display its API on GET requests), and auto-generated documentation
+    <a href="server.php">here</a>- -></p>-->
+
+<h2><a id="debugger">Online json-rpc debugger</a></h2>
+<p>TBD...</p>
+<!--<p>A demo xml-rpc debugger application, built on top of this library, is active at the address
+    <a href="https://gggeek.altervista.org/sw/xmlrpc/debugger/">https://gggeek.altervista.org/sw/xmlrpc/debugger/</a>.<br/>
+    You can use the debugger to e.g. query the demo server, or debug your own personal xml-rpc server, if it is accessible
+    on the net.<br/>
+    If your xml-rpc server is not accessible from the internet, we recommend using the <a href="https://github.com/gggeek/phpxmlrpc-debugger/pkgs/container/phpxmlrpc-debugger">Container version</a>
+    of the debugger.</p>-->
+
+<h2><a id="support">Support</a></h2>
+
+<p>JSON-RPC for PHP is offered "as-is" without any warranty or commitment to support. However, informal advice and help
+    is available via the JSON-RPC for PHP website.</p>
+
+<h3>Online Support</h3>
+<p>Bugs, feature requests and patches can be posted to the <a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/issues">project's development website</a>.</p>
+
+<h3><a id="contact">Contact</a></h3>
+<!-- See the lib's <a href="https://sourceforge.net/projects/phpxmlrpc/">SourceForge home page</a> for the complete list of maintainers, file a bug report, feature request or patch.<br> -->
+For security related issues feel free to contact <a href="https://sourceforge.net/u/ggiunta/profile/send_message">ggiunta at users.sourceforge.net</a>
+
+<!--
+To contact the maintainers of the library please goto the library <a href="https://sourceforge.net/projects/phpxmlrpc"> Sourceforge Home Page</a> and use the mail addresses of the developers listed there. You can also file bug reports, fetaure requests or patches.-->
+<!--
+    <p>The original <a href="http://xmlrpc.usefulinc.com/php.html">project homepage</a> is still available.</p>
+-->
+
+<h2><a id="development">Development</a></h2>
+<p>Source code, bug tracker, pull requests, releases are all managed on <a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/">GitHub</a></p>
+
+<h2><a id="roadmap">Roadmap</a></h2>
+<p>See the list of issues on <a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/issues">Github</a></p>
+
+<hr>
+<!--<a href="https://validator.w3.org/nu/?doc=http%3A%2F%2Fgggeek.github.io%2Fphpxmlrpc%2F"><img
+    src="https://www.w3.org/Icons/valid-xhtml10" height="31" width="88"
+    alt="Valid HTML 5"></a><br>-->
+Page last updated: 2025/10/5
+
+</div>
+</body>
+</html>
