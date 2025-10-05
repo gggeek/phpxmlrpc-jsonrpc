@@ -22,8 +22,8 @@ function setup_tools() {
     #       ext-iconv, ext-json, ext-mbstring, ext-simplexml, ext-xml
     # @todo what about the zip, unzip cli tools?
     $sudo apt-get install -y \
-        #asciidoctor \
         curl git gpg unzip zip "${PHPPKG}" "${PHPPKG/cli/mbstring}" "${PHPPKG/cli/curl}"
+        #asciidoctor
 
     # pandoc toolchain
     #$sudo apt-get install -y \
