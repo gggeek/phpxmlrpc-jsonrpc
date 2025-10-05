@@ -3,6 +3,7 @@
 namespace PhpXmlRpc\JsonRpc;
 
 use PhpXmlRpc\Exception\NoSuchMethodException;
+use PhpXmlRpc\Helper\Interop;
 use PhpXmlRpc\JsonRpc\Helper\Charset;
 use PhpXmlRpc\JsonRpc\Helper\Parser;
 use PhpXmlRpc\JsonRpc\Traits\EncoderAware;
@@ -36,6 +37,9 @@ class Server extends BaseServer
 
     protected $debug = 0;
 
+    /** @var null|bool This is required as checking for NULL resp. Id is not sufficient - it can happen in error cases */
+    protected $is_servicing_notification = null;
+
     /**
      * Reimplemented to make us use the correct parser type.
      *
@@ -63,6 +67,39 @@ class Server extends BaseServer
             $out .= "/* DEBUG INFO:\n\n" . str_replace('*/', '*\u002f', Charset::instance()->encodeEntities(static::$_xmlrpc_debuginfo, PhpXmlRpc::$xmlrpc_internalencoding, $charsetEncoding)) . "\n*/\n";
         }
         return $out;
+    }
+
+    /**
+     * Execute the json-rpc request, printing the response.
+     *
+     * @param string $data the request body. If null, the http POST request will be examined
+     * @param bool $returnPayload When true, return the response but do not echo it or any http header
+     *
+     * @return Response|string the response object (usually not used by caller...) or its json serialization
+     * @throws \Exception in case the executed method does throw an exception (and depending on server configuration)
+     */
+    public function service($data = null, $returnPayload = false)
+    {
+        $this->is_servicing_notification = false;
+        $out = parent::service($data, $returnPayload);
+        $this->is_servicing_notification = null;
+        return $out;
+    }
+
+    /**
+     * Parse http headers received along with the json-rpc request. If needed, inflate request.
+     *
+     * @return Response|null null on success or an error Response
+     */
+    public function parseRequestHeaders(&$data, &$reqEncoding, &$respEncoding, &$respCompression)
+    {
+        $resp = parent::parseRequestHeaders($data, $reqEncoding, $respEncoding, $respCompression);
+
+        if ($resp != null) {
+            $this->fixErrorCodeIfNeeded($resp);
+        }
+
+        return $resp;
     }
 
     /**
@@ -281,13 +318,18 @@ class Server extends BaseServer
         if ($reqEncoding != '') {
             $options['source_charset'] = $reqEncoding;
         }
-        // register a callback with the xml parser for when it finds the method name
+        // register a callback with the parser for when it finds the method name
         $options['methodname_callback'] = array($this, 'methodNameCallback');
 
         try {
             $ok = $parser->parseRequest($data, $this->functions_parameters_type, $options);
         } catch (NoSuchMethodException $e) {
-            return new static::$responseClass(0, $e->getCode(), $e->getMessage());
+            // inject both the req. id and protocol version
+            // NB: even if this was a notification, we send back a full response
+            $resp = new static::$responseClass(0, $e->getCode(), $e->getMessage(), '', $parser->_xh['id']);
+            $resp->setJsonRpcVersion($parser->_xh['jsonrpc_version']);
+            $this->fixErrorCodeIfNeeded($resp);
+            return $resp;
         }
 
         // BC we now get false|array, we did use to get true/false
@@ -298,10 +340,14 @@ class Server extends BaseServer
             $_xh = $parser->_xh;
         }
         if (!$ok) {
-            $r = new static::$responseClass(0,
-                PhpXmlRpc::$xmlrpcerr['invalid_request'],
-                PhpXmlRpc::$xmlrpcstr['invalid_request'] . ' ' . $_xh['isf_reason']);
+            $r = new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['invalid_request'],
+                PhpXmlRpc::$xmlrpcstr['invalid_request'] . ' ' . $_xh['isf_reason'], '', $parser->_xh['id']);
         } else {
+
+            if ($_xh['id'] === null) {
+                $this->is_servicing_notification = true;
+            }
+
             if ($this->functions_parameters_type == 'phpvals' || $this->functions_parameters_type == 'epivals' ||
                 (isset($this->dmap[$_xh['method']]['parameters_type']) &&
                 ($this->dmap[$_xh['method']]['parameters_type'] == 'phpvals' || $this->dmap[$_xh['method']]['parameters_type'] == 'epivals'))
@@ -326,10 +372,64 @@ class Server extends BaseServer
                 $r = $this->execute($m);
             }
         }
-        if (isset($_xh['jsonrpc_version'])) {
-            $r->setJsonRpcVersion($_xh['jsonrpc_version']);
-        }
+
+        $r->setJsonRpcVersion($_xh['jsonrpc_version']);
+        $this->fixErrorCodeIfNeeded($r);
+
         return $r;
+    }
+
+    /**
+     * @param Response $resp
+     * @return void
+     */
+    protected function fixErrorCodeIfNeeded($resp)
+    {
+        // Jsonrpc 2.0 responses use the same error codes as the phpxmlrpc interop ones.
+        // We fix them without changing the global error codes, in case there are some xmlrrpc calls being answered, too
+        if (($errCode = $resp->faultCode()) != 0 && $resp->getJsonRpcVersion() === PhpJsonRpc::VERSION_2_0) {
+            if (isset(Interop::$xmlrpcerr[$errCode])) {
+                /// @todo do not use deprecated property accessor to set this value
+                $resp->errno = Interop::$xmlrpcerr[$errCode];
+            }
+        }
+    }
+
+    /**
+     * @param Response $resp
+     * @param string $respCharset
+     * @return string
+     */
+    protected function generatePayload($resp, $respCharset)
+    {
+        if ($this->is_servicing_notification) {
+            return '';
+        }
+
+        return parent::generatePayload($resp, $respCharset);
+    }
+
+    /**
+     * @param string $payload
+     * @param string $respContentType
+     * @param string $respEncoding
+     * @return void
+     */
+    protected function printPayload($payload, $respContentType, $respEncoding)
+    {
+        if ($this->is_servicing_notification) {
+            // return a 204 response with no body
+
+            if (!headers_sent()) {
+                http_response_code(204);
+            } else {
+                $this->getLogger()->error('JSON-RPC: ' . __METHOD__ . ': http headers already sent before response is fully generated. Check for php warning or error messages');
+            }
+
+            return;
+        }
+
+        parent::printPayload($payload, $respContentType, $respEncoding);
     }
 
     /**

@@ -144,7 +144,7 @@ class Request extends BaseRequest
      * @param string $data the json-rpc response, possibly including http headers
      * @param bool $headersProcessed when true prevents parsing HTTP headers for interpretation of content-encoding and conseuqent decoding
      * @param string $returnType decides return type, i.e. content of response->value(). Either 'jsonrpcvals', 'json' or 'phpvals'
-     * @return Response
+     * @return Response|true true when notifications are sent (and the server returns an http response with no body)
      *
      * @todo move more of this parsing into the parent class (split method in smaller ones)
      * @todo throw when $returnType == 'xmlrpcvals', 'epivals' or 'xml'
@@ -158,7 +158,7 @@ class Request extends BaseRequest
 
         $this->httpResponse = array('raw_data' => $data, 'headers' => array(), 'cookies' => array());
 
-        if ($data == '') {
+        if ($data == '' && $this->id !== null) {
             $this->getLogger()->error('JSON-RPC: ' . __METHOD__ . ': no response received from server.');
             return new Response(0, PhpXmlRpc::$xmlrpcerr['no_data'], PhpXmlRpc::$xmlrpcstr['no_data'], '', $this->id);
         }
@@ -166,6 +166,10 @@ class Request extends BaseRequest
         // parse the HTTP headers of the response, if present, and separate them from data
         if (substr($data, 0, 4) == 'HTTP') {
             $httpParser = new Http();
+            if ($this->id === null) {
+                // accept 204 responses when sending notifications
+                $httpParser->setAcceptedStatusCodes(array('200', '204'));
+            }
             try {
                 $httpResponse = $httpParser->parseResponseHeaders($data, $headersProcessed, $this->debug > 0);
             } catch (HttpException $e) {
@@ -230,6 +234,11 @@ class Request extends BaseRequest
             }
         }
 
+        /// @todo is it correct to assume that all servers which accept notifications will return an empty http body?
+        if ($this->id === null && $data === '') {
+            return true;
+        }
+
         // if user wants back raw json, give it to her
         // NB: in this case we inject $this->id even if it might differ in the received jon
         if ($returnType == 'json') {
@@ -251,7 +260,7 @@ class Request extends BaseRequest
         // first error check: json not well formed
         if ($_xh['isf'] == 3) {
             $r = new Response(0, PhpXmlRpc::$xmlrpcerr['invalid_return'],
-                PhpXmlRpc::$xmlrpcstr['invalid_return'] . ' ' . $_xh['isf_reason'], '', null, $httpResponse);
+                PhpXmlRpc::$xmlrpcstr['invalid_return'] . ' ' . $_xh['isf_reason'], '', $this->id, $httpResponse);
 
             if ($this->debug) {
                 $this->getLogger()->debug($_xh['isf_reason']);
@@ -260,7 +269,7 @@ class Request extends BaseRequest
         // second error check: json well-formed but not json-rpc compliant
         elseif ($_xh['isf'] == 2) {
             $r = new Response(0, PhpXmlRpc::$xmlrpcerr['xml_not_compliant'],
-                PhpXmlRpc::$xmlrpcstr['xml_not_compliant'] . ' ' . $_xh['isf_reason'], '', null, $httpResponse);
+                PhpXmlRpc::$xmlrpcstr['xml_not_compliant'] . ' ' . $_xh['isf_reason'], '', $this->id, $httpResponse);
 
             /// @todo echo something for user? check if it was already done by the parser...
             //if ($this->debug > 0) {
@@ -272,7 +281,7 @@ class Request extends BaseRequest
         elseif ($_xh['isf'] > 3 || ($returnType == Parser::RETURN_JSONRPCVALS && !$_xh['isf'] && !is_object($_xh['value']))) {
             // something odd has happened and it's time to generate a client side error indicating something odd went on
             $r = new Response(0, PhpXmlRpc::$xmlrpcerr['xml_parsing_error'], PhpXmlRpc::$xmlrpcstr['xml_parsing_error'],
-                '', null, $httpResponse);
+                '', $this->id, $httpResponse);
 
             /// @todo echo something for the user?
         } else {
@@ -283,29 +292,31 @@ class Request extends BaseRequest
                 );
             }
 
-            $v = $_xh['value'];
+            /// @todo for jsonrpc 2.0, a null id should be treated as error (check here or before?)
 
-            if ($_xh['isf']) {
-                if ($v['faultCode'] == 0) {
-                    // FAULT returned, errno needs to reflect that
-                    /// @todo feature creep - add this code to PhpXmlRpc::$xmlrpcerr
-                    $this->getLogger()->error('JSON-RPC: ' . __METHOD__ . ': fault response received with faultCode 0 or null. Converted it to -1');
-                    $v['faultCode'] = -1;
-                }
+            /// @todo check if we got back a different json-rpc version that we sent, log a warning if we did
 
-                // unlike the xml-rpc parser, the json parser never wraps errors into Value objects
-                $r = new Response(0, $v['faultCode'], $v['faultString'], '', null, $httpResponse);
-            } else {
-                $r = new Response($v, 0, '', $returnType, null, $httpResponse);
-            }
-
-            /// @todo check that received id is the same as the sent one
+            // check that received id is the same as the one that was sent
             if ($_xh['id'] != $this->id) {
+                $r = new Response(0, PhpXmlRpc::$xmlrpcerr['invalid_return'],
+                    PhpXmlRpc::$xmlrpcstr['invalid_return'] . ' The response Id does not match the request one', '', $this->id, $httpResponse);
+            } else {
+                $v = $_xh['value'];
 
+                if ($_xh['isf']) {
+                    if ($v['faultCode'] == 0) {
+                        // FAULT returned, errno needs to reflect that
+                        /// @todo feature creep - add this code to PhpXmlRpc::$xmlrpcerr
+                        $this->getLogger()->error('JSON-RPC: ' . __METHOD__ . ': fault response received with faultCode 0 or null. Converted it to -1');
+                        $v['faultCode'] = -1;
+                    }
+
+                    // unlike the xml-rpc parser, the json parser never wraps errors into Value objects
+                    $r = new Response(0, $v['faultCode'], $v['faultString'], '', $_xh['id'], $httpResponse);
+                } else {
+                    $r = new Response($v, 0, '', $returnType, $_xh['id'], $httpResponse);
+                }
             }
-
-            /// @todo for jsonrpc 2.0, a null id should be treated as error (here or before?)
-            $r->id = $_xh['id'];
         }
 
         if (isset($_xh['jsonrpc_version'])) {

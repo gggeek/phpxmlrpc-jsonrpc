@@ -1,10 +1,18 @@
 ## JSON-RPC for PHP version XX (unreleased)
 
-- new: default the code to use jsonrpc version 2.0 protocol, while allowing usage of jsonrpc 1.0 too
+- new: default the code to use jsonrpc version 2.0 protocol, while allowing usage of json-rpc 1.0 too
+
+- new: added a `Notification` class, to be used for sending json-rpc notification calls
 
 - breaking change: when creating a Request, passing in a NULL id will now automatically generate a unique id.
   To manually create notifications, use the new `Notification` class instead.
-  The "id" of both Request and Response objects  has been made protected. To access it, use the `id()` method.
+  The "id" of both Request and Response objects has been made protected. To access it, use the `id()` method.
+
+- breaking change: the Server will now respond to Notifications (request with no Id / null Id) with an HTTP 204
+  response with no body
+
+- breaking change: when sending a Notification call, `Client::send()` will now return true instead of a Response object,
+  iff the server returns an empty http response body
 
 - fixed: removed warnings when running on php 8.5
 

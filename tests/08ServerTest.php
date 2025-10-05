@@ -108,6 +108,30 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         $this->client->path = parse_url($this->client->path, PHP_URL_PATH) . '?' . $query;
     }
 
+    // test that we get back the same ID as we sent
+    public function testId()
+    {
+        $sendString = "hi";
+        $m = new Request('examples.stringecho', array(
+            new Value($sendString, 'string'),
+        ));
+        $r = $this->send($m, 0, true);
+        $this->assertEquals(0, $r->faultCode());
+        $this->assertEquals($sendString, $r->value()->scalarval());
+        $this->assertEquals($m->id(), $r->id());
+    }
+
+    // test that we get back no response
+    public function testNotification()
+    {
+        $sendString = "hi";
+        $m = new \PhpXmlRpc\JsonRpc\Notification('examples.stringecho', array(
+            new Value($sendString, 'string'),
+        ));
+        $r = $this->client->send($m, $this->timeout, $this->method);
+        $this->assertEquals(true, $r);
+    }
+
     public function testString()
     {
         $sendString = "here are 3 \"entities\": < > & " .
@@ -152,7 +176,7 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         }
 
         $sendString = 'κόσμε'; // Greek word 'kosme'
-        $r = new Request('examples.stringecho', array());
+        $r = new Request('examples.stringecho', array(), 100);
 
         // we have to set the encoding declaration either in the http header or xml prolog, as mb_detect_encoding
         // (used on the server side) will fail recognizing these 2 charsets
@@ -160,13 +184,13 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         // This test is known to fail with old mbstring versions, at least the ones we get with php 5.4, 5.5 as present
         // in the CI test vms (@todo check - maybe this was only true for the XML version of the test)
         if (version_compare(PHP_VERSION, '5.6.0', '>=')) {
-            $str = mb_convert_encoding('{"method": "examples.stringecho", "params": ["' . $sendString . '"], "id": null}', 'UCS-4', 'UTF-8');
+            $str = mb_convert_encoding('{"method": "examples.stringecho", "params": ["' . $sendString . '"], "id": 100}', 'UCS-4', 'UTF-8');
             $r->setPayload($str, 'application/json; charset=UCS-4');
             $v = $this->send($r);
             $this->assertEquals($sendString, $v->scalarval());
         }
 
-        $str = mb_convert_encoding('{"method": "examples.stringecho", "params": ["' . $sendString . '"], "id": null}', 'UTF-16', 'UTF-8');
+        $str = mb_convert_encoding('{"method": "examples.stringecho", "params": ["' . $sendString . '"], "id": 100}', 'UTF-16', 'UTF-8');
         $r->setPayload($str, 'application/json; charset=UTF-16');
         $v = $this->send($r);
         $this->assertEquals($sendString, $v->scalarval());
@@ -181,8 +205,8 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         }
 
         $sendString = '安室奈美恵'; // Japanese name "Namie Amuro"
-        $str = '{"method": "examples.stringecho", "params": ["' . mb_convert_encoding($sendString, 'EUC-JP', 'UTF-8') . '"], "id": null}';
-        $r = new Request('examples.stringecho', array());
+        $str = '{"method": "examples.stringecho", "params": ["' . mb_convert_encoding($sendString, 'EUC-JP', 'UTF-8') . '"], "id": 200}';
+        $r = new Request('examples.stringecho', array(), 200);
         $r->setPayload($str, 'application/json; charset=EUC-JP');
 
         $v = $this->send($r);
@@ -198,9 +222,9 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         }
         // the warning suppression is due to utf8_decode being deprecated in php 8.2
         $sendString = @utf8_decode('élève');
-        $str = '{"method": "examples.stringecho", "params": ["' . mb_convert_encoding($sendString, 'ISO-8859-1', 'UTF-8') . '"], "id": null}';
+        $str = '{"method": "examples.stringecho", "params": ["' . mb_convert_encoding($sendString, 'ISO-8859-1', 'UTF-8') . '"], "id": 400}';
 
-        $r = new Request('examples.stringecho', array());
+        $r = new Request('examples.stringecho', array(), 400);
         $r->setPayload($str, 'application/json');
 
         // no encoding declaration either in the http header or xml prolog, let mb_detect_encoding

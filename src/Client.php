@@ -73,7 +73,8 @@ class Client extends BaseClient
      * @param \PhpXmlRpc\JsonRpc\Request|\PhpXmlRpc\JsonRpc\Request[]|string $req
      * @param int $timeout deprecated
      * @param string $method deprecated
-     * @return \PhpXmlRpc\JsonRpc\Response|\PhpXmlRpc\JsonRpc\Response[]
+     * @return \PhpXmlRpc\JsonRpc\Response|true|\PhpXmlRpc\JsonRpc\Response[] true for notification calls, if the server
+     *         returns an empty http response body
      */
     public function send($req, $timeout = 0, $method = '')
     {

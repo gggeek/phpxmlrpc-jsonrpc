@@ -80,6 +80,7 @@ class Parser
             $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc response object';
             return false;
         }
+
         if (array_key_exists('jsonrpc', $ok) && $ok['jsonrpc'] === '2.0') {
             if (!array_key_exists('method', $ok) || !is_string($ok['method']) ||
                 (array_key_exists('params', $ok) && !is_array($ok['params'])) ||
@@ -98,6 +99,12 @@ class Parser
                 $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 request object';
                 return false;
             }
+        }
+
+        // we have to set these _before_ possibly triggering an exception with call_user_func
+        $this->_xh['id'] = isset($ok['id']) ? $ok['id'] : null;
+        if (isset($ok['jsonrpc'])) {
+            $this->_xh['jsonrpc_version'] = $ok['jsonrpc'];
         }
 
         $this->returnTypeOverride = null;
@@ -129,10 +136,6 @@ class Parser
 
         $this->_xh['method'] = $ok['method'];
         $this->_xh['params'] = $ok['params'];
-        $this->_xh['id'] = isset($ok['id']) ? $ok['id'] : null;
-        if (isset($ok['jsonrpc'])) {
-            $this->_xh['jsonrpc_version'] = $ok['jsonrpc'];
-        }
 
         return $this->_xh;
     }
@@ -373,6 +376,7 @@ class Parser
             'params' => array(),
             'pt' => array(),
             'id' => null,
+            'jsonrpc_version' => PhpJsonRpc::VERSION_1_0,
         );
 
         $srcEncoding = isset($options['source_charset']) ? $options['source_charset'] : '';
@@ -408,6 +412,7 @@ class Parser
                     $this->convertEncoding($out, false);
                 } else {
                     $this->getLogger()->error('JSON-RPC: ' . __METHOD__ . ': unsupported internal charset encoding of application: ' . $dstEncoding);
+/// @todo should we flag a fault condition? Check what the parent class does
                 }
             }
         }
