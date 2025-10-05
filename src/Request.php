@@ -18,6 +18,7 @@ class Request extends BaseRequest
 
     /** @var string */
     protected $jsonrpc_version = PhpJsonRpc::VERSION_2_0;
+    /** @var string[] */
     protected $paramnames = array();
 
     /**
@@ -148,7 +149,7 @@ class Request extends BaseRequest
 
         if ($data == '') {
             $this->getLogger()->error('JSON-RPC: ' . __METHOD__ . ': no response received from server.');
-            return new Response(0, PhpXmlRpc::$xmlrpcerr['no_data'], PhpXmlRpc::$xmlrpcstr['no_data']);
+            return new Response(0, PhpXmlRpc::$xmlrpcerr['no_data'], PhpXmlRpc::$xmlrpcstr['no_data'], '', $this->id);
         }
 
         // parse the HTTP headers of the response, if present, and separate them from data
@@ -159,9 +160,9 @@ class Request extends BaseRequest
             } catch (HttpException $e) {
                 // failed processing of HTTP response headers
                 // save into response obj the full payload received, for debugging
-                return new Response(0, $e->getCode(), $e->getMessage(), '', null, array('raw_data' => $data, 'status_code', $e->statusCode()));
+                return new Response(0, $e->getCode(), $e->getMessage(), '', $this->id, array('raw_data' => $data, 'status_code' => $e->statusCode()));
             } catch(\Exception $e) {
-                return new Response(0, $e->getCode(), $e->getMessage(), '', null, array('raw_data' => $data));
+                return new Response(0, $e->getCode(), $e->getMessage(), '', $this->id, array('raw_data' => $data));
             }
         } else {
             $httpResponse = $this->httpResponse;
@@ -207,7 +208,7 @@ class Request extends BaseRequest
             $httpResponse = null;
         }
 
-        if ($this->debug) {
+        if ($this->debug > 0) {
             if ($serverComments !== '') {
                 $this->getLogger()->debug("---SERVER DEBUG INFO (DECODED)---\n\t" .
                     str_replace("\n", "\n\t", base64_decode($serverComments)) . "\n---END---");
@@ -219,8 +220,9 @@ class Request extends BaseRequest
         }
 
         // if user wants back raw json, give it to her
+        // NB: in this case we inject $this->id even if it might differ in the received jon
         if ($returnType == 'json') {
-            return new Response($data, 0, '', 'json', $httpResponse);
+            return new Response($data, 0, '', 'json', $this->id, $httpResponse);
         }
 
         $options = array('target_charset' => PhpXmlRpc::$xmlrpc_internalencoding);
@@ -246,20 +248,22 @@ class Request extends BaseRequest
         }
         // second error check: json well-formed but not json-rpc compliant
         elseif ($_xh['isf'] == 2) {
-            $r = new Response(0, PhpXmlRpc::$xmlrpcerr['invalid_return'],
-                PhpXmlRpc::$xmlrpcstr['invalid_return'] . ' ' . $_xh['isf_reason'], '', null, $httpResponse);
+            $r = new Response(0, PhpXmlRpc::$xmlrpcerr['xml_not_compliant'],
+                PhpXmlRpc::$xmlrpcstr['xml_not_compliant'] . ' ' . $_xh['isf_reason'], '', null, $httpResponse);
 
-            if ($this->debug) {
-                /// @todo echo something for user? check if it was already done by the parser...
-            }
+            /// @todo echo something for user? check if it was already done by the parser...
+            //if ($this->debug > 0) {
+            //}
         }
         // third error check: parsing of the response has somehow gone boink.
         /// @todo shall we omit the 2nd part of this check, since we trust the parsing code?
         ///       Either that, or check the fault results too...
         elseif ($_xh['isf'] > 3 || ($returnType == Parser::RETURN_JSONRPCVALS && !$_xh['isf'] && !is_object($_xh['value']))) {
             // something odd has happened and it's time to generate a client side error indicating something odd went on
-            $r = new Response(0, PhpXmlRpc::$xmlrpcerr['invalid_return'], PhpXmlRpc::$xmlrpcstr['invalid_return'],
+            $r = new Response(0, PhpXmlRpc::$xmlrpcerr['xml_parsing_error'], PhpXmlRpc::$xmlrpcstr['xml_parsing_error'],
                 '', null, $httpResponse);
+
+            /// @todo echo something for the user?
         } else {
 
             if ($this->debug > 1) {
@@ -285,7 +289,11 @@ class Request extends BaseRequest
             }
 
             /// @todo check that received id is the same as the sent one
-            /// @todo for jsonrpc 2.0, a null id should be treated as error
+            if ($_xh['id'] != $this->id) {
+
+            }
+
+            /// @todo for jsonrpc 2.0, a null id should be treated as error (here or before?)
             $r->id = $_xh['id'];
         }
 

@@ -38,7 +38,7 @@ class Client extends BaseClient
     {
         parent::__construct($path, $server, $port, $method);
 
-        // @todo we need to override the list of std supported encodings, since  according to ECMA-262, the standard
+        // @todo we need to override the list of std supported encodings, since according to ECMA-262, the standard
         //       charset is UTF-16...
         //$this->accepted_charset_encodings = array('UTF-16', 'UTF-8', 'ISO-8859-1', 'US-ASCII');
 
