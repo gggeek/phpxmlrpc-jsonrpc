@@ -11,7 +11,7 @@
  */
 
 // We answer to CORS preflight requests, to allow browsers which are visiting a site on a different domain to send
-// xml-rpc requests (generated via javascript) to this server.
+// json-rpc requests (generated via javascript) to this server.
 // Doing so has serious security implications, so we lock it by default to only be enabled on the well-known demo server.
 // If enabling it on your server, you most likely want to set up an allowed domains whitelist, rather than using'*'
 if ($_SERVER['SERVER_ADMIN'] == 'info@altervista.org') {
