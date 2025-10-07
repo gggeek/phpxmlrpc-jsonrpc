@@ -353,8 +353,14 @@ class Server extends BaseServer
             $_xh = $parser->_xh;
         }
         if (!$ok) {
-            $r = new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['invalid_request'],
-                PhpXmlRpc::$xmlrpcstr['invalid_request'] . ' ' . $_xh['isf_reason'], '', $parser->_xh['id']);
+            if ($_xh['isf'] == 3 && preg_match('/^JSON parsing failed. Error: ([0-9]+)/', $_xh['isf_reason'], $matches)) {
+                /// @see error values from https://www.php.net/manual/en/function.json-last-error.php
+                $r = new static::$responseClass(0, PhpXmlRpc::$xmlrpcerrxml + (int)$matches[1],
+                    $_xh['isf_reason'], '', $parser->_xh['id']);
+            } else {
+                $r = new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['invalid_request'],
+                    PhpXmlRpc::$xmlrpcstr['invalid_request'] . ' ' . $_xh['isf_reason'], '', $parser->_xh['id']);
+            }
         } else {
 
             if ($_xh['id'] === null) {

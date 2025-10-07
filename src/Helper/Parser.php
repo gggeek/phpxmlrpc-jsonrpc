@@ -8,6 +8,7 @@ use PhpXmlRpc\JsonRpc\Request;
 use PhpXmlRpc\JsonRpc\Response;
 use PhpXmlRpc\JsonRpc\Traits\EncoderAware;
 use PhpXmlRpc\JsonRpc\Value;
+use PhpXmlRpc\PhpXmlRpc;
 use PhpXmlRpc\Traits\LoggerAware;
 
 /**
@@ -379,6 +380,9 @@ class Parser
             'jsonrpc_version' => PhpJsonRpc::VERSION_1_0,
         );
 
+        /// @todo test if $data === '' and return a known error if it does, to save a tiny bit of processing time -
+        ///       set isf=3, 'isf_reason' = 'JSON parsing failed. Error: 4'
+
         $srcEncoding = isset($options['source_charset']) ? $options['source_charset'] : '';
         if (!in_array($srcEncoding, array('', 'UTF-8', 'US-ASCII'))) {
             if (function_exists('mb_convert_encoding')) {
@@ -397,7 +401,7 @@ class Parser
         if (json_last_error() !== JSON_ERROR_NONE) {
             $this->_xh['isf'] = 3;
             $this->_xh['isf_reason'] = 'JSON parsing failed. Error: ' . json_last_error();
-/// @todo check what the parent class does log
+/// @todo the parent class does not log anything in this case...
             $this->getLogger()->error($this->_xh['isf_reason']);
             //return false;
         }

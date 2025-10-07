@@ -2,7 +2,7 @@
 
 include_once __DIR__ . '/ServerAwareTestCase.php';
 
-abstract class PhpXmlRpc_WebTestCase extends PhpJsonRpc_ServerAwareTestCase
+abstract class PhpJsonRpc_WebTestCase extends PhpJsonRpc_ServerAwareTestCase
 {
     /**
      * Make an HTTP request, check that the result is a 200 OK page with no php fatal error or warning messages.
@@ -54,7 +54,7 @@ abstract class PhpXmlRpc_WebTestCase extends PhpJsonRpc_ServerAwareTestCase
     }
 
     /**
-     * Build an xml-rpc client, tweaked if needed to collect code-coverage information of the server.
+     * Build a json-rpc client, tweaked if needed to collect code-coverage information of the server.
      * @see also ServerTest::set_up
      *
      * @param string $path

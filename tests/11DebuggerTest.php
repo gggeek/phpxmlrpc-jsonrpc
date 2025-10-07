@@ -5,7 +5,7 @@ include_once __DIR__ . '/WebTestCase.php';
 /**
  * Tests for the bundled debugger.
  */
-class DebuggerTest extends PhpXmlRpc_WebTestCase
+class DebuggerTest extends PhpJsonRpc_WebTestCase
 {
     public function testIndex()
     {
