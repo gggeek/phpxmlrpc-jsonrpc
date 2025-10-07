@@ -6,27 +6,28 @@ use PhpXmlRpc\Exception\StateErrorException;
 use PhpXmlRpc\JsonRpc\Encoder;
 use PhpXmlRpc\JsonRpc\PhpJsonRpc;
 use PhpXmlRpc\JsonRpc\Value;
+use PhpXmlRpc\Traits\CharsetEncoderAware;
 
 /**
  * @todo implement a CharsetEncoderAware trait (as soon as there is a 2nd user of Charset)
  */
 class Serializer
 {
-    protected static $charsetEncoder;
+    use CharsetEncoderAware;
 
     public static $defaultJsonrpcVersion = PhpJsonRpc::VERSION_2_0;
 
+    /**
+     * Reimplemented to make us use the correct parser type.
+     *
+     * @return Charset
+     */
     public function getCharsetEncoder()
     {
         if (self::$charsetEncoder === null) {
             self::$charsetEncoder = Charset::instance();
         }
         return self::$charsetEncoder;
-    }
-
-    public function setCharsetEncoder($charsetEncoder)
-    {
-        self::$charsetEncoder = $charsetEncoder;
     }
 
     /**

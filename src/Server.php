@@ -43,6 +43,19 @@ class Server extends BaseServer
     /**
      * Reimplemented to make us use the correct parser type.
      *
+     * @return Charset
+     */
+    public function getCharsetEncoder()
+    {
+        if (self::$charsetEncoder === null) {
+            self::$charsetEncoder = Charset::instance();
+        }
+        return self::$charsetEncoder;
+    }
+
+    /**
+     * Reimplemented to make us use the correct parser type.
+     *
      * @return Parser
      */
     public function getParser()

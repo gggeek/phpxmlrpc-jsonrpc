@@ -18,9 +18,10 @@ class Charset
 
     /**
      * This class is singleton for performance reasons.
-     * @todo can't we just make $xml_iso88591_Entities a static variable instead ?
      *
      * @return Charset
+     *
+     * @todo can't we just make $xml_iso88591_Entities a static variable instead ?
      */
     public static function instance()
     {
@@ -68,6 +69,12 @@ class Charset
      * @param string $srcEncoding charset of source string, defaults to PhpXmlRpc::$xmlrpc_internalencoding
      * @param string $destEncoding charset of the encoded string, defaults to ASCII for maximum interoperability
      * @return string
+     *
+     * @todo make use of iconv when it is available and mbstring is not
+     * @todo support aliases for charset names, eg ASCII, LATIN1, ISO-88591 (see f.e. polyfill-iconv for a list),
+     *       but then take those into account as well in other methods, ie. isValidCharset)
+     * @todo when converting to ASCII, allow to choose whether to escape the range 0-31,127 (non-print chars) or not
+     * @todo allow picking different strategies to deal w. invalid chars? eg. source in latin-1 and chars 128-159
      */
     public function encodeEntities($data, $srcEncoding = '', $destEncoding = '')
     {
@@ -87,8 +94,10 @@ class Charset
             $srcEncoding = 'UTF-8';
         }
 
+        $conversion = strtoupper($srcEncoding . '_' . $destEncoding);
+
         // list ordered with (expected) most common scenarios first
-        switch (strtoupper($srcEncoding . '_' . $destEncoding)) {
+        switch ($conversion) {
             case 'UTF-8_UTF-8':
             case 'ISO-8859-1_ISO-8859-1':
             case 'US-ASCII_UTF-8':
@@ -100,14 +109,15 @@ class Charset
             case 'UTF-8_US-ASCII':
             case 'UTF-8_ISO-8859-1':
                 // NB: this will choke on invalid UTF-8, going most likely beyond EOF
-                $escapedData = "";
+                $escapedData = '';
                 // be kind to users creating string jsonrpcvals out of different php types
                 $data = (string)$data;
                 $ns = strlen($data);
                 for ($nn = 0; $nn < $ns; $nn++) {
                     $ch = $data[$nn];
                     $ii = ord($ch);
-                    // 1 - 7 bits: 0bbbbbbb (127)
+                    // 7 bits in 1 byte: 0bbbbbbb (127)
+                    /// @todo for UTF-8_US-ASCII conversion, should we use \uXX encoding for chars < 32?
                     if ($ii < 128) {
                         /// @todo shall we replace this with a (supposedly) faster str_replace?
                         switch ($ii) {
@@ -141,38 +151,29 @@ class Charset
                             default:
                                 $escapedData .= $ch;
                         } // switch
-                    } // 2 - 11 bits: 110bbbbb 10bbbbbb (2047)
-                    else if ($ii >> 5 == 6) {
+                    } // 11 bits in 2 bytes: 110bbbbb 10bbbbbb (2047)
+                    elseif ($ii >> 5 == 6) {
                         $b1 = ($ii & 31);
-                        $ii = ord($data[$nn + 1]);
-                        $b2 = ($ii & 63);
+                        $b2 = (ord($data[$nn + 1]) & 63);
                         $ii = ($b1 * 64) + $b2;
-                        $ent = sprintf('\u%\'04x', $ii);
-                        $escapedData .= $ent;
+                        $escapedData .= sprintf('\u%\'04x', $ii);
                         $nn += 1;
-                    } // 3 - 16 bits: 1110bbbb 10bbbbbb 10bbbbbb
-                    else if ($ii >> 4 == 14) {
+                    } // 16 bits in 3 bytes: 1110bbbb 10bbbbbb 10bbbbbb
+                    elseif ($ii >> 4 == 14) {
                         $b1 = ($ii & 15);
-                        $ii = ord($data[$nn + 1]);
-                        $b2 = ($ii & 63);
-                        $ii = ord($data[$nn + 2]);
-                        $b3 = ($ii & 63);
+                        $b2 = (ord($data[$nn + 1]) & 63);
+                        $b3 = (ord($data[$nn + 2]) & 63);
                         $ii = ((($b1 * 64) + $b2) * 64) + $b3;
-                        $ent = sprintf('\u%\'04x', $ii);
-                        $escapedData .= $ent;
+                        $escapedData .= sprintf('\u%\'04x', $ii);
                         $nn += 2;
-                    } // 4 - 21 bits: 11110bbb 10bbbbbb 10bbbbbb 10bbbbbb
-                    else if ($ii >> 3 == 30) {
+                    } // 21 bits in 4 bytes: 11110bbb 10bbbbbb 10bbbbbb 10bbbbbb
+                    elseif ($ii >> 3 == 30) {
                         $b1 = ($ii & 7);
-                        $ii = ord($data[$nn + 1]);
-                        $b2 = ($ii & 63);
-                        $ii = ord($data[$nn + 2]);
-                        $b3 = ($ii & 63);
-                        $ii = ord($data[$nn + 3]);
-                        $b4 = ($ii & 63);
+                        $b2 = (ord($data[$nn + 1]) & 63);
+                        $b3 = (ord($data[$nn + 2]) & 63);
+                        $b4 = (ord($data[$nn + 3]) & 63);
                         $ii = ((((($b1 * 64) + $b2) * 64) + $b3) * 64) + $b4;
-                        $ent = sprintf('\u%\'04x', $ii);
-                        $escapedData .= $ent;
+                        $escapedData .= sprintf('\u%\'04x', $ii);
                         $nn += 3;
                     }
                 }
@@ -180,7 +181,12 @@ class Charset
 
             case 'ISO-8859-1_UTF-8':
                 $escapedData = str_replace(array('\\', '"', '/', "\t", "\n", "\r", chr(8), chr(11), chr(12)), array('\\\\', '\"', '\/', '\t', '\n', '\r', '\b', '\v', '\f'), $data);
-                $escapedData = utf8_encode($escapedData);
+                /// @todo if on php >= 8.2, prefer using mbstring or iconv. Also: suppress the warning!
+                if (function_exists('mb_convert_encoding')) {
+                    $escapedData = mb_convert_encoding($escapedData, 'UTF-8', 'ISO-8859-1');
+                } else {
+                    $escapedData = utf8_encode($escapedData);
+                }
                 break;
 
             case 'ISO-8859-1_US-ASCII':
@@ -225,5 +231,22 @@ class Charset
         } // switch
 
         return $escapedData;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function knownCharsets()
+    {
+        $knownCharsets = array('UTF-8', 'ISO-8859-1', 'US-ASCII');
+        // Add all charsets which mbstring can handle, but remove junk not found in IANA registry at
+        // http://www.iana.org/assignments/character-sets/character-sets.xhtml
+        if (function_exists('mb_list_encodings')) {
+            $knownCharsets = array_unique(array_merge($knownCharsets, array_diff(mb_list_encodings(), array(
+                'pass', 'auto', 'wchar', 'BASE64', 'UUENCODE', 'ASCII', 'HTML-ENTITIES', 'Quoted-Printable',
+                '7bit','8bit', 'byte2be', 'byte2le', 'byte4be', 'byte4le'
+            ))));
+        }
+        return $knownCharsets;
     }
 }

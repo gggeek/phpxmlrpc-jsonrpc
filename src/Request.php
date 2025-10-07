@@ -4,7 +4,9 @@ namespace PhpXmlRpc\JsonRpc;
 
 use PhpXmlRpc\Exception\HttpException;
 use PhpXmlRpc\Helper\Http;
+use PhpXmlRpc\JsonRpc\Helper\Charset;
 use PhpXmlRpc\JsonRpc\Helper\Parser;
+use PhpXmlRpc\JsonRpc\Traits\JsonRpcVersionAware;
 use PhpXmlRpc\JsonRpc\Traits\SerializerAware;
 use PhpXmlRpc\PhpXmlRpc;
 use PhpXmlRpc\Request as BaseRequest;
@@ -12,11 +14,10 @@ use PhpXmlRpc\Request as BaseRequest;
 class Request extends BaseRequest
 {
     use SerializerAware;
+    use JsonRpcVersionAware;
 
     protected $id = null; // used to store request ID internally
     public $content_type = 'application/json';
-    /** @var string */
-    protected $jsonrpc_version = PhpJsonRpc::VERSION_2_0;
     /** @var string[] */
     protected $paramnames = array();
 
@@ -26,16 +27,38 @@ class Request extends BaseRequest
     /**
      * @param string $methodName the name of the method to invoke
      * @param \PhpXmlRpc\Value[] $params array of parameters to be passed to the method (xmlrpcval objects)
+     * @param null|string $jsonrpcVersion pass either PhpJsonRpc::VERSION_2_0 or PhpJsonRpc::VERSION_1_0 to force a value
      * @param mixed $id the id of the json-rpc request. NB: a NULL id is allowed, in which case an unique id will be
      *                  generated. To send notifications, use the Notification class
      */
-    public function __construct($methodName, $params = array(), $id = null)
+    public function __construct($methodName, $params = array(), $id = null, $jsonrpcVersion = null)
     {
         if ($id === null) {
             $id = $this->generateId();
         }
+        /// @todo if the version is 2.0, id should not be a bool value. Log a warning if it is
         $this->id = $id;
+
+        if ($jsonrpcVersion !== null) {
+            $this->jsonrpc_version = $jsonrpcVersion;
+        } else {
+            $this->jsonrpc_version = PhpJsonRpc::$defaultJsonrpcVersion;
+        }
+
         parent::__construct($methodName, $params);
+    }
+
+    /**
+     * Reimplemented to make us use the correct parser type.
+     *
+     * @return Charset
+     */
+    public function getCharsetEncoder()
+    {
+        if (self::$charsetEncoder === null) {
+            self::$charsetEncoder = Charset::instance();
+        }
+        return self::$charsetEncoder;
     }
 
     /**
@@ -44,23 +67,6 @@ class Request extends BaseRequest
     public function id()
     {
         return $this->id;
-    }
-
-    /**
-     * @param string $jsonrpcVersion
-     * @return void
-     */
-    public function setJsonRpcVersion($jsonrpcVersion)
-    {
-        $this->jsonrpc_version = $jsonrpcVersion;
-    }
-
-    /**
-     * @return string
-     */
-    public function getJsonRpcVersion()
-    {
-        return $this->jsonrpc_version;
     }
 
     /**

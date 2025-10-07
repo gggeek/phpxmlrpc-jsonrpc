@@ -5,6 +5,7 @@ namespace PhpXmlRpc\JsonRpc;
 use PhpXmlRpc\Client as BaseClient;
 use PhpXmlRpc\Exception\ValueErrorException;
 use PhpXmlRpc\JsonRpc\Helper\Parser;
+use PhpXmlRpc\JsonRpc\Traits\JsonRpcVersionAware;
 use PhpXmlRpc\PhpXmlRpc;
 
 /**
@@ -13,6 +14,8 @@ use PhpXmlRpc\PhpXmlRpc;
  */
 class Client extends BaseClient
 {
+    use JsonRpcVersionAware;
+
     protected static $requestClass = '\\PhpXmlRpc\\JsonRpc\\Request';
     protected static $responseClass = '\\PhpXmlRpc\\JsonRpc\\Response';
 
@@ -21,9 +24,6 @@ class Client extends BaseClient
     protected static $extra_options = array(
         self::OPT_JSONRPC_VERSION,
     );
-
-    /** @var string|null */
-    protected $jsonrpc_version = PhpJsonRpc::VERSION_2_0;
 
     // by default, no multicall exists for JSON-RPC, so do not try it
     public $no_multicall = true;

@@ -6,6 +6,7 @@
 
 - breaking change: when creating a Request, passing in a NULL id will now automatically generate a unique id.
   To manually create notifications, use the new `Notification` class instead.
+  Note that this change does not apply if using the legacy `jsonrpcmsg` class
   The "id" of both Request and Response objects has been made protected. To access it, use the `id()` method.
 
 - breaking change: the Server will now respond to Notifications (request with no Id / null Id) with an HTTP 204

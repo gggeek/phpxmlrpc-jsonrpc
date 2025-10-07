@@ -2,16 +2,18 @@
 
 namespace PhpXmlRpc\JsonRpc;
 
+use PhpXmlRpc\JsonRpc\Helper\Charset;
+use PhpXmlRpc\JsonRpc\Traits\JsonRpcVersionAware;
 use PhpXmlRpc\JsonRpc\Traits\SerializerAware;
 use PhpXmlRpc\Response as BaseResponse;
 
 class Response extends BaseResponse
 {
     use SerializerAware;
+    use JsonRpcVersionAware;
 
     protected $content_type = 'application/json';
     protected $id = null;
-    protected $jsonrpc_version = PhpJsonRpc::VERSION_2_0;
 
     public function __construct($val, $fCode = 0, $fString = '', $valType = '', $id = null, $httpResponse = null)
     {
@@ -37,28 +39,24 @@ class Response extends BaseResponse
     }
 
     /**
+     * Reimplemented to make us use the correct parser type.
+     *
+     * @return Charset
+     */
+    public function getCharsetEncoder()
+    {
+        if (self::$charsetEncoder === null) {
+            self::$charsetEncoder = Charset::instance();
+        }
+        return self::$charsetEncoder;
+    }
+
+    /**
      * @return mixed
      */
     public function id()
     {
         return $this->id;
-    }
-
-    /**
-     * @param string $jsonrpcVersion
-     * @return void
-     */
-    public function setJsonRpcVersion($jsonrpcVersion)
-    {
-        $this->jsonrpc_version = $jsonrpcVersion;
-    }
-
-    /**
-     * @return string
-     */
-    public function getJsonRpcVersion()
-    {
-        return $this->jsonrpc_version;
     }
 
     /**

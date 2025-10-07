@@ -20,7 +20,8 @@ file_put_contents(sys_get_temp_dir() . '/phpunit_rand_id.txt', $randId);
 $client = new jsonrpc_client($baseurl);
 $client->setCookie('PHPUNIT_RANDOM_TEST_ID', $randId);
 
-$req = new jsonrpcmsg('system.listMethods', array());
+$req = new jsonrpcmsg('system.listMethods', array(), 1);
+
 $resp = $client->send($req);
 if ($resp->faultCode() !== 0) {
     unlink(sys_get_temp_dir() . '/phpunit_rand_id.txt');

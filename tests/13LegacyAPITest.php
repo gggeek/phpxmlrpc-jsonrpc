@@ -13,8 +13,9 @@ class LegacyAPITest extends PhpJsonRpc_ServerAwareTestCase
 
         exec('php ' . __DIR__ . '/legacy_loader_test.php', $out, $result);
 
-        /// @todo dump output if in debug mode or if test fails
-
+        if ($result != 0) {
+            /// @todo dump output if in debug mode or if test fails
+        }
         $this->assertEquals(0, $result);
     }
 }

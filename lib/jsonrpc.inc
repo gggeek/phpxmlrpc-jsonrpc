@@ -22,6 +22,7 @@
 
 include_once(__DIR__.'/../src/PhpJsonRpc.php');
 include_once(__DIR__.'/../src/Traits/EncoderAware.php');
+include_once(__DIR__.'/../src/Traits/JsonRpcVersionAware.php');
 include_once(__DIR__.'/../src/Traits/SerializerAware.php');
 include_once(__DIR__.'/../src/Helper/Charset.php');
 include_once(__DIR__.'/../src/Helper/Parser.php');
@@ -36,6 +37,7 @@ use PhpXmlRpc\JsonRpc\Encoder;
 use PhpXmlRpc\JsonRpc\Helper\Charset;
 use PhpXmlRpc\JsonRpc\Helper\Parser;
 use PhpXmlRpc\JsonRpc\Helper\Serializer;
+use PhpXmlRpc\JsonRpc\PhpJsonRpc;
 
 // Note: the json spec omits \v, but it is present in ECMA-262, so we allow it
 /// @deprecated
@@ -58,15 +60,33 @@ class jsonrpc_client extends \PhpXmlRpc\JsonRpc\Client
     // BC: default to full ASCII escaping of generated requests
     public $request_charset_encoding = '';
 
+    // default to jsonrpc 1.0
+    protected $jsonrpc_version = \PhpXmlRpc\JsonRpc\PhpJsonRpc::VERSION_1_0;
+
     /// @todo bring back methods from xmlrpc_client which are missing in \PhpXmlRpc\JsonRpc\Client, if any
 }
 
 class jsonrpcmsg extends \PhpXmlRpc\JsonRpc\Request
 {
+    // default to jsonrpc 1.0
+    protected $jsonrpc_version = PhpJsonRpc::VERSION_1_0;
+
+    // undo the change in behaviour of the constructor
+    public function __construct($methodName, $params = array(), $id = null, $jsonrpcVersion = null)
+    {
+        $originalId = $id;
+        parent::__construct($methodName, $params = array(), $id = null, $jsonrpcVersion);
+        if ($originalId === null) {
+            $this->id = null;
+        }
+    }
+
 }
 
 class jsonrpcresp extends \PhpXmlRpc\JsonRpc\Response
 {
+    // default to jsonrpc 1.0
+    protected $jsonrpc_version = PhpJsonRpc::VERSION_1_0;
 }
 
 class jsonrpcval extends \PhpXmlRpc\JsonRpc\Value
