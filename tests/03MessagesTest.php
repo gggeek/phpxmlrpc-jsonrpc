@@ -7,6 +7,26 @@ include_once __DIR__ . '/LoggerAwareTestCase.php';
  */
 class MessagesTest extends PhpJsonRpc_LoggerAwareTestCase
 {
+    public function testSerializeRequestJsonRpc1()
+    {
+        $r = new \PhpXmlRpc\JsonRpc\Request('hello', array(), null, \PhpXmlRpc\JsonRpc\PhpJsonRpc::VERSION_1_0);
+        $v = $r->serialize();
+        /// @todo use a regexp in case json formatting gets different
+        $this->assertStringContainsString('"method": "hello"', $v);
+        $this->assertStringNotContainsString('"jsonrpc"', $v);
+    }
+
+    public function testSerializeRequestJsonRpc2()
+    {
+        $r = new \PhpXmlRpc\JsonRpc\Request('hello', array(), null, \PhpXmlRpc\JsonRpc\PhpJsonRpc::VERSION_2_0);
+        $r->setJsonRpcVersion(\PhpXmlRpc\JsonRpc\PhpJsonRpc::VERSION_2_0);
+        $v = $r->serialize();
+        /// @todo use a regexp in case json formatting gets different
+        $this->assertStringContainsString('"method": "hello"', $v);
+        $this->assertStringContainsString('"jsonrpc": "2.0"', $v);
+    }
+
+
     public function testSerializePHPValResponseJsonRpc1()
     {
         $r = new \PhpXmlRpc\JsonRpc\Response(array('hello' => 'world'), 0, '', 'phpvals');
@@ -37,5 +57,11 @@ class MessagesTest extends PhpJsonRpc_LoggerAwareTestCase
 
         $r = new \PhpXmlRpc\JsonRpc\Request('hello', array(), '1');
         $this->assertSame('1', $r->id());
+    }
+
+    public function testNotificationId()
+    {
+        $r = new \PhpXmlRpc\JsonRpc\Notification('hello', array());
+        $this->assertSame(null, $r->id());
     }
 }
