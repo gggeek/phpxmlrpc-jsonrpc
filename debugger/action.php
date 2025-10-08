@@ -10,6 +10,6 @@ if (!file_exists($vendorDir.'/autoload.php') || !file_exists($vendorDir.'/phpxml
 
 include_once($vendorDir.'/autoload.php');
 
-define('DEFAULT_WSTYPE', '1');
+define('DEFAULT_WSTYPE', '2');
 
 include($vendorDir.'/phpxmlrpc/phpxmlrpc/debugger/action.php');

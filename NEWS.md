@@ -18,6 +18,9 @@
 - breaking change: when a Client sends invalid json, the returned response will sport a faultCode of 100+X, with X
   corresponding to the value returned by php function `json_last_error`, eg. 104 for no data, instead of previous 5
 
+- fixed: when receiving empty requests, make sure the returned response's error code is the same on php 5 as it is
+  on later php versions
+
 - fixed: removed warnings when running on php 8.5
 
 - improved: added CI testing on php 8.4 and 8.5. Default the local testing container to using PHP 8.1 on Ubuntu Jammy
