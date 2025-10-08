@@ -31,6 +31,9 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
         ));
         $r = $this->client->send($m, $this->timeout);
         $this->assertEquals(5, $r->faultCode());
+        $this->assertEquals($m->id(), $r->id(), 'Response Id is different from request Id');
+/// @todo figure out why this is failing
+        //$this->assertEquals($m->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
     }
 
     public function test404Interop()
@@ -58,6 +61,9 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
         $this->client->setOption(\PhpXmlRpc\Client::OPT_USE_CURL, \PhpXmlRpc\Client::USE_CURL_NEVER);
         $r = $this->client->send($m);
         $this->assertEquals(\PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['unsupported_option'], $r->faultCode());
+        $this->assertEquals($m->id(), $r->id(), 'Response Id is different from request Id');
+/// @todo figure out why this is failing
+        //$this->assertEquals($m->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
     }
 
     public function testSrvNotFound()
@@ -73,6 +79,9 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
             $r = $this->client->send($m, 5);
             // make sure there's no freaking catchall DNS in effect
             $this->assertEquals(5, $r->faultCode());
+            $this->assertEquals($m->id(), $r->id(), 'Response Id is different from request Id');
+/// @todo figure out why this is failing
+            //$this->assertEquals($m->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
         }
     }
 
