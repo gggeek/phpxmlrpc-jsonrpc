@@ -20,6 +20,7 @@ class Request extends BaseRequest
     public $content_type = 'application/json';
     /** @var string[] */
     protected $paramnames = array();
+    protected $parsedResponseIsFromServer = false;
 
     protected static $currentIdCounter = 1;
     protected static $currentIdPrefix = '';
@@ -84,7 +85,6 @@ class Request extends BaseRequest
      */
     public function addParam($param, $name=null)
     {
-        $this->paramnames[] = $name;
         $ok = parent::addParam($param);
         if ($ok) {
             $this->paramnames[] = $name;
@@ -158,6 +158,8 @@ class Request extends BaseRequest
      */
     public function parseResponse($data = '', $headersProcessed = false, $returnType = Parser::RETURN_JSONRPCVALS)
     {
+        $this->parsedResponseIsFromServer = false;
+
         if ($this->debug) {
             $this->getLogger()->debug("---GOT---\n$data\n---END---");
         }
@@ -319,8 +321,10 @@ class Request extends BaseRequest
 
                     // unlike the xml-rpc parser, the json parser never wraps errors into Value objects
                     $r = new Response(0, $v['faultCode'], $v['faultString'], '', $_xh['id'], $httpResponse);
+                    $this->parsedResponseIsFromServer = true;
                 } else {
                     $r = new Response($v, 0, '', $returnType, $_xh['id'], $httpResponse);
+                    $this->parsedResponseIsFromServer = true;
                 }
             }
         }
@@ -343,5 +347,15 @@ class Request extends BaseRequest
             static::$currentIdCounter++;
         }
         return $id;
+    }
+
+    public function parsedResponseIsFromServer()
+    {
+        return $this->parsedResponseIsFromServer;
+    }
+
+    public function resetParsedResponseIsFromServer()
+    {
+        $this->parsedResponseIsFromServer = false;
     }
 }

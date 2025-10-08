@@ -298,8 +298,10 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
 
     public function testUnknownMethod()
     {
-        $m = new Request('examples.a_very_unlikely.method', array());
-        $v = $this->send($m, \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['unknown_method']);
+        $m = new Request('examples.a_very_unlikely.method', array(), 1, PhpXmlRpc\JsonRpc\PhpJsonRpc::VERSION_2_0);
+        $v = $this->send($m, \PhpXmlRpc\Helper\Interop::$xmlrpcerr['unknown_method'], true);
+        $m = new Request('examples.a_very_unlikely.method', array(), 2, PhpXmlRpc\JsonRpc\PhpJsonRpc::VERSION_1_0);
+        $v = $this->send($m, \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['unknown_method'], true);
     }
 
     public function testBoolean()
@@ -610,19 +612,19 @@ And turned it into nylon';
         $m = new Request('tests.raiseException', array(
             new Value(0, 'int'),
         ));
-        $v = $this->send($m, \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['server_error']);
+        $v = $this->send($m, \PhpXmlRpc\Helper\Interop::$xmlrpcerr['server_error']);
 
         // these test for the different server exception catching modes
         $m = new Request('tests.raiseException', array(
             new Value(3, 'int'),
         ));
-        $v = $this->send($m, \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['server_error']);
+        $v = $this->send($m, \PhpXmlRpc\Helper\Interop::$xmlrpcerr['server_error']);
         $this->addQueryParams(array('EXCEPTION_HANDLING' => 1));
         $v = $this->send($m, 3); // the error code of the expected exception
         $this->addQueryParams(array('EXCEPTION_HANDLING' => 2));
         // depending on whether display_errors is ON or OFF on the server, we will get back a different error here,
         // as php will generate an http status code of either 200 or 500...
-        $v = $this->send($m, array(\PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['invalid_return'], \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['http_error']));
+        $v = $this->send($m, array(\PhpXmlRpc\Helper\Interop::$xmlrpcerr['invalid_return'], \PhpXmlRpc\Helper\Interop::$xmlrpcerr['http_error']));
     }
 
     public function testCatchErrors()
@@ -634,13 +636,13 @@ And turned it into nylon';
 
         // these test for the different server error catching modes
         $m = new Request('tests.raiseError');
-        $v = $this->send($m, \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['server_error']);
+        $v = $this->send($m, \PhpXmlRpc\Helper\Interop::$xmlrpcerr['server_error']);
         $this->addQueryParams(array('EXCEPTION_HANDLING' => 1));
         $v = $this->send($m, 1); // the error code of the expected exception
         $this->addQueryParams(array('EXCEPTION_HANDLING' => 2));
         // depending on whether display_errors is ON or OFF on the server, we will get back a different error here,
         // as php will generate an http status code of either 200 or 500...
-        $v = $this->send($m, array(\PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['invalid_return'], \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['http_error']));
+        $v = $this->send($m, array(\PhpXmlRpc\Helper\Interop::$xmlrpcerr['invalid_return'], \PhpXmlRpc\Helper\Interop::$xmlrpcerr['http_error']));
     }
 
     public function testZeroParams()
@@ -670,7 +672,7 @@ And turned it into nylon';
         $m = new Request('tests.getStateName.12', array(
             new Value(23, 'int')
         ));
-        $v = $this->send($m, array(\PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['incorrect_params']));
+        $v = $this->send($m, array(\PhpXmlRpc\Helper\Interop::$xmlrpcerr['incorrect_params']));
     }
 
     /*
@@ -697,7 +699,7 @@ And turned it into nylon';
         $m = new Request('tests.getStateName.2', array(
             new Value(0, 'int'),
         ));
-        $v = $this->send($m, \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['server_error']);
+        $v = $this->send($m, \PhpXmlRpc\Helper\Interop::$xmlrpcerr['server_error']);
 
         // check if the generated function dispatch map is fine, by checking if the server registered it
         $m = new Request('system.methodSignature', array(
@@ -720,7 +722,7 @@ And turned it into nylon';
         $m = new Request('tests.getStateName.6', array(
             new Value(0, 'int'),
         ));
-        $v = $this->send($m, \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['server_error']);
+        $v = $this->send($m, \PhpXmlRpc\Helper\Interop::$xmlrpcerr['server_error']);
     }
 
     public function testServerWrappedObjectMethods()

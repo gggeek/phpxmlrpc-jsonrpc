@@ -7,6 +7,7 @@ use PhpXmlRpc\JsonRpc\Traits\JsonRpcVersionAware;
 use PhpXmlRpc\JsonRpc\Traits\SerializerAware;
 use PhpXmlRpc\Response as BaseResponse;
 
+/// @todo introduce $responseClass, to allow subclasses to produce different types of response?
 class Response extends BaseResponse
 {
     use SerializerAware;
@@ -87,52 +88,12 @@ class Response extends BaseResponse
         return '';
     }
 
-    // *** BC layer ***
-
-    // we have to make this return by ref in order to allow calls such as `$resp->_cookies['name'] = ['value' => 'something'];`
-    public function &__get($name)
-    {
-        switch ($name) {
-            case 'id':
-                $this->logDeprecation('Getting property Response::' . $name . ' is deprecated');
-                return $this->$name;
-            default:
-                return parent::__get($name);
-        }
-    }
-
-    public function __set($name, $value)
-    {
-        switch ($name) {
-            case 'id':
-                $this->logDeprecation('Setting property Response::' . $name . ' is deprecated');
-                $this->$name = $value;
-                break;
-            default:
-                parent::__set($name, $value);
-        }
-    }
-
-    public function __isset($name)
-    {
-        switch ($name) {
-            case 'id':
-                $this->logDeprecation('Checking property Response::' . $name . ' is deprecated');
-                return isset($this->$name);
-            default:
-                return parent::__isset($name);
-        }
-    }
-
-    public function __unset($name)
-    {
-        switch ($name) {
-            case 'id':
-                $this->logDeprecation('Unsetting property Response::' . $name . ' is deprecated');
-                unset($this->$name);
-                break;
-            default:
-                parent::__unset($name);
-        }
+    /**
+     * @param Response $resp
+     * @param mixed $id
+     * @return Response
+     */
+    public static function withId($resp, $id) {
+        return new self($resp->value(), $resp->faultCode(), $resp->faultString(), $resp->valueType(), $id, $resp->httpResponse());
     }
 }

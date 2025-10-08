@@ -20,6 +20,7 @@ use PhpXmlRpc\Traits\LoggerAware;
  * @todo add a ParseValue method ?
  * @todo add a Parse method (same as XMLParser) ?
  * @todo add a constructor which can be used to set default options
+ * @todo introduce $responseClass, to allow subclasses to produce different types of response?
  */
 class Parser
 {
@@ -310,8 +311,8 @@ class Parser
                 $resp = new Response(0, $err['faultCode'], $err['faultString']);
             }
 
-            /// @todo move to proper id injection
-            $resp->id = $ok['id'];
+            /// @todo
+            $resp = Response::withId($resp, $ok['id']);
 
             return $resp;
         }

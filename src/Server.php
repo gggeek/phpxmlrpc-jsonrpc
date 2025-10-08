@@ -122,10 +122,11 @@ class Server extends BaseServer
      * @param mixed[] $params
      * @param string[] $paramTypes
      * @param mixed $msgID
+     * @param string $jsonrpcVersion
      * @return Response
      * @throws \Exception
      */
-    protected function execute($req, $params = null, $paramTypes = null, $msgID = null)
+    protected function execute($req, $params = null, $paramTypes = null, $msgID = null, $jsonrpcVersion = null)
     {
         static::$_xmlrpcs_occurred_errors = '';
         static::$_xmlrpc_debuginfo = '';
@@ -143,7 +144,12 @@ class Server extends BaseServer
 
         if (!isset($dmap[$methodName]['function'])) {
             // No such method
-            return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['unknown_method'], PhpXmlRpc::$xmlrpcstr['unknown_method'], '', $msgID);
+            $r = new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['unknown_method'], PhpXmlRpc::$xmlrpcstr['unknown_method'], '', $msgID);
+            if ($jsonrpcVersion != null) {
+                $r->setJsonRpcVersion($jsonrpcVersion);
+            }
+            $this->fixErrorCodeIfNeeded($r);
+            return $r;
         }
 
         // Check signature
@@ -156,9 +162,14 @@ class Server extends BaseServer
             }
             if (!$ok) {
                 // Didn't match.
-                return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['incorrect_params'],
+                $r = new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['incorrect_params'],
                     PhpXmlRpc::$xmlrpcstr['incorrect_params'] . ": {$errStr}", '', $msgID
                 );
+                if ($jsonrpcVersion != null) {
+                    $r->setJsonRpcVersion($jsonrpcVersion);
+                }
+                $this->fixErrorCodeIfNeeded($r);
+                return $r;
             }
         }
 
@@ -185,9 +196,14 @@ class Server extends BaseServer
         // verify that function to be invoked is in fact callable
         if (!is_callable($func)) {
             $this->getLogger()->error("JSON-RPC: " . __METHOD__ . ": function $funcName registered as method handler is not callable");
-            return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['server_error'],
+            $r = new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['server_error'],
                 PhpXmlRpc::$xmlrpcstr['server_error'] . ': no function matches method', '', $msgID
             );
+            if ($jsonrpcVersion != null) {
+                $r->setJsonRpcVersion($jsonrpcVersion);
+            }
+            $this->fixErrorCodeIfNeeded($r);
+            return $r;
         }
 
         if (isset($dmap[$methodName]['exception_handling'])) {
@@ -248,8 +264,7 @@ class Server extends BaseServer
             }
             // here $r is either an xmlrpc response or a json-rpc response
             if (is_a($r, 'PhpXmlRpc\JsonRpc\Response')) {
-                /// @todo move to proper id injection
-                $r->id = $msgID;
+                $r = call_user_func_array(array(static::$responseClass, 'withId'), array($r, $msgID));
             } else {
 
                 // Dirty trick!!!
@@ -310,6 +325,13 @@ class Server extends BaseServer
             set_error_handler(self::$_xmlrpcs_prev_ehandler);
         } else {
             restore_error_handler();
+        }
+
+        if ($jsonrpcVersion != null) {
+            $r->setJsonRpcVersion($jsonrpcVersion);
+        }
+        if ($exception_handling != 1 && $exception_handling != 2) {
+            $this->fixErrorCodeIfNeeded($r);
         }
 
         return $r;
@@ -374,7 +396,7 @@ class Server extends BaseServer
                 if ($this->debug > 1) {
                     $this->debugMsg("\n+++PARSED+++\n" . var_export($_xh['params'], true) . "\n+++END+++");
                 }
-                $r = $this->execute($_xh['method'], $_xh['params'], $_xh['pt'], $_xh['id']);
+                $r = $this->execute($_xh['method'], $_xh['params'], $_xh['pt'], $_xh['id'], $_xh['jsonrpc_version']);
             } else {
                 // build a json-rpc Request object with data parsed from json
                 $m = new Request($_xh['method'], array(), $_xh['id']);
@@ -388,12 +410,9 @@ class Server extends BaseServer
                     $this->debugMsg("\n+++PARSED+++\n" . var_export($m, true) . "\n+++END+++");
                 }
 
-                $r = $this->execute($m);
+                $r = $this->execute($m, null, null, null, $_xh['jsonrpc_version']);
             }
         }
-
-        $r->setJsonRpcVersion($_xh['jsonrpc_version']);
-        $this->fixErrorCodeIfNeeded($r);
 
         return $r;
     }
@@ -405,11 +424,12 @@ class Server extends BaseServer
     protected function fixErrorCodeIfNeeded($resp)
     {
         // Jsonrpc 2.0 responses use the same error codes as the phpxmlrpc interop ones.
-        // We fix them without changing the global error codes, in case there are some xmlrrpc calls being answered, too
+        // We fix them without changing the global error codes, in case there are some xmlrpc calls being answered, too
         if (($errCode = $resp->faultCode()) != 0 && $resp->getJsonRpcVersion() === PhpJsonRpc::VERSION_2_0) {
-            if (isset(Interop::$xmlrpcerr[$errCode])) {
+            $errKeys = array_flip(PhpXmlRpc::$xmlrpcerr);
+            if (isset($errKeys[$errCode]) && isset(Interop::$xmlrpcerr[$errKeys[$errCode]])) {
                 /// @todo do not use deprecated property accessor to set this value
-                $resp->errno = Interop::$xmlrpcerr[$errCode];
+                $resp->errno = Interop::$xmlrpcerr[$errKeys[$errCode]];
             }
         }
     }

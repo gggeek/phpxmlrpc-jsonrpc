@@ -87,6 +87,54 @@ class jsonrpcresp extends \PhpXmlRpc\JsonRpc\Response
 {
     // default to jsonrpc 1.0
     protected $jsonrpc_version = PhpJsonRpc::VERSION_1_0;
+
+    // *** BC layer ***
+
+    public function &__get($name)
+    {
+        switch ($name) {
+            case 'id':
+                $this->logDeprecation('Getting property Response::' . $name . ' is deprecated');
+                return $this->$name;
+            default:
+                return parent::__get($name);
+        }
+    }
+
+    public function __set($name, $value)
+    {
+        switch ($name) {
+            case 'id':
+                $this->logDeprecation('Setting property Response::' . $name . ' is deprecated');
+                $this->$name = $value;
+                break;
+            default:
+                parent::__set($name, $value);
+        }
+    }
+
+    public function __isset($name)
+    {
+        switch ($name) {
+            case 'id':
+                $this->logDeprecation('Checking property Response::' . $name . ' is deprecated');
+                return isset($this->$name);
+            default:
+                return parent::__isset($name);
+        }
+    }
+
+    public function __unset($name)
+    {
+        switch ($name) {
+            case 'id':
+                $this->logDeprecation('Unsetting property Response::' . $name . ' is deprecated');
+                unset($this->$name);
+                break;
+            default:
+                parent::__unset($name);
+        }
+    }
 }
 
 class jsonrpcval extends \PhpXmlRpc\JsonRpc\Value
