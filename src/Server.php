@@ -531,4 +531,13 @@ class Server extends BaseServer
     {
         return '';
     }
+
+    /**
+     * @param string $methName
+     * @return bool
+     */
+    protected function isSyscall($methName)
+    {
+        return (strpos($methName, "system.") === 0 || strpos($methName, "rpc.") === 0);
+    }
 }

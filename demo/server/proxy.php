@@ -27,7 +27,7 @@ use PhpXmlRpc\JsonRpc\Request;
 use PhpXmlRpc\JsonRpc\Server;
 
 /**
- * Forward an xml-rpc request to another server, and return to client the response received.
+ * Forward a json-rpc request to another server, and return to client the response received.
  *
  * @param PhpXmlRpc\JsonRpc\Request $req (see method docs below for a description of the expected parameters)
  * @return PhpXmlRpc\JsonRpc\Response

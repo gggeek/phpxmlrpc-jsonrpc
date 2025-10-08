@@ -5,15 +5,16 @@ A php library for building json-rpc clients and servers.
 
 Originally bundled as part of the [phpxmlrpc/extras](https://github.com/gggeek/phpxmlrpc-extras) package.
 
-At the moment it only partially supports version 2.0 of the JSON-RPC protocol.
-Features still to be implemented are: multicall, notifications, standard error codes.
+At the moment it has incomplete support for both version 2.0 and 1.0 of the JSON-RPC protocol.
+Features still to be implemented are: multicall and socket communications (both the provided Client and Server classes
+only work over HTTP).
 
 Requirements and Installation
 -----------------------------
 
 * PHP >= 5.4.0
 * PHP Json extension
-* phpxmlrpc/phpxmlrpc >= 4.10.1
+* phpxmlrpc/phpxmlrpc >= 4.11.4
 
 The recommended way to install this library is using Composer.
 

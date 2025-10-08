@@ -16,11 +16,13 @@
   iff the server returns an empty http response body
 
 - breaking change: when a Client sends invalid json, the returned response will sport a faultCode of 100+X, with X
-  corresponding to the value returned by php function `json_last_error`, eg. 104 for no data, instead of 5
+  corresponding to the value returned by php function `json_last_error`, eg. 104 for no data, instead of previous 5
 
 - fixed: removed warnings when running on php 8.5
 
 - improved: added CI testing on php 8.4 and 8.5. Default the local testing container to using PHP 8.1 on Ubuntu Jammy
+
+- bumped the minimum required version of phpxmlrpc/phpxmlrpc to 4.11.4
 
 
 ## JSON-RPC for PHP version 1.0-beta2 - 2024/4/15
