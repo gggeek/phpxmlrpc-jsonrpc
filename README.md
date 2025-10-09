@@ -5,9 +5,10 @@ A php library for building json-rpc clients and servers.
 
 Originally bundled as part of the [phpxmlrpc/extras](https://github.com/gggeek/phpxmlrpc-extras) package.
 
-At the moment it has incomplete support for both version 2.0 and 1.0 of the JSON-RPC protocol.
-Features still to be implemented are: multicall and socket communications (both the provided Client and Server classes
-only work over HTTP).
+It supports both version 2.0 and 1.0 of the JSON-RPC protocol - but both are in near-complete status at the moment.
+
+Features still to be implemented are: multicall, and socket communications (both the provided Client and Server classes
+only work over HTTP). For json-rpc 1.0 support for `__jsonclass__` is also missing.
 
 Requirements and Installation
 -----------------------------
@@ -22,18 +23,18 @@ Documentation
 -------------
 
 * See the documentation page at [gggeek.github.io/phpxmlrpc-jsonrpc](https://gggeek.github.io/phpxmlrpc-jsonrpc)
-  for a list of the library main features and all project related information, including information about online resources such as
-  debuggers and demo servers.
+  for a list of the library main features and all project related information, including information about online resources
+  such as debuggers and demo servers.
 
 * Automatically-generated documentation for the API is available online at [http://gggeek.github.io/phpxmlrpc-jsonrpc/doc/api/index.html](http://gggeek.github.io/phpxmlrpc-jsonrpc/doc/api/index.html)
 
 * You are encouraged to look also at the code examples found in the demo/ directory.
 
   Note: to reduce the size of the download, the demo files are not part of the default package installed with Composer.
-  You can either check them out online at https://github.com/gggeek/phpxmlrpc-jsonrpc/tree/master/demo, download them as a separate
-  tarball from https://github.com/gggeek/phpxmlrpc-jsonrpc/releases or make sure they are available locally by installing the
-  library using Composer option `--prefer-install=source`. Whatever the method chosen, make sure that the demo folder is
-  not directly accessible from the internet, i.e. it is not within the webserver root directory).
+  You can either check them out online at https://github.com/gggeek/phpxmlrpc-jsonrpc/tree/master/demo, download them as
+  a separate tarball from https://github.com/gggeek/phpxmlrpc-jsonrpc/releases or make sure they are available locally
+  by installing the library using Composer option `--prefer-install=source`. Whatever the method chosen, make sure that
+  the demo folder is not directly accessible from the internet, i.e. it is not within the webserver root directory).
 
 Extras
 ------
