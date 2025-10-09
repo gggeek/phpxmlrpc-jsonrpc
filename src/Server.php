@@ -402,8 +402,17 @@ class Server extends BaseServer
                 $m = new Request($_xh['method'], array(), $_xh['id']);
                 // now add parameters in
                 /// @todo for more speed, we could just pass in the array to the constructor (and loose the type validation)...
-                for ($i = 0; $i < sizeof($_xh['params']); $i++) {
-                    $m->addParam($_xh['params'][$i]);
+                $useNamedParams = false;
+                $i = 0;
+                foreach ($_xh['params'] as $name => $param) {
+                    if ($name !== $i) {
+                        $useNamedParams = true;
+                        break;
+                    }
+                    $i++;
+                }
+                foreach ($_xh['params'] as $name => $param) {
+                    $m->addParam($_xh['params'][$name], $useNamedParams ? $name : null);
                 }
 
                 if ($this->debug > 1) {

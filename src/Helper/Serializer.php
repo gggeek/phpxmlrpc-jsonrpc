@@ -155,10 +155,10 @@ class Serializer
         $result .= "\"method\": \"" . $this->getCharsetEncoder()->encodeEntities($req->method(), '', $charsetEncoding) . "\",\n";
 
         $useNamedParameters = false;
-        if ($jsonRpcVersion == PhpJsonRpc::VERSION_2_0 && is_callable([$req, 'getParamNames']) && $req->getNumParams() > 0) {
+        if ($jsonRpcVersion == PhpJsonRpc::VERSION_2_0 && is_callable([$req, 'getParamName']) && $req->getNumParams() > 0) {
             $useNamedParameters = true;
-            $paramNames = $req->getParamNames();
-            foreach($paramNames as $paramName) {
+            for ($i = 0; $i < $req->getNumParams(); $i++) {
+                $paramName =  $req->getParamName($i);
                 if (!is_string($paramName)) {
                     $useNamedParameters = false;
                     break;
@@ -172,7 +172,7 @@ class Serializer
                 $p = $req->getParam($i);
                 // NB: we try to force serialization as json even though the object param might be a plain xmlrpcval object.
                 // This way we do not need to override addParam, aren't we lazy?
-                $result .= "\n  \"" . $this->getCharsetEncoder()->encodeEntities($paramNames[$i], null, $charsetEncoding) . "\": " . $this->serializeValue($p, $charsetEncoding) . ",";
+                $result .= "\n  \"" . $this->getCharsetEncoder()->encodeEntities($req->getParamName($i), null, $charsetEncoding) . "\": " . $this->serializeValue($p, $charsetEncoding) . ",";
             }
             $result = substr($result, 0, -1) . "\n}";
         } else {

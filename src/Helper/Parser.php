@@ -277,17 +277,26 @@ class Parser
 
         $encoder = $this->getEncoder();
 
-        if (is_array($ok) && array_key_exists('method', $ok) && array_key_exists('params', $ok) && array_key_exists('id', $ok) &&
+        if (is_array($ok) && array_key_exists('method', $ok) && array_key_exists('params', $ok) && //array_key_exists('id', $ok) &&
             is_string($ok['method']) && is_array($ok['params'])) {
-            $req = new Request($ok['method'], array(), $ok['id']);
-            foreach ($ok['params'] as $param) {
-                $req->addparam($encoder->encode($param, $options));
+            $req = new Request($ok['method'], array(), array_key_exists('id', $ok) ? $ok['id'] : null);
+            $useNamedParams = false;
+            $i = 0;
+            foreach ($ok['params'] as $name => $param) {
+                if ($name !== $i) {
+                    $useNamedParams = true;
+                    break;
+                }
+                $i++;
+            }
+            foreach ($ok['params'] as $name => $param) {
+                $req->addparam($encoder->encode($param, $options), $useNamedParams ? $name : null);
             }
             return $req;
         }
 
-        if (is_array($ok) && array_key_exists('result', $ok) && array_key_exists('error', $ok) && array_key_exists('id', $ok)) {
-            if ($ok['error'] !== null) {
+        if (is_array($ok) && (array_key_exists('result', $ok) || array_key_exists('error', $ok)) && array_key_exists('id', $ok)) {
+            if (!array_key_exists('error', $ok) || $ok['error'] === null) {
                 $resp = new Response($encoder->encode($ok['result']));
             } else {
                 if (is_array($ok['error']) && array_key_exists('faultCode', $ok['error'])
@@ -299,12 +308,20 @@ class Parser
                         /// @todo use a constant for this error code
                         $err['faultCode'] = -1;
                     }
-                }
-                // NB: what about json-rpc servers that do NOT respect
-                // the faultCode/faultString convention???
-                // we force the error into a string. regardless of type...
-                else
-                {
+                } elseif (is_array($ok['error']) && array_key_exists('code', $ok['error'])
+                    && array_key_exists('message', $ok['error'])
+                ) {
+                    $err = array('faultCode' => $ok['error']['code'], 'faultString' => $ok['error']['message']);
+                    if ($err['faultCode'] == 0) {
+                        // FAULT returned, errno needs to reflect that
+                        /// @todo use a constant for this error code
+                        $err['faultCode'] = -1;
+                    }
+                } else {
+                    // NB: what about json-rpc servers that do NOT respect
+                    // the faultCode/faultString convention???
+                    // we force the error into a string. regardless of type...
+
                     /// @todo use a constant for this error code
                     $err = array('faultCode' => -1, 'faultString' => (is_string($ok['error']) || is_int($ok['error'])) ? $ok['error'] : var_export($ok['error'], true));
                 }

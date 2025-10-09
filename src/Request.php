@@ -46,7 +46,24 @@ class Request extends BaseRequest
             $this->jsonrpc_version = PhpJsonRpc::$defaultJsonrpcVersion;
         }
 
-        parent::__construct($methodName, $params);
+        //parent::__construct($methodName, $params);
+
+        $this->methodname = $methodName;
+
+        $useNamedParams = false;
+        if ($jsonrpcVersion == PhpJsonRpc::VERSION_2_0 && count($params)) {
+            $i = 0;
+            foreach($params as $name => $param) {
+                if ($name !== $i) {
+                    $useNamedParams = true;
+                    break;
+                }
+                $i++;
+            }
+        }
+        foreach ($params as $name => $param) {
+            $this->addParam($param, $useNamedParams ? $name : null);
+        }
     }
 
     /**
@@ -70,12 +87,9 @@ class Request extends BaseRequest
         return $this->id;
     }
 
-    /**
-     * @return string[]
-     */
-    public function getParamNames()
+    public function getParamName($i)
     {
-        return $this->paramnames;
+        return $this->paramnames[$i];
     }
 
     /**

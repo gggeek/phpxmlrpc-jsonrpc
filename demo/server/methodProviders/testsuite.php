@@ -101,6 +101,26 @@ function findStateWithNulls($req)
         return new Response(new Value(plain_findstate($a->scalarval())));
 }
 
+// used to test checking for named parameters calls
+$findstate13_sig = array(
+    array(Value::$xmlrpcString, Value::$xmlrpcInt),
+);
+/**
+ * @param \PhpXmlRpc\JsonRpc\Request $req
+ * @return Response
+ * @throws Exception
+ */
+function findStateWithNamedParameter($req)
+{
+    $arg = $req->getParam(0);
+    $argName = $req->getParamName(0);
+
+    if ($argName == 'stateno')
+        return new Response(new Value(plain_findstate($arg->scalarval())));
+    else
+        return new Response(0, 12345, 'This method can only be called with named parameter "stateno"');
+}
+
 $sleep_sig = array(array(Value::$xmlrpcInt, Value::$xmlrpcInt));
 $sleep_doc = 'Sleeps for the requested number of seconds (between 1 and 60), before sending back the response';
 function sleepSeconds($secs) {
@@ -151,6 +171,12 @@ return array(
     'tests.getStateName.12' => array(
         "function" => "findStateWithNulls",
         "signature" => $findstate12_sig,
+        "docstring" => exampleMethods::$findstate_doc,
+    ),
+
+    'tests.getStateName.13' => array(
+        "function" => "findStateWithNamedParameter",
+        "signature" => $findstate13_sig,
         "docstring" => exampleMethods::$findstate_doc,
     ),
 

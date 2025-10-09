@@ -1211,4 +1211,47 @@ And turned it into nylon';
         $this->assertEmpty($h['headers']);
         $this->assertEmpty($h['raw_data']);
     }
+
+    public function testNamedParameters()
+    {
+        $this->client->setJsonRpcVersion(PhpJsonRpc::VERSION_2_0);
+
+        // tests.sleep is registered server-side using parameters_type = phpvals
+
+        $m = new Request('tests.sleep',
+            array('secs' => new Value(0, 'int')),
+            null,
+            PhpJsonRpc::VERSION_2_0
+        );
+        $this->assertStringContainsString('"secs"', $m->serialize());
+        $v = $this->send($m);
+
+        $m = new Request('tests.sleep',
+            array(),
+            null,
+            PhpJsonRpc::VERSION_2_0
+        );
+        $m->addParam(new Value(0, 'int'), 'usecs');
+        $this->assertStringNotContainsString('"secs"', $m->serialize());
+        $this->assertStringContainsString('"usecs"', $m->serialize());
+        $v = $this->send($m, Interop::$xmlrpcerr['server_error']);
+
+        // examples.getStateName13 checks manually for the arg name to be 'stateno'
+
+        $m = new Request('tests.getStateName.13',
+            array('stateno' => new Value(rand(1, 50), 'int')),
+            null,
+            PhpJsonRpc::VERSION_2_0
+        );
+        $this->assertStringContainsString('"stateno"', $m->serialize());
+        $v = $this->send($m);
+
+        $m = new Request('tests.getStateName.13',
+            array('whatever' => new Value(rand(1, 50), 'int')),
+            null,
+            PhpJsonRpc::VERSION_2_0
+        );
+        $this->assertStringContainsString('"whatever"', $m->serialize());
+        $v = $this->send($m, 12345);
+    }
 }

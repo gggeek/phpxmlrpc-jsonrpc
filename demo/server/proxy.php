@@ -29,7 +29,7 @@ use PhpXmlRpc\JsonRpc\Server;
 /**
  * Forward a json-rpc request to another server, and return to client the response received.
  *
- * @param PhpXmlRpc\JsonRpc\Request $req (see method docs below for a description of the expected parameters)
+ * @param Request $req (see method docs below for a description of the expected parameters)
  * @return PhpXmlRpc\JsonRpc\Response
  */
 function forward_request($req)
@@ -42,6 +42,8 @@ function forward_request($req)
     // *** NB *** here we should validate the received url, using f.e. a whitelist of approved servers _and protocols_...
     //            fe. any url using the 'file://' protocol might be considered a hacking attempt
     $client = new Client($url);
+
+    $jsonRpcVersion = null;
 
     if ($req->getNumParams() > 3) {
         // We have to set some options onto the client.
@@ -67,6 +69,9 @@ function forward_request($req)
                 case 'HTTPProxy':
                 case 'HTTPProxyCredentials':
                     /// @todo add support for this as well if needed
+                    break;
+                case 'JsonRpcVersion':
+                    /// @todo allow the client to specify the preferred json-rpc version
                     break;
                 case 'RequestCharsetEncoding':
                     // allow the server to work as charset transcoder.
@@ -95,11 +100,31 @@ function forward_request($req)
     ///       - using std http header conventions, such as X-forwarded-for (but public servers should strip
     ///         X-forwarded-for anyway, unless they consider this server as trusted...)
     $reqMethod = $req->getParam(1)->scalarVal();
-    $req = new Request($reqMethod);
+
+    $useNamedParams = false;
     if ($req->getNumParams() > 1) {
         $pars = $req->getParam(2);
-        foreach ($pars as $par) {
-            $req->addParam($par);
+        if ($pars->kindOf() == 'struct') {
+            $useNamedParams = true;
+        }
+    }
+    if ($useNamedParams) {
+        // force the outgoing call to use json-rpc version 2
+        $jsonRpcVersion = \PhpXmlRpc\JsonRpc\PhpJsonRpc::VERSION_2_0;
+    }
+
+    // json-rpc version left to the lib global config
+    $req = new Request($reqMethod, array(), null, $jsonRpcVersion);
+
+    if ($req->getNumParams() > 1) {
+        if ($pars->kindOf() == 'struct') {
+            foreach ($pars as $name => $par) {
+                $req->addParam($par, $name);
+            }
+        } else {
+            foreach ($pars as $par) {
+                $req->addParam($par);
+            }
         }
     }
 
@@ -120,8 +145,10 @@ $server = new Server(
                 array('mixed', 'string', 'string'),
                 array('mixed', 'string', 'string', 'array'),
                 array('mixed', 'string', 'string', 'array', 'struct'),
+                array('mixed', 'string', 'string', 'struct'),
+                array('mixed', 'string', 'string', 'struct', 'struct'),
             ),
-            'docstring' => 'forwards json-rpc calls to remote servers. Returns remote method\'s response. Accepts params: remote server url (might include basic auth credentials), method name, array of params (optional), and a struct containing call options (optional)',
+            'docstring' => 'forwards json-rpc calls to remote servers. Returns remote method\'s response. Accepts params: remote server url (might include basic auth credentials), method name, array/struct of params (optional), and a struct containing call options (optional)',
         ),
     )
 );
