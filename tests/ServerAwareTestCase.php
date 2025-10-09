@@ -4,6 +4,8 @@ include_once __DIR__ . '/LoggerAwareTestCase.php';
 
 use PHPUnit\Extensions\SeleniumCommon\RemoteCoverage;
 use PHPUnit\Framework\TestResult;
+use PhpXmlRpc\JsonRpc\Client;
+use PhpXmlRpc\JsonRpc\PhpJsonRpc;
 
 abstract class PhpJsonRpc_ServerAwareTestCase extends PhpJsonRpc_LoggerAwareTestCase
 {
@@ -88,9 +90,9 @@ abstract class PhpJsonRpc_ServerAwareTestCase extends PhpJsonRpc_LoggerAwareTest
         $server = explode(':', $this->args['HTTPSERVER']);
         /// @todo use the non-legacy API calling convention, except in a dedicated test
         if (count($server) > 1) {
-            $client = new \PhpXmlRpc\JsonRpc\Client($this->args['HTTPURI'], $server[0], $server[1]);
+            $client = new Client($this->args['HTTPURI'], $server[0], $server[1]);
         } else {
-            $client = new \PhpXmlRpc\JsonRpc\Client($this->args['HTTPURI'], $this->args['HTTPSERVER']);
+            $client = new Client($this->args['HTTPURI'], $this->args['HTTPSERVER']);
         }
 
         $client->setDebug($this->args['DEBUG']);
@@ -110,11 +112,25 @@ abstract class PhpJsonRpc_ServerAwareTestCase extends PhpJsonRpc_LoggerAwareTest
      */
     public function getAvailableUseCurlOptions()
     {
-        $opts = array(array(\PhpXmlRpc\Client::USE_CURL_NEVER));
+        $opts = array(array(Client::USE_CURL_NEVER));
         if (function_exists('curl_init'))
         {
-            $opts[] = array(\PhpXmlRpc\Client::USE_CURL_ALWAYS);
+            $opts[] = array(Client::USE_CURL_ALWAYS);
         }
+
+        return $opts;
+    }
+
+    /**
+     * Dataprovider method: generates the list of test cases for tests which have to be run on curl vs. socket
+     * @return array[]
+     */
+    public function getAvailableJsonRpcVersions()
+    {
+        $opts = array(
+            array(PhpJsonRpc::VERSION_2_0),
+            array(PhpJsonRpc::VERSION_1_0),
+        );
 
         return $opts;
     }

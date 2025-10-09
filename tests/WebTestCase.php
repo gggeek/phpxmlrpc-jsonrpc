@@ -2,6 +2,8 @@
 
 include_once __DIR__ . '/ServerAwareTestCase.php';
 
+use PhpXmlRpc\JsonRpc\Client;
+
 abstract class PhpJsonRpc_WebTestCase extends PhpJsonRpc_ServerAwareTestCase
 {
     /**
@@ -58,11 +60,11 @@ abstract class PhpJsonRpc_WebTestCase extends PhpJsonRpc_ServerAwareTestCase
      * @see also ServerTest::set_up
      *
      * @param string $path
-     * @return \PhpXmlRpc\JsonRpc\Client
+     * @return Client
      */
     protected function newClient($path)
     {
-        $client = new \PhpXmlRpc\JsonRpc\Client($this->baseUrl . $path);
+        $client = new Client($this->baseUrl . $path);
         $client->setCookie('PHPUNIT_RANDOM_TEST_ID', static::$randId);
         if ($this->collectCodeCoverageInformation) {
             $client->setCookie('PHPUNIT_SELENIUM_TEST_ID', $this->testId);

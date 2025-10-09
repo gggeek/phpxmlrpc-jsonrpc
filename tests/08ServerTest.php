@@ -4,9 +4,12 @@ include_once __DIR__ . '/ServerAwareTestCase.php';
 
 use PhpXmlRpc\JsonRpc\Client;
 use PhpXmlRpc\JsonRpc\Encoder;
+use PhpXmlRpc\JsonRpc\Notification;
+use PhpXmlRpc\JsonRpc\PhpJsonRpc;
 use PhpXmlRpc\JsonRpc\Request;
 use PhpXmlRpc\JsonRpc\Value;
 use PhpXmlRpc\JsonRpc\Wrapper;
+use PhpXmlRpc\Helper\Interop;
 
 /**
  * Tests which involve interaction with the server - carried out via the client.
@@ -60,7 +63,7 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
     }
 
     /**
-     * @param PhpXmlRpc\JsonRpc\Request|array $msg
+     * @param Request|array $msg
      * @param int|array $errorCode expected error codes
      * @param bool $returnResponse
      * @return mixed|\PhpXmlRpc\JsonRpc\Response|\PhpXmlRpc\JsonRpc\Response[]|\PhpXmlRpc\JsonRpc\Value|string|null
@@ -111,9 +114,14 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         $this->client->path = parse_url($this->client->path, PHP_URL_PATH) . '?' . $query;
     }
 
-    // test that we get back the same ID as we sent
-    public function testId()
+    /**
+     * test that we get back the same ID as we sent
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testId($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $sendString = "hi";
         $m = new Request('examples.stringecho', array(
             new Value($sendString, 'string'),
@@ -124,19 +132,29 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         $this->assertEquals($m->id(), $r->id());
     }
 
-    // test that we get back no response
-    public function testNotification()
+    /**
+     * test that we get back no response
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testNotification($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $sendString = "hi";
-        $m = new \PhpXmlRpc\JsonRpc\Notification('examples.stringecho', array(
+        $m = new Notification('examples.stringecho', array(
             new Value($sendString, 'string'),
         ));
         $r = $this->client->send($m, $this->timeout, $this->method);
         $this->assertEquals(true, $r);
     }
 
-    public function testString()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testString($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $sendString = "here are 3 \"entities\": < > & " .
             "and here's a dollar sign: \$pretendvarname and a backslash too: " . chr(92) .
             " - isn't that great? \\\"hackery\\\" at it's best " .
@@ -155,9 +173,14 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         }
     }
 
-    // test internal encoding being set to non-utf8
-    public function testLatin1String()
+    /**
+     * test internal encoding being set to non-utf8
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testLatin1String($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $sendString = "last but not least weird names: G" . chr(252) . "nter, El" . chr(232) . "ne";
         $r = new Request('examples.stringecho', array(
             new Value($sendString, 'string'),
@@ -170,9 +193,14 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         }
     }
 
-    // test wire encoding being set to non-utf8
-    public function testExoticCharsetsRequests()
+    /**
+     * test wire encoding being set to non-utf8
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testExoticCharsetsRequests($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         // note that we should disable this call also when mbstring is missing server-side
         if (!function_exists('mb_convert_encoding')) {
             $this->markTestSkipped('Miss mbstring extension to test exotic charsets');
@@ -199,9 +227,14 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         $this->assertEquals($sendString, $v->scalarval());
     }
 
-    // test wire encoding being set to non-utf8
-    public function testExoticCharsetsRequests2()
+    /**
+     * test wire encoding being set to non-utf8
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testExoticCharsetsRequests2($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         // note that we should disable this call also when mbstring is missing server-side
         if (!function_exists('mb_convert_encoding')) {
             $this->markTestSkipped('Miss mbstring extension to test exotic charsets');
@@ -248,8 +281,13 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         }
     }*/
 
-    public function testUtf8Method()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testUtf8Method($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request("tests.utf8methodname." . 'κόσμε', array(
             new Value('hello')
         ));
@@ -259,8 +297,13 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         }
     }
 
-    public function testAddingDoubles()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testAddingDoubles($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         // note that rounding errors mean we keep precision to sensible levels here ;-)
         $a = 12.13;
         $b = -23.98;
@@ -274,8 +317,13 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         }
     }
 
-    public function testAdding()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testAdding($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('examples.addtwo', array(
             new Value(12, 'int'),
             new Value(-23, 'int'),
@@ -286,8 +334,13 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         }
     }
 
-    public function testInvalidNumber()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testInvalidNumber($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('examples.addtwo', array(
             new Value('fred', 'int'),
             new Value("\"; exec('ls')", 'int'),
@@ -301,14 +354,19 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
 
     public function testUnknownMethod()
     {
-        $m = new Request('examples.a_very_unlikely.method', array(), 1, PhpXmlRpc\JsonRpc\PhpJsonRpc::VERSION_2_0);
-        $v = $this->send($m, \PhpXmlRpc\Helper\Interop::$xmlrpcerr['unknown_method'], true);
-        $m = new Request('examples.a_very_unlikely.method', array(), 2, PhpXmlRpc\JsonRpc\PhpJsonRpc::VERSION_1_0);
+        $m = new Request('examples.a_very_unlikely.method', array(), 1, PhpJsonRpc::VERSION_2_0);
+        $v = $this->send($m, Interop::$xmlrpcerr['unknown_method'], true);
+        $m = new Request('examples.a_very_unlikely.method', array(), 2, PhpJsonRpc::VERSION_1_0);
         $v = $this->send($m, \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['unknown_method'], true);
     }
 
-    public function testBoolean()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testBoolean($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('examples.invertBooleans', array(
             new Value(array(
                 new Value(true, 'boolean'),
@@ -361,8 +419,13 @@ And turned it into nylon';
         }
     }*/
 
-    public function testCountEntities()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testCountEntities($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $sendString = "h'fd>onc>>l>>rw&bpu>q>e<v&gxs<ytjzkami<";
         $m = new Request('validator1.countTheEntities', array(
             new Value($sendString, 'string'),
@@ -598,8 +661,13 @@ And turned it into nylon';
     }
 */
 
-    public function testCatchWarnings()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testCatchWarnings($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('tests.generatePHPWarning', array(
             new Value('whatever', 'string'),
         ));
@@ -609,53 +677,75 @@ And turned it into nylon';
         }
     }
 
-    public function testCatchExceptions()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testCatchExceptions($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         // this tests for the server to catch exceptions with error code 0
         $m = new Request('tests.raiseException', array(
             new Value(0, 'int'),
         ));
-        $v = $this->send($m, \PhpXmlRpc\Helper\Interop::$xmlrpcerr['server_error']);
+        $v = $this->send($m, array(Interop::$xmlrpcerr['server_error'], \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['server_error']));
 
         // these test for the different server exception catching modes
         $m = new Request('tests.raiseException', array(
             new Value(3, 'int'),
         ));
-        $v = $this->send($m, \PhpXmlRpc\Helper\Interop::$xmlrpcerr['server_error']);
+        $v = $this->send($m, array(Interop::$xmlrpcerr['server_error'], \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['server_error']));
         $this->addQueryParams(array('EXCEPTION_HANDLING' => 1));
         $v = $this->send($m, 3); // the error code of the expected exception
         $this->addQueryParams(array('EXCEPTION_HANDLING' => 2));
         // depending on whether display_errors is ON or OFF on the server, we will get back a different error here,
         // as php will generate an http status code of either 200 or 500...
-        $v = $this->send($m, array(\PhpXmlRpc\Helper\Interop::$xmlrpcerr['invalid_return'], \PhpXmlRpc\Helper\Interop::$xmlrpcerr['http_error']));
+        $v = $this->send($m, array(Interop::$xmlrpcerr['invalid_xml'], Interop::$xmlrpcerr['http_error'],
+            \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['invalid_xml'], \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['http_error']));
     }
 
-    public function testCatchErrors()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testCatchErrors($jsonRpcVersion)
     {
         if (version_compare(PHP_VERSION, '7.0.0', '<'))
         {
             $this->markTestSkipped('cannot test php Error on php < 7.0');
         }
 
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         // these test for the different server error catching modes
         $m = new Request('tests.raiseError');
-        $v = $this->send($m, \PhpXmlRpc\Helper\Interop::$xmlrpcerr['server_error']);
+        $v = $this->send($m, array(Interop::$xmlrpcerr['server_error'], \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['server_error']));
         $this->addQueryParams(array('EXCEPTION_HANDLING' => 1));
         $v = $this->send($m, 1); // the error code of the expected exception
         $this->addQueryParams(array('EXCEPTION_HANDLING' => 2));
         // depending on whether display_errors is ON or OFF on the server, we will get back a different error here,
-        // as php will generate an http status code of either 200 or 500...
-        $v = $this->send($m, array(\PhpXmlRpc\Helper\Interop::$xmlrpcerr['invalid_return'], \PhpXmlRpc\Helper\Interop::$xmlrpcerr['http_error']));
+        // as php will generate an http status code of either 200 (with a non-valid-json string) or 500...
+        $v = $this->send($m, array(Interop::$xmlrpcerr['invalid_xml'], Interop::$xmlrpcerr['http_error'],
+            \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['invalid_xml'], \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['http_error']));
     }
 
-    public function testZeroParams()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testZeroParams($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('system.listMethods');
         $v = $this->send($m);
     }
 
-    public function testNullParams()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testNullParams($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('tests.getStateName.12', array(
             new Value('whatever', 'null'),
             new Value(23, 'int'),
@@ -675,7 +765,7 @@ And turned it into nylon';
         $m = new Request('tests.getStateName.12', array(
             new Value(23, 'int')
         ));
-        $v = $this->send($m, array(\PhpXmlRpc\Helper\Interop::$xmlrpcerr['incorrect_params']));
+        $v = $this->send($m, array(Interop::$xmlrpcerr['incorrect_params'], \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['incorrect_params']));
     }
 
     /*
@@ -690,8 +780,13 @@ And turned it into nylon';
     }
     */
 
-    public function testServerWrappedFunction()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testServerWrappedFunction($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('tests.getStateName.2', array(
             new Value(23, 'int'),
         ));
@@ -702,19 +797,24 @@ And turned it into nylon';
         $m = new Request('tests.getStateName.2', array(
             new Value(0, 'int'),
         ));
-        $v = $this->send($m, \PhpXmlRpc\Helper\Interop::$xmlrpcerr['server_error']);
+        $v = $this->send($m, array(Interop::$xmlrpcerr['server_error'], \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['server_error']));
 
         // check if the generated function dispatch map is fine, by checking if the server registered it
         $m = new Request('system.methodSignature', array(
             new Value('tests.getStateName.2'),
         ));
         $v = $this->send($m);
-        $encoder = new \PhpXmlRpc\Encoder();
+        $encoder = new Encoder();
         $this->assertEquals(array(array('string', 'int')), $encoder->decode($v));
     }
 
-    public function testServerWrappedFunctionAsSource()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testServerWrappedFunctionAsSource($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('tests.getStateName.6', array(
             new Value(23, 'int'),
         ));
@@ -725,11 +825,16 @@ And turned it into nylon';
         $m = new Request('tests.getStateName.6', array(
             new Value(0, 'int'),
         ));
-        $v = $this->send($m, \PhpXmlRpc\Helper\Interop::$xmlrpcerr['server_error']);
+        $v = $this->send($m, array(Interop::$xmlrpcerr['server_error'], \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['server_error']));
     }
 
-    public function testServerWrappedObjectMethods()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testServerWrappedObjectMethods($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('tests.getStateName.3', array(
             new Value(23, 'int'),
         ));
@@ -767,8 +872,13 @@ And turned it into nylon';
         $this->assertEquals('Michigan', $v->scalarval());
     }
 
-    public function testServerWrappedObjectMethodsAsSource()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testServerWrappedObjectMethodsAsSource($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('tests.getStateName.7', array(
             new Value(23, 'int'),
         ));
@@ -788,8 +898,13 @@ And turned it into nylon';
         $this->assertEquals('Michigan', $v->scalarval());
     }
 
-    public function testServerClosure()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testServerClosure($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('tests.getStateName.10', array(
             new Value(23, 'int'),
         ));
@@ -797,8 +912,13 @@ And turned it into nylon';
         $this->assertEquals('Michigan', $v->scalarval());
     }
 
-    public function testServerWrappedClosure()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testServerWrappedClosure($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('tests.getStateName.11', array(
             new Value(23, 'int'),
         ));
@@ -806,8 +926,13 @@ And turned it into nylon';
         $this->assertEquals('Michigan', $v->scalarval());
     }
 
-    public function testServerWrappedClass()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testServerWrappedClass($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('tests.handlersContainer.findState', array(
             new Value(23, 'int'),
         ));
@@ -815,8 +940,13 @@ And turned it into nylon';
         $this->assertEquals('Michigan', $v->scalarval());
     }
 
-    public function testServerWrappedClassWithNamespace()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testServerWrappedClassWithNamespace($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('namespacetest.findState', array(
             new Value(23, 'int'),
         ));
@@ -824,16 +954,26 @@ And turned it into nylon';
         $this->assertEquals('Michigan', $v->scalarval());
     }
 
-    public function testWrapInexistentMethod()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testWrapInexistentMethod($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $w = new Wrapper();
         // make a 'deep client copy' as the original one might have many properties set
         $func = $w->wrapXmlrpcMethod($this->client, 'examples.getStateName.notexisting', array('simple_client_copy' => 0));
         $this->assertEquals(false, $func);
     }
 
-    public function testWrapInexistentUrl()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testWrapInexistentUrl($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $this->client->path = '/notexisting';
         $w = new Wrapper();
         // make a 'deep client copy' as the original one might have many properties set
@@ -841,8 +981,13 @@ And turned it into nylon';
         $this->assertEquals(false, $func);
     }
 
-    public function testWrappedMethod()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testWrappedMethod($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $w = new Wrapper();
         // make a 'deep client copy' as the original one might have many properties set
         $func = $w->wrapXmlrpcMethod($this->client, 'examples.getStateName', array('simple_client_copy' => 0));
@@ -858,8 +1003,13 @@ And turned it into nylon';
         }
     }
 
-    public function testWrappedMethodAsSource()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testWrappedMethodAsSource($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $w = new Wrapper();
         // make a 'deep client copy' as the original one might have many properties set
         $func = $w->wrapXmlrpcMethod($this->client, 'examples.getStateName', array('simple_client_copy' => 0, 'return_source' => true));
@@ -877,8 +1027,13 @@ And turned it into nylon';
         }
     }
 
-    public function testWrappedClass()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testWrappedClass($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $w = new Wrapper();
         // make a 'deep client copy' as the original one might have many properties set
         // also for speed only wrap one method of the whole server
@@ -917,8 +1072,13 @@ And turned it into nylon';
     }
 */
 
-    public function testGetCookies()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testGetCookies($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         // let server set to us some cookies we tell it
         $cookies = array(
             //'c1' => array(),
@@ -963,8 +1123,13 @@ And turned it into nylon';
         }
     }
 
-    public function testSetCookies()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testSetCookies($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         // let server set to us some cookies we tell it
         $cookies = array(
             'c0' => null,
@@ -997,8 +1162,13 @@ And turned it into nylon';
         }
     }
 
-    public function testServerComments()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testServerComments($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('tests.handlersContainer.debugMessageGenerator', array(
             new Value('hello world', 'string'),
         ));
@@ -1007,8 +1177,13 @@ And turned it into nylon';
         $this->assertStringContainsString('hello world', $r->raw_data);
     }
 
-    public function testSendTwiceSameMsg()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testSendTwiceSameMsg($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('examples.stringecho', array(
             new Value('hello world', 'string'),
         ));
@@ -1019,8 +1194,13 @@ And turned it into nylon';
         }
     }
 
-    public function testNegativeDebug()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testNegativeDebug($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('examples.stringecho', array(
             new Value('hello world', 'string'),
         ));

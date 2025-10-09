@@ -3,8 +3,10 @@
 include_once __DIR__ . '/ServerAwareTestCase.php';
 
 use PhpXmlRpc\JsonRpc\Client;
+use PhpXmlRpc\JsonRpc\PhpJsonRpc;
 use PhpXmlRpc\JsonRpc\Request;
 use PhpXmlRpc\JsonRpc\Value;
+use PhpXmlRpc\Helper\Interop;
 
 /**
  * Tests involving the Client class (and mostly no server).
@@ -22,22 +24,36 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
         $this->client = $this->getClient();
     }
 
-    public function test404()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function test404($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $this->client->path = '/NOTEXIST.php';
 
         $m = new Request('examples.echo', array(
             new Value('hello', 'string'),
         ));
         $r = $this->client->send($m, $this->timeout);
-        $this->assertEquals(5, $r->faultCode());
+        if ($jsonRpcVersion == PhpJsonRpc::VERSION_2_0) {
+            $this->assertEquals(Interop::$xmlrpcerr['http_error'], $r->faultCode());
+        } else {
+            $this->assertEquals(\PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['http_error'], $r->faultCode());
+        }
         $this->assertEquals($m->id(), $r->id(), 'Response Id is different from request Id');
 /// @todo figure out why this is failing
         //$this->assertEquals($m->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
     }
 
-    public function test404Interop()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function test404Interop($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $this->client->path = '/NOTEXIST.php';
 
         $m = new Request('examples.echo', array(
@@ -46,19 +62,24 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
         $orig = \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr;
         \PhpXmlRpc\PhpXmlRpc::useInteropFaults();
         $r = $this->client->send($m, $this->timeout);
-        $this->assertEquals(-32300, $r->faultCode());
+        $this->assertEquals(Interop::$xmlrpcerr['http_error'], $r->faultCode());
          /// @todo reset this via tear_down
         \PhpXmlRpc\PhpXmlRpc::$xmlrpcerr = $orig;
     }
 
-    public function testUnsupportedAuth()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testUnsupportedAuth($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $m = new Request('examples.echo', array(
             new Value('hello', 'string'),
         ));
-        $this->client->setOption(\PhpXmlRpc\Client::OPT_USERNAME, 'user');
-        $this->client->setOption(\PhpXmlRpc\Client::OPT_AUTH_TYPE, 2);
-        $this->client->setOption(\PhpXmlRpc\Client::OPT_USE_CURL, \PhpXmlRpc\Client::USE_CURL_NEVER);
+        $this->client->setOption(Client::OPT_USERNAME, 'user');
+        $this->client->setOption(Client::OPT_AUTH_TYPE, 2);
+        $this->client->setOption(Client::OPT_USE_CURL, Client::USE_CURL_NEVER);
         $r = $this->client->send($m);
         $this->assertEquals(\PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['unsupported_option'], $r->faultCode());
         $this->assertEquals($m->id(), $r->id(), 'Response Id is different from request Id');
@@ -66,9 +87,15 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
         //$this->assertEquals($m->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
     }
 
-    public function testSrvNotFound()
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
+    public function testSrvNotFound($jsonRpcVersion)
     {
+        $this->client->setJsonRpcVersion($jsonRpcVersion);
+
         $this->client->server .= 'XXX';
+        // make sure there's no freaking catchall DNS in effect
         $dnsinfo = @dns_get_record($this->client->server);
         if ($dnsinfo) {
             $this->markTestSkipped('Seems like there is a catchall DNS in effect: host ' . $this->client->server . ' found');
@@ -77,8 +104,12 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
                 new Value('hello', 'string'),
             ));
             $r = $this->client->send($m, 5);
-            // make sure there's no freaking catchall DNS in effect
-            $this->assertEquals(5, $r->faultCode());
+            if ($jsonRpcVersion == PhpJsonRpc::VERSION_2_0) {
+                $this->assertEquals(Interop::$xmlrpcerr['http_error'], $r->faultCode());
+            } else {
+                $this->assertEquals(\PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['http_error'], $r->faultCode());
+            }
+
             $this->assertEquals($m->id(), $r->id(), 'Response Id is different from request Id');
 /// @todo figure out why this is failing
             //$this->assertEquals($m->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
@@ -120,8 +151,8 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
      */
     public function testCustomHeaders($curlOpt)
     {
-        $this->client->setOption(\PhpXmlRpc\Client::OPT_USE_CURL, $curlOpt);
-        $this->client->setOption(\PhpXmlRpc\Client::OPT_EXTRA_HEADERS, array('X-PJR-Test: yes'));
+        $this->client->setOption(Client::OPT_USE_CURL, $curlOpt);
+        $this->client->setOption(Client::OPT_EXTRA_HEADERS, array('X-PJR-Test: yes'));
         $r = new Request('tests.getallheaders');
         $r = $this->client->send($r);
         $this->assertEquals(0, $r->faultCode());

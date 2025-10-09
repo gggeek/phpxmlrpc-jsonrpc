@@ -267,8 +267,8 @@ class Request extends BaseRequest
 
         // first error check: json not well formed
         if ($_xh['isf'] == 3) {
-            $r = new Response(0, PhpXmlRpc::$xmlrpcerr['invalid_return'],
-                PhpXmlRpc::$xmlrpcstr['invalid_return'] . ' ' . $_xh['isf_reason'], '', $this->id, $httpResponse);
+            $r = new Response(0, PhpXmlRpc::$xmlrpcerr['invalid_xml'],
+                PhpXmlRpc::$xmlrpcstr['invalid_xml'] . ' ' . $_xh['isf_reason'], '', $this->id, $httpResponse);
 
             if ($this->debug) {
                 $this->getLogger()->debug($_xh['isf_reason']);
@@ -306,8 +306,8 @@ class Request extends BaseRequest
 
             // check that received id is the same as the one that was sent
             if ($_xh['id'] != $this->id) {
-                $r = new Response(0, PhpXmlRpc::$xmlrpcerr['invalid_return'],
-                    PhpXmlRpc::$xmlrpcstr['invalid_return'] . ' The response Id does not match the request one', '', $this->id, $httpResponse);
+                $r = new Response(0, PhpXmlRpc::$xmlrpcerr['invalid_xml'],
+                    PhpXmlRpc::$xmlrpcstr['invalid_xml'] . ' The response Id does not match the request one', '', $this->id, $httpResponse);
             } else {
                 $v = $_xh['value'];
 
