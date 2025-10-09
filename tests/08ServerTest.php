@@ -85,7 +85,7 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         }
         $this->assertEquals($msg->id(), $r->id(), 'Response Id is different from request Id');
 /// @todo figure out why this is failing
-        //$this->assertEquals($msg->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
+        $this->assertEquals($msg->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
         if (!$r->faultCode()) {
             if ($returnResponse) {
                 return $r;
@@ -195,19 +195,16 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
 
     /**
      * test wire encoding being set to non-utf8
-     * @dataProvider getAvailableJsonRpcVersions
      */
-    public function testExoticCharsetsRequests($jsonRpcVersion)
+    public function testExoticCharsetsRequests()
     {
-        $this->client->setJsonRpcVersion($jsonRpcVersion);
-
         // note that we should disable this call also when mbstring is missing server-side
         if (!function_exists('mb_convert_encoding')) {
             $this->markTestSkipped('Miss mbstring extension to test exotic charsets');
         }
 
         $sendString = 'κόσμε'; // Greek word 'kosme'
-        $r = new Request('examples.stringecho', array(), 100);
+        $r = new Request('examples.stringecho', array(), 100, PhpJsonRpc::VERSION_2_0);
 
         // we have to set the encoding declaration either in the http header or xml prolog, as mb_detect_encoding
         // (used on the server side) will fail recognizing these 2 charsets
@@ -215,13 +212,13 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         // This test is known to fail with old mbstring versions, at least the ones we get with php 5.4, 5.5 as present
         // in the CI test vms (@todo check - maybe this was only true for the XML version of the test)
         if (version_compare(PHP_VERSION, '5.6.0', '>=')) {
-            $str = mb_convert_encoding('{"method": "examples.stringecho", "params": ["' . $sendString . '"], "id": 100}', 'UCS-4', 'UTF-8');
+            $str = mb_convert_encoding('{"jsonrpc": "2.0", "method": "examples.stringecho", "params": ["' . $sendString . '"], "id": 100}', 'UCS-4', 'UTF-8');
             $r->setPayload($str, 'application/json; charset=UCS-4');
             $v = $this->send($r);
             $this->assertEquals($sendString, $v->scalarval());
         }
 
-        $str = mb_convert_encoding('{"method": "examples.stringecho", "params": ["' . $sendString . '"], "id": 100}', 'UTF-16', 'UTF-8');
+        $str = mb_convert_encoding('{"jsonrpc": "2.0", "method": "examples.stringecho", "params": ["' . $sendString . '"], "id": 100}', 'UTF-16', 'UTF-8');
         $r->setPayload($str, 'application/json; charset=UTF-16');
         $v = $this->send($r);
         $this->assertEquals($sendString, $v->scalarval());
@@ -229,12 +226,9 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
 
     /**
      * test wire encoding being set to non-utf8
-     * @dataProvider getAvailableJsonRpcVersions
      */
-    public function testExoticCharsetsRequests2($jsonRpcVersion)
+    public function testExoticCharsetsRequests2()
     {
-        $this->client->setJsonRpcVersion($jsonRpcVersion);
-
         // note that we should disable this call also when mbstring is missing server-side
         if (!function_exists('mb_convert_encoding')) {
             $this->markTestSkipped('Miss mbstring extension to test exotic charsets');
@@ -242,7 +236,7 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
 
         $sendString = '安室奈美恵'; // Japanese name "Namie Amuro"
         $str = '{"method": "examples.stringecho", "params": ["' . mb_convert_encoding($sendString, 'EUC-JP', 'UTF-8') . '"], "id": 200}';
-        $r = new Request('examples.stringecho', array(), 200);
+        $r = new Request('examples.stringecho', array(), 200, PhpJsonRpc::VERSION_1_0);
         $r->setPayload($str, 'application/json; charset=EUC-JP');
 
         $v = $this->send($r);

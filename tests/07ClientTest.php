@@ -43,8 +43,7 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
             $this->assertEquals(\PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['http_error'], $r->faultCode());
         }
         $this->assertEquals($m->id(), $r->id(), 'Response Id is different from request Id');
-/// @todo figure out why this is failing
-        //$this->assertEquals($m->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
+        $this->assertEquals($m->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
     }
 
     /**
@@ -83,8 +82,7 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
         $r = $this->client->send($m);
         $this->assertEquals(\PhpXmlRpc\PhpXmlRpc::$xmlrpcerr['unsupported_option'], $r->faultCode());
         $this->assertEquals($m->id(), $r->id(), 'Response Id is different from request Id');
-/// @todo figure out why this is failing
-        //$this->assertEquals($m->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
+        $this->assertEquals($m->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
     }
 
     /**
@@ -111,8 +109,7 @@ class ClientTest extends PhpJsonRpc_ServerAwareTestCase
             }
 
             $this->assertEquals($m->id(), $r->id(), 'Response Id is different from request Id');
-/// @todo figure out why this is failing
-            //$this->assertEquals($m->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
+            $this->assertEquals($m->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
         }
     }
 
