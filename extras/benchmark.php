@@ -141,7 +141,7 @@ end_test('Data encoding (large array)', 'native encoding', $out);
 
 // test 'old style' data decoding vs. 'automatic style' decoding
 $dummy = new Request('');
-$out = new Response($data);
+$out = new Response($value, 0, '', '', 1);
 $in = $out->serialize();
 
 begin_test('Data decoding (large array)', 'manual decoding');
