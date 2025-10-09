@@ -505,9 +505,17 @@ class Server extends BaseServer
     {
         $outAr = parent::getCapabilities();
 
+        $outAr['json-rpc-2'] = new Value(
+            array(
+                'specUrl' => new Value('https://www.jsonrpc.org/specification', Value::$xmlrpcString),
+                'specVersion' => new Value(2, Value::$xmlrpcInt)
+            ),
+            Value::$xmlrpcStruct
+        );
+
         $outAr['json-rpc'] = new Value(
             array(
-                'specUrl' => new Value('http://json-rpc.org/wiki/specification', Value::$xmlrpcString),
+                'specUrl' => new Value('https://www.jsonrpc.org/specification_v1', Value::$xmlrpcString),
                 'specVersion' => new Value(1, Value::$xmlrpcInt)
             ),
             Value::$xmlrpcStruct
