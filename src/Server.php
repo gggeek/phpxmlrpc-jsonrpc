@@ -39,6 +39,8 @@ class Server extends BaseServer
 
     /** @var null|bool This is required as checking for NULL resp. Id is not sufficient - it can happen in error cases */
     protected $is_servicing_notification = null;
+    /** @var null|false|array */
+    protected $is_servicing_multicall = null;
 
     /**
      * Reimplemented to make us use the correct parser type.
@@ -94,8 +96,10 @@ class Server extends BaseServer
     public function service($data = null, $returnPayload = false)
     {
         $this->is_servicing_notification = false;
+        $this->is_servicing_multicall = false;
         $out = parent::service($data, $returnPayload);
         $this->is_servicing_notification = null;
+        $this->is_servicing_multicall = null;
         return $out;
     }
 
@@ -386,7 +390,11 @@ class Server extends BaseServer
         } else {
 
             if ($_xh['id'] === null) {
-                $this->is_servicing_notification = true;
+                if ($_xh['is_multicall']) {
+                    $this->is_servicing_multicall = $_xh['is_multicall'];
+                } else {
+                    $this->is_servicing_notification = true;
+                }
             }
 
             if ($this->functions_parameters_type == 'phpvals' || $this->functions_parameters_type == 'epivals' ||
@@ -454,6 +462,32 @@ class Server extends BaseServer
             return '';
         }
 
+        if ($this->is_servicing_multicall) {
+            $serializer = $this->getSerializer();
+            $payloads = [];
+
+            /** @var value $subRespValue */
+            foreach($resp->value() as $i => $subRespValue) {
+                $id = $this->is_servicing_multicall[$i];
+
+                // handle errors, and notifications
+                if ($subRespValue->kindOf() === 'struct') {
+                    $subResp = new Response(null, $subRespValue['faultCode']->scalarVal(), $subRespValue['faultString']->scalarVal(), '', $id);
+                } else {
+                    if ($id === null) {
+                        continue;
+                    } else {
+                        $subResp = new Response($subRespValue[0], 0, '', '', $id);
+                    }
+                }
+                // since json-rpc 1.0 does not specify batch call support, we force responses to be json-rpc 2.0
+                $subResp->setJsonRpcVersion(PhpJsonRpc::VERSION_2_0);
+                $payloads[] = $serializer->serializeResponse($subResp, $id, $respCharset);
+            }
+
+            return $payloads ? ("[\n" . implode(",\n", $payloads) . "\n]") : '';
+        }
+
         return parent::generatePayload($resp, $respCharset);
     }
 
@@ -465,7 +499,7 @@ class Server extends BaseServer
      */
     protected function printPayload($payload, $respContentType, $respEncoding)
     {
-        if ($this->is_servicing_notification) {
+        if ($this->is_servicing_notification || ($this->is_servicing_multicall && $payload === '')) {
             // return a 204 response with no body
 
             if (!headers_sent()) {
@@ -556,5 +590,131 @@ class Server extends BaseServer
     protected function isSyscall($methName)
     {
         return (strpos($methName, "system.") === 0 || strpos($methName, "rpc.") === 0);
+    }
+
+    /**
+     * @internal this function will become protected in the future
+     *
+     * @param Server $server
+     * @param Value $call
+     * @return Value
+     */
+    public static function _xmlrpcs_multicall_do_call($server, $call)
+    {
+        if ($call->kindOf() != 'struct') {
+            return static::_xmlrpcs_multicall_error('notstruct');
+        }
+        $methName = @$call['method'];
+        if (!$methName) {
+            return static::_xmlrpcs_multicall_error('nomethod');
+        }
+        if ($methName->kindOf() != 'scalar' || $methName->scalarTyp() != 'string') {
+            return static::_xmlrpcs_multicall_error('notstring');
+        }
+        if ($methName->scalarVal() == 'system.multicall') {
+            return static::_xmlrpcs_multicall_error('recursion');
+        }
+        $params = @$call['params'];
+        if (!$params) {
+            //return static::_xmlrpcs_multicall_error('noparams');
+            $params = new Value(array(), 'array');
+        }
+        if ($params->kindOf() != 'array') {
+            return static::_xmlrpcs_multicall_error('notarray');
+        }
+
+        $req = new Request($methName->scalarVal());
+        foreach ($params as $i => $param) {
+            /// @todo allow support for named parameters, if this is a jsonrpc 2.0 call (which it should)
+            if (!$req->addParam($param)) {
+                $i++; // for error message, we count params from 1
+                return static::_xmlrpcs_multicall_error(new static::$responseClass(0,
+                    PhpXmlRpc::$xmlrpcerr['incorrect_params'],
+                    PhpXmlRpc::$xmlrpcstr['incorrect_params'] . ": probable json error in param " . $i));
+            }
+        }
+
+        $result = $server->execute($req);
+
+        if ($result->faultCode() != 0) {
+            return static::_xmlrpcs_multicall_error($result); // Method returned fault.
+        }
+
+        return new Value(array($result->value()), 'array');
+    }
+
+    /**
+     * @internal this function will become protected in the future
+     *
+     * @param Server $server
+     * @param Value $call
+     * @return Value
+     */
+    public static function _xmlrpcs_multicall_do_call_phpvals($server, $call)
+    {
+        if (!is_array($call)) {
+            return static::_xmlrpcs_multicall_error('notstruct');
+        }
+        if (!array_key_exists('methodName', $call)) {
+            return static::_xmlrpcs_multicall_error('nomethod');
+        }
+        if (!is_string($call['method'])) {
+            return static::_xmlrpcs_multicall_error('notstring');
+        }
+        if ($call['method'] == 'system.multicall') {
+            return static::_xmlrpcs_multicall_error('recursion');
+        }
+        if (!array_key_exists('params', $call)) {
+            //return static::_xmlrpcs_multicall_error('noparams');
+            $call['params'] = array();
+        }
+        if (!is_array($call['params'])) {
+            return static::_xmlrpcs_multicall_error('notarray');
+        }
+
+        /* no base64 or datetime values in json-rpc
+        // this is a simplistic hack, since we might have received
+        // base64 or datetime values, but they will be listed as strings here...
+        $pt = array();
+        $wrapper = new Wrapper();
+        foreach ($call['params'] as $val) {
+            // support EPI-encoded base64 and datetime values
+            if ($val instanceof \stdClass && isset($val->xmlrpc_type)) {
+                $pt[] = $val->xmlrpc_type == 'datetime' ? Value::$xmlrpcDateTime : $val->xmlrpc_type;
+            } else {
+                $pt[] = $wrapper->php2XmlrpcType(gettype($val));
+            }
+        }
+        */
+
+        $result = $server->execute($call['methodName'], $call['params'], $pt);
+
+        if ($result->faultCode() != 0) {
+            return static::_xmlrpcs_multicall_error($result); // Method returned fault.
+        }
+
+        return new Value(array($result->value()), 'array');
+    }
+
+    /**
+     * @internal this function will become protected in the future
+     *
+     * @param $err
+     * @return Value
+     */
+    public static function _xmlrpcs_multicall_error($err)
+    {
+        if (is_string($err)) {
+            $str = PhpXmlRpc::$xmlrpcstr["multicall_{$err}"];
+            $code = PhpXmlRpc::$xmlrpcerr["multicall_{$err}"];
+        } else {
+            $code = $err->faultCode();
+            $str = $err->faultString();
+        }
+        $struct = array();
+        $struct['faultCode'] = new Value($code, 'int');
+        $struct['faultString'] = new Value($str, 'string');
+
+        return new Value($struct, 'struct');
     }
 }

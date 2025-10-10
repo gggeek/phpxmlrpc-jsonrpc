@@ -42,7 +42,8 @@ class Parser
         'params' => array(),
         'pt' => array(),
         'id' => null,
-        'jsonrpc_version' => PhpJsonRpc::VERSION_1_0
+        'jsonrpc_version' => PhpJsonRpc::VERSION_1_0,
+        'is_multicall' => false,
     );
 
     protected $returnTypeOverride = null;
@@ -97,9 +98,37 @@ class Parser
                 !array_key_exists('params', $ok) || !is_array($ok['params']) ||
                 !array_key_exists('id', $ok)
             ) {
-                $this->_xh['isf'] = 2;
-                $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 request object';
-                return false;
+                // look for an array of requests, aka. "batch mode", trigger multicall
+                $isMultiCall = true;
+                $i = 0;
+                $multicallReqIds = array();
+                foreach ($ok as $key => $val) {
+                    if ($key !== $i || !is_array($val) || !array_key_exists('method', $val) || !is_string($val['method']) ||
+                        (array_key_exists('params', $val) && !is_array($val['params']))
+                    ) {
+                        $isMultiCall = false;
+                        break;
+                    } else {
+                        // store the req ids to be able to re-inject them later (and tell apart notifications)
+                        $multicallReqIds[] = array_key_exists('id', $val) ? $val['id']: null;
+                    }
+                    $i++;
+                }
+
+                if ($isMultiCall) {
+                    $ok = array(
+                        'method' => 'system.multicall',
+                        // a single arg, which is an array
+                        'params' => array($ok)
+                    );
+                    // we add a (flag) to _xh to indicate the multicall and prevent the lack of an id to be understood as
+                    // notification call
+                    $this->_xh['is_multicall'] = $multicallReqIds;
+                } else {
+                    $this->_xh['isf'] = 2;
+                    $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 request object';
+                    return false;
+                }
             }
         }
 
@@ -396,6 +425,7 @@ class Parser
             'pt' => array(),
             'id' => null,
             'jsonrpc_version' => PhpJsonRpc::VERSION_1_0,
+            'is_multicall' => false
         );
 
         // we test manually for $data === '' because on php up to 5.6 that gets decoded ok by json_decode.
