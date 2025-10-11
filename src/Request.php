@@ -11,6 +11,7 @@ use PhpXmlRpc\JsonRpc\Traits\SerializerAware;
 use PhpXmlRpc\PhpXmlRpc;
 use PhpXmlRpc\Request as BaseRequest;
 
+/// @todo introduce $responseClass, to allow subclasses to produce different types of response?
 class Request extends BaseRequest
 {
     use SerializerAware;
@@ -27,10 +28,15 @@ class Request extends BaseRequest
 
     /**
      * @param string $methodName the name of the method to invoke
-     * @param \PhpXmlRpc\Value[] $params array of parameters to be passed to the method (xmlrpcval objects)
-     * @param null|string $jsonrpcVersion pass either PhpJsonRpc::VERSION_2_0 or PhpJsonRpc::VERSION_1_0 to force a value
-     * @param mixed $id the id of the json-rpc request. NB: a NULL id is allowed, in which case an unique id will be
-     *                  generated. To send notifications, use the Notification class
+     * @param \PhpXmlRpc\Value[] $params array of parameters to be passed to the method (xmlrpcval objects).
+     *                                   For json-rpc 2.0 calls, the array keys should either be all consecutive integers
+     *                                   starting at 0, ar be all strings, in which case the named-parameters calling
+     *                                   convention will be used instead of the positional parameters one.
+     * @param null|string $jsonrpcVersion pass either PhpJsonRpc::VERSION_2_0 or PhpJsonRpc::VERSION_1_0 to force a value.
+     *                                    If not set, the lib default value (set in PhpJsonRpc::$defaultJsonrpcVersion)
+     *                                    will be used
+     * @param mixed $id the id of the json-rpc request. A NULL value is allowed, in which case a unique id will be
+     *                  generated. To send notifications, use the Notification class instead.
      */
     public function __construct($methodName, $params = array(), $id = null, $jsonrpcVersion = null)
     {
@@ -87,6 +93,11 @@ class Request extends BaseRequest
         return $this->id;
     }
 
+    /**
+     * @param int $i
+     * @return string A string is returned, as long as only string keys are used in the constructor and addParam calls.
+     *                Does not check if the index is oyt of bounds.
+     */
     public function getParamName($i)
     {
         return $this->paramnames[$i];
@@ -94,7 +105,7 @@ class Request extends BaseRequest
 
     /**
      * @param $param
-     * @param string|null $name
+     * @param string|null $name Either all params should have a name, or none of them
      * @return bool
      */
     public function addParam($param, $name=null)
@@ -350,6 +361,9 @@ class Request extends BaseRequest
         return $r;
     }
 
+    /**
+     * @return string|int
+     */
     protected function generateId()
     {
         $id = static::$currentIdPrefix . static::$currentIdCounter;
@@ -363,11 +377,17 @@ class Request extends BaseRequest
         return $id;
     }
 
+    /**
+     * @return bool
+     */
     public function parsedResponseIsFromServer()
     {
         return $this->parsedResponseIsFromServer;
     }
 
+    /**
+     * @return void
+     */
     public function resetParsedResponseIsFromServer()
     {
         $this->parsedResponseIsFromServer = false;

@@ -7,7 +7,6 @@ use PhpXmlRpc\JsonRpc\Traits\JsonRpcVersionAware;
 use PhpXmlRpc\JsonRpc\Traits\SerializerAware;
 use PhpXmlRpc\Response as BaseResponse;
 
-/// @todo introduce $responseClass, to allow subclasses to produce different types of response?
 class Response extends BaseResponse
 {
     use SerializerAware;
@@ -89,6 +88,7 @@ class Response extends BaseResponse
     }
 
     /**
+     * Duplicates a Response, injecting the id
      * @param Response $resp
      * @param mixed $id
      * @return Response

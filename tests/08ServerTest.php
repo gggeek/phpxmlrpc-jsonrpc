@@ -84,7 +84,6 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
             $this->assertEquals($errorCode, $r->faultCode(), 'Error ' . $r->faultCode() . ' connecting to server: ' . $r->faultString());
         }
         $this->assertEquals($msg->id(), $r->id(), 'Response Id is different from request Id');
-/// @todo figure out why this is failing
         $this->assertEquals($msg->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
         if (!$r->faultCode()) {
             if ($returnResponse) {
