@@ -331,8 +331,9 @@ class Request extends BaseRequest
 
             /// @todo check if we got back a different json-rpc version that we sent, log a warning if we did
 
-            // check that received id is the same as the one that was sent
-            if ($_xh['id'] != $this->id) {
+            // check that received id is the same as the one that was sent, unless we get back a null ID, which stands for
+            // server-side errors
+            if ($_xh['id'] !== null && $_xh['id'] != $this->id) {
                 $r = new Response(0, PhpXmlRpc::$xmlrpcerr['invalid_xml'],
                     PhpXmlRpc::$xmlrpcstr['invalid_xml'] . ' The response Id does not match the request one', '', $this->id, $httpResponse);
             } else {

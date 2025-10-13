@@ -387,6 +387,7 @@ class Server extends BaseServer
                 $r = new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['invalid_request'],
                     PhpXmlRpc::$xmlrpcstr['invalid_request'] . ' ' . $_xh['isf_reason'], '', $parser->_xh['id']);
             }
+            $this->fixErrorCodeIfNeeded($r);
         } else {
 
             if ($_xh['id'] === null) {
@@ -440,9 +441,10 @@ class Server extends BaseServer
      */
     protected function fixErrorCodeIfNeeded($resp)
     {
-        // Jsonrpc 2.0 responses use the same error codes as the phpxmlrpc interop ones.
-        // We fix them without changing the global error codes, in case there are some xmlrpc calls being answered, too
-        if (($errCode = $resp->faultCode()) != 0 && $resp->getJsonRpcVersion() === PhpJsonRpc::VERSION_2_0) {
+        // Json-rpc 2.0 responses use the same error codes as the xml-rpc interop ones.
+        // We fix them without changing the global error codes, in case there are some xml-rpc calls being answered, too
+        if (($errCode = $resp->faultCode()) != 0 && ($resp->getJsonRpcVersion() === PhpJsonRpc::VERSION_2_0 ||
+            $resp->getJsonRpcVersion() == '' && PhpJsonRpc::$defaultJsonrpcVersion === PhpJsonRpc::VERSION_2_0)) {
             $errKeys = array_flip(PhpXmlRpc::$xmlrpcerr);
             if (isset($errKeys[$errCode]) && isset(Interop::$xmlrpcerr[$errKeys[$errCode]])) {
                 /// @todo do not use deprecated property accessor to set this value
