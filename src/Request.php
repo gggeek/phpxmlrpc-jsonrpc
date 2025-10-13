@@ -18,7 +18,7 @@ class Request extends BaseRequest
     use JsonRpcVersionAware;
 
     protected $id = null; // used to store request ID internally
-    public $content_type = 'application/json';
+    protected $content_type = 'application/json';
     /** @var string[] */
     protected $paramnames = array();
     protected $parsedResponseIsFromServer = false;
@@ -32,6 +32,8 @@ class Request extends BaseRequest
      *                                   For json-rpc 2.0 calls, the array keys should either be all consecutive integers
      *                                   starting at 0, ar be all strings, in which case the named-parameters calling
      *                                   convention will be used instead of the positional parameters one.
+     *                                   Note that \PhpXmlRpc\Value of type DateTime and Base64 will be serialized as
+     *                                   json strings, but not decoded into the correct type at the receiving end.
      * @param null|string $jsonrpcVersion pass either PhpJsonRpc::VERSION_2_0 or PhpJsonRpc::VERSION_1_0 to force a value.
      *                                    If not set, the lib default value (set in PhpJsonRpc::$defaultJsonrpcVersion)
      *                                    will be used
