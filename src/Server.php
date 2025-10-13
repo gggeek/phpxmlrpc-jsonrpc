@@ -380,6 +380,7 @@ class Server extends BaseServer
         if (!$ok) {
             if ($_xh['isf'] == 3 && preg_match('/^JSON parsing failed. Error: ([0-9]+)/', $_xh['isf_reason'], $matches)) {
                 /// @see error values from https://www.php.net/manual/en/function.json-last-error.php
+                ///      The values are known to go from 1 (JSON_ERROR_DEPTH) to 16 (JSON_ERROR_NON_BACKED_ENUM)
                 $r = new static::$responseClass(0, PhpXmlRpc::$xmlrpcerrxml + (int)$matches[1],
                     $_xh['isf_reason'], '', $parser->_xh['id']);
             } else {
@@ -444,6 +445,12 @@ class Server extends BaseServer
         // We fix them without changing the global error codes, in case there are some xml-rpc calls being answered, too
         if (($errCode = $resp->faultCode()) != 0 && ($resp->getJsonRpcVersion() === PhpJsonRpc::VERSION_2_0 ||
             $resp->getJsonRpcVersion() == '' && PhpJsonRpc::$defaultJsonrpcVersion === PhpJsonRpc::VERSION_2_0)) {
+            // We use 20 as a hardcoded limit because 1. atm the highest known json error code is 16; 2. json error
+            // codes do get added in new php versions, so we can not know the future max errors, and 3. using a php
+            // constant can not do, as it won't be defined in the min php version we support (atm 5.4)
+            if ($errCode >= PhpXmlRpc::$xmlrpcerrxml && $errCode <= PhpXmlRpc::$xmlrpcerrxml + 20) {
+                $errCode = PhpXmlRpc::$xmlrpcerr['invalid_xml'];
+            }
             $errKeys = array_flip(PhpXmlRpc::$xmlrpcerr);
             if (isset($errKeys[$errCode]) && isset(Interop::$xmlrpcerr[$errKeys[$errCode]])) {
                 /// @todo do not use deprecated property accessor to set this value
