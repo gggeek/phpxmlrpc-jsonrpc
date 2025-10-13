@@ -211,7 +211,7 @@ class Request extends BaseRequest
                 // failed processing of HTTP response headers
                 // save into response obj the full payload received, for debugging
                 return new Response(0, $e->getCode(), $e->getMessage(), '', $this->id, array('raw_data' => $data, 'status_code' => $e->statusCode()));
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 return new Response(0, $e->getCode(), $e->getMessage(), '', $this->id, array('raw_data' => $data));
             }
         } else {
@@ -241,9 +241,16 @@ class Request extends BaseRequest
         /// @todo optimization creep - return an error msg if $data == ''
 
         // be tolerant of junk after methodResponse (e.g. javascript ads automatically inserted by free hosts)
-        $end = strrpos($data, '}');
-        if ($end) {
-            $data = substr($data, 0, $end + 1);
+        if ($data !== '' && ($data[0] === '{' || $data[0] === '[')) {
+            if ($data[0] === '[') {
+                $lc = ']';
+            } else {
+                $lc = '}';
+            }
+            $end = strrpos($data, $lc);
+            if ($end) {
+                $data = substr($data, 0, $end + 1);
+            }
         }
 
         // try to 'guestimate' the character encoding of the received response (even though it should be UTF-8, really)
@@ -275,8 +282,9 @@ class Request extends BaseRequest
         }
 
         // if user wants back raw json, give it to her
-        // NB: in this case we inject $this->id even if it might differ in the received jon
-        if ($returnType == 'json') {
+        // NB: in this case we inject $this->id even if it might differ in the received json
+        /// @todo use constants
+        if ($returnType == 'json' || $returnType == 'xml') {
             return new Response($data, 0, '', 'json', $this->id, $httpResponse);
         }
 
