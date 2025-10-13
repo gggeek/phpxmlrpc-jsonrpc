@@ -66,10 +66,11 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
      * @param Request|array $msg
      * @param int|array $errorCode expected error codes
      * @param bool $returnResponse
+     * @param bool $checkVersion
      * @return mixed|\PhpXmlRpc\JsonRpc\Response|\PhpXmlRpc\JsonRpc\Response[]|\PhpXmlRpc\JsonRpc\Value|string|null
      * @todo allow callers to disable checking of faultCode
      */
-    protected function send($msg, $errorCode = 0, $returnResponse = false)
+    protected function send($msg, $errorCode = 0, $returnResponse = false, $checkVersion = true)
     {
         /// @todo move to injecting timeout and method into `getClient`, use the non-legacy API calling convention
         $r = $this->client->send($msg, $this->timeout, $this->method);
@@ -83,8 +84,12 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         } else {
             $this->assertEquals($errorCode, $r->faultCode(), 'Error ' . $r->faultCode() . ' connecting to server: ' . $r->faultString());
         }
-        $this->assertEquals($msg->id(), $r->id(), 'Response Id is different from request Id');
-        $this->assertEquals($msg->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
+        if ($r->id() !== null) {
+            $this->assertEquals($msg->id(), $r->id(), 'Response Id is different from request Id');
+        }
+        if ($checkVersion) {
+            $this->assertEquals($msg->getJsonRpcVersion(), $r->getJsonRpcVersion(), 'Response version is different from request version');
+        }
         if (!$r->faultCode()) {
             if ($returnResponse) {
                 return $r;
@@ -445,58 +450,71 @@ And turned it into nylon';
 
         return new Value($struct, 'struct');
     }
+*/
 
-    public function testServerMulticall()
+    public function testServerMulticall1()
     {
-        // We manually construct a system.multicall() call to ensure
-        // that the server supports it.
+        // We manually construct a batch ("multicall") call to ensure
+        // that the server supports them.
+        $payload = '[
+            {
+                "jsonrpc": "2.0",
+                "method": "system.methodHelp",
+                "params": ["system.listMethods"],
+                "id": 1
+            },
+            {
+                "jsonrpc": "2.0",
+                "method": "system.methodHelp",
+                "params": ["system.methodSignature"],
+                "id": 2
+            },
+            {
+                "jsonrpc": "2.0",
+                "method": "system.methodHelp",
+                "params": [
+                    "system.methodHelp"
+                ]
+            },
+            {
+                "jsonrpc": "2.0",
+                "method": "system.methodSignature",
+                "params": [1,2,3,4],
+                "id": 4
+            },
+            {
+                "method": "system.listMethods",
+                "id": 5
+            }
+        ]';
 
-        // NB: This test will NOT pass if server does not support system.multicall.
-
-        // Based on http://xmlrpc-c.sourceforge.net/hacks/test_multicall.py
-        $good1 = $this->_multicall_msg(
-            'system.methodHelp',
-            array(php_xmlrpc_encode('system.listMethods')));
-        $bad = $this->_multicall_msg(
-            'test.nosuch',
-            array(php_xmlrpc_encode(1), php_xmlrpc_encode(2)));
-        $recursive = $this->_multicall_msg(
-            'system.multicall',
-            array(new Value(array(), 'array')));
-        $good2 = $this->_multicall_msg(
-            'system.methodSignature',
-            array(php_xmlrpc_encode('system.listMethods')));
-        $arg = new Value(
-            array($good1, $bad, $recursive, $good2),
-            'array'
-        );
-
-        $m = new Request('system.multicall', array($arg));
-        $v = $this->send($m);
-        if ($v) {
-            //$this->assertEquals(0, $r->faultCode(), "fault from system.multicall");
-            $this->assertEquals(4, $v->arraysize(), "bad number of return values");
-
-            $r1 = $v->arraymem(0);
-            $this->assertTrue(
-                $r1->kindOf() == 'array' && $r1->arraysize() == 1,
-                "did not get array of size 1 from good1"
-            );
-
-            $r2 = $v->arraymem(1);
-            $this->assertEquals('struct', $r2->kindOf(), "no fault from bad");
-
-            $r3 = $v->arraymem(2);
-            $this->assertEquals('struct', $r3->kindOf(), "recursive system.multicall did not fail");
-
-            $r4 = $v->arraymem(3);
-            $this->assertTrue(
-                $r4->kindOf() == 'array' && $r4->arraysize() == 1,
-                "did not get array of size 1 from good2"
-            );
-        }
+        // we use Notification to avoid the check for correct Resp. Id. Undo this after client-side support is plugged in
+        $m = new Notification('');
+        $m->setPayload($payload);
+        $this->client->setOption(Client::OPT_RETURN_TYPE, 'json');
+        $v = $this->send($m, 0, false, false);
+        $v = json_decode($v, true);
+        $this->assertIsArray($v);
+        $this->assertCount(4, $v);
+        $this->assertIsArray($v[2]);
+        $this->assertequals(4, $v[2]['id']);
     }
 
+    /**
+     * @dataProvider getFaultyMultiCallPayloads
+     * @param string $payload
+     * @param $expectedReturn
+     */
+    public function testServerMulticall2($payload, $expectedReturn)
+    {
+        // We manually construct faulty batch ("multicall") calls to ensure
+        // that the server answers to them with the expected error code.
+        $m = new Request('');
+        $m->setPayload($payload);
+        $v = $this->send($m, $expectedReturn);
+    }
+
+/*
     public function testClientMulticall1()
     {
         // NB: This test will NOT pass if server does not support system.multicall.
@@ -1259,5 +1277,20 @@ And turned it into nylon';
         $this->assertStringNotContainsString('"secs"', $m->serialize());
         $this->assertStringContainsString('"usecs"', $m->serialize());
         $v = $this->send($m, Interop::$xmlrpcerr['server_error']);
+    }
+
+    public function getFaultyMultiCallPayloads()
+    {
+        /// @see https://www.jsonrpc.org/specification#examples
+        return array(
+            // invalid json
+            array('[{"jsonrpc": "2.0", "method": "sum", "params": [1,2,4], "id": "1"},{"jsonrpc": "2.0", "method"]', -32700),
+            // empty array
+            array('[]', -32600),
+            // invalid batch
+            array('[1]', -32600),
+            /// @todo add more fault cases
+            //array('[1,2,3]', ),
+        );
     }
 }
