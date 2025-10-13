@@ -140,7 +140,7 @@ class Client extends BaseClient
     protected function fixErrorCodeIfNeeded($resp)
     {
         // Jsonrpc 2.0 responses use the same error codes as the phpxmlrpc interop ones.
-        // We fix them without changing the global error codes, in case there are some xmlrpc calls being answered, too
+        // We fix them without changing the global error codes, in case there are some xml-rpc calls being answered, too
         if (($errCode = $resp->faultCode()) != 0 && $resp->getJsonRpcVersion() === PhpJsonRpc::VERSION_2_0) {
             $errKeys = array_flip(PhpXmlRpc::$xmlrpcerr);
             if (isset($errKeys[$errCode]) && isset(Interop::$xmlrpcerr[$errKeys[$errCode]])) {

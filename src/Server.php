@@ -266,15 +266,14 @@ class Server extends BaseServer
                     $r = new static::$responseClass($this->getEncoder()->encode($r, $this->phpvals_encoding_options));
                 }
             }
-            // here $r is either an xmlrpc response or a json-rpc response
+            // here $r is either an xml-rpc response or a json-rpc response
             if (is_a($r, 'PhpXmlRpc\JsonRpc\Response')) {
                 $r = call_user_func_array(array(static::$responseClass, 'withId'), array($r, $msgID));
             } else {
 
                 // Dirty trick!!!
-                // User has given us back an xmlrpc response, since he had an existing xmlrpc server with boatloads of code.
-                // Be nice to him, and serialize the xmlrpc stuff into JSON.
-                // was: $r->setPayload($this->getSerializer()->serializeResponse($r, $msgID), 'application/json');
+                // User has given us back an xml-rpc response, since he had an existing xml-rpc server with boatloads of code.
+                // Be nice to him, and serialize the xml-rpc stuff into JSON.
                 $r = new static::$responseClass($r->value(), $r->faultCode(), $r->faultString(), $r->valueType(), $msgID, $r->httpResponse());
             }
         } catch (\Exception $e) {
@@ -543,7 +542,7 @@ class Server extends BaseServer
     /**
      * @return array[]
      *
-     * @todo if building json-rpc-only webservers, you should at least undeclare the xmlrpc capability:
+     * @todo if building json-rpc-only webservers, you should at least undeclare the xml-rpc capability:
      *        unset($outAr['xmlrpc']);
      */
     public function getCapabilities()

@@ -15,8 +15,6 @@ class Serializer
 {
     use CharsetEncoderAware;
 
-    public static $defaultJsonrpcVersion = PhpJsonRpc::VERSION_2_0;
-
     /**
      * Reimplemented to make us use the correct parser type.
      *
@@ -138,7 +136,7 @@ class Serializer
         if (is_callable([$req, 'getJsonRpcVersion'])) {
             $jsonRpcVersion = $req->getJsonRpcVersion();
         } else {
-            $jsonRpcVersion = self::$defaultJsonrpcVersion;
+            $jsonRpcVersion = PhpJsonRpc::$defaultJsonrpcVersion;
         }
 
         switch ($jsonRpcVersion) {
@@ -213,7 +211,7 @@ class Serializer
 
     /**
      * Serialize a Response as json.
-     * Moved outside the corresponding class to ease multi-serialization of xmlrpc response objects.
+     * Moved outside the corresponding class to ease multi-serialization of xml-rpc response objects.
      *
      * @param \PhpXmlRpc\Response $resp
      * @param mixed $id
@@ -223,10 +221,12 @@ class Serializer
      */
     public function serializeResponse($resp, $id = null, $charsetEncoding = '')
     {
+        $jsonRpcVersion = null;
         if (is_callable([$resp, 'getJsonRpcVersion'])) {
             $jsonRpcVersion = $resp->getJsonRpcVersion();
-        } else {
-            $jsonRpcVersion = self::$defaultJsonrpcVersion;
+        }
+        if ($jsonRpcVersion === null) {
+            $jsonRpcVersion = PhpJsonRpc::$defaultJsonrpcVersion;
         }
 
         $result = "{\n";
@@ -238,7 +238,7 @@ class Serializer
                 $result .= "\"jsonrpc\": \"2.0\",\n";
                 break;
             default:
-                /// @todo throw
+/// @todo throw
                 break;
         }
 
@@ -265,7 +265,7 @@ class Serializer
                 $result .= "\"error\": { \"code\": " . $resp->faultCode() . ", \"message\": \"" . $this->getCharsetEncoder()->encodeEntities($resp->errstr, null, $charsetEncoding) . "\" }";
             } else {
                 $result .= "\"error\": { \"faultCode\": " . $resp->faultCode() . ", \"faultString\": \"" . $this->getCharsetEncoder()->encodeEntities($resp->errstr, null, $charsetEncoding) . "\" },";
-                $result .= "\"result\": null";
+                $result .= "\n\"result\": null";
             }
         } else {
             $result .= "\"result\": ";
