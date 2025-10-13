@@ -78,7 +78,7 @@ class Parser
             return false;
         }
 
-        if (!is_array($ok)) {
+        if (!is_array($ok) || !count($ok)) {
             $this->_xh['isf'] = 2;
             $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc request object';
             return false;
