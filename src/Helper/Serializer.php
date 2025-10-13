@@ -58,7 +58,7 @@ class Serializer
                     case Value::$xmlrpcDateTime:
                         // quote date as a json string.
                         // assumes date format is valid and will not break js...
-/// @todo check: how to handle the cases where $val is a timestamp or a DateTime?
+/// @todo check: how to handle the cases where $val is a timestamp or a DateTimeInterface?
                         $rs .= '"' . $val . '"';
                         break;
                     case Value::$xmlrpcDouble:
@@ -77,7 +77,7 @@ class Serializer
                         $rs .= ($val ? 'true' : 'false');
                         break;
                     case Value::$xmlrpcBase64:
-                        // treat base 64 values as strings ???
+                        // treat base 64 values as strings
                         $rs .= '"' . base64_encode($val) . '"';
                         break;
                     default:
@@ -100,7 +100,7 @@ class Serializer
                 break;
             case 3:
                 // struct
-                /// @todo implement json-rpc extension for object serialization
+                /// @todo implement json-rpc 1.0 extension for object serialization
                 //if ($value->_php_class)
                 //{
                 //$rs.='<struct php_class="' . $this->_php_class . "\">\n";

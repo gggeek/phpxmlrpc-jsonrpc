@@ -15,6 +15,22 @@ class Response extends BaseResponse
     protected $content_type = 'application/json';
     protected $id = null;
 
+    /**
+     * @param \PhpXmlRpc\Value|string|mixed $val either a Value object, a php value or the json serialization of a
+     *        json-rpc value (a string).
+     *        Note that using anything other than a Value object wll have an impact on serialization.
+     *        Note that \PhpXmlRpc\Value of type DateTime and Base64 will be serialized as json strings, but not decoded
+     *        into the correct type at the receiving end.
+     * @param integer $fCode set it to anything but 0 to create an error response. In that case, $val is discarded
+     * @param string $fString the error string, in case of an error response
+     * @param string $valType The type of $val passed in. Either 'jsonrpcvals', 'phpvals' or 'json'. Leave empty to let
+     *                        the code guess the correct type by looking at $val - in which case strings are assumed
+     *                        to be serialized json
+     * @param mixed $id
+     * @param array|null $httpResponse this should be set when the response is being built out of data received from
+     *                                 http (i.e. not when programmatically building a Response server-side). Array
+     *                                 keys should include, if known: headers, cookies, raw_data, status_code
+     */
     public function __construct($val, $fCode = 0, $fString = '', $valType = '', $id = null, $httpResponse = null)
     {
         // accommodate those methods which build a Response using the calling syntax of the PhpXmlRpc\Response class
@@ -27,7 +43,7 @@ class Response extends BaseResponse
 
         parent::__construct($val, $fCode, $fString, $valType, $httpResponse);
 
-        /// @todo throw exception if $valType is xml or xmlrpcvals ? Esp. valid for xml strings
+        /// @todo throw exception if $valType is xml or xmlrpcvals ? Esp. valid for xml strings (test decoding them?)
         switch ($this->valtyp) {
             case 'xml':
                 $this->valtyp = 'json';
