@@ -2,6 +2,9 @@
 
 include_once __DIR__ . '/WebTestCase.php';
 
+use \PhpXmlRpc\JsonRpc\Request;
+use \PhpXmlRpc\JsonRpc\Value;
+
 /**
  * Tests for php files in the 'demo' directory.
  *
@@ -80,8 +83,8 @@ class DemoFilesTest extends PhpJsonRpc_WebTestCase
         $this->assertRegexp('#<int>10(5|3)</int>#', $page);
 
         $c = $this->newClient('?demo=server/codegen.php');
-        $r = $c->send(new \PhpXmlRpc\Request('CommentManager.getComments', array(
-            new \PhpXmlRpc\Value('aCommentId')
+        $r = $c->send(new Request('CommentManager.getComments', array(
+            new Value('aCommentId')
         )));
         $this->assertEquals(0, $r->faultCode());
     }*/
@@ -94,20 +97,20 @@ class DemoFilesTest extends PhpJsonRpc_WebTestCase
 
         $page = $this->request('?demo=server/discuss.php');
         $this->assertStringContainsString('"error": {', $page);
-        $this->assertRegexp('#"faultCode": 104#', $page);
+        $this->assertRegexp('#"code": -32700#', $page);
 
         $c = $this->newClient('?demo=server/discuss.php');
 
-        $r = $c->send(new \PhpXmlRpc\JsonRpc\Request('discuss.addComment', array(
-            new \PhpXmlRpc\JsonRpc\Value('aCommentId'),
-            new \PhpXmlRpc\JsonRpc\Value('aCommentUser'),
-            new \PhpXmlRpc\JsonRpc\Value('a Comment')
+        $r = $c->send(new Request('discuss.addComment', array(
+            new Value('aCommentId'),
+            new Value('aCommentUser'),
+            new Value('a Comment')
         )));
         $this->assertEquals(0, $r->faultCode());
         $this->assertGreaterThanOrEqual(1, $r->value()->scalarval());
 
-        $r = $c->send(new \PhpXmlRpc\JsonRpc\Request('discuss.getComments', array(
-            new \PhpXmlRpc\JsonRpc\Value('aCommentId')
+        $r = $c->send(new Request('discuss.getComments', array(
+            new Value('aCommentId')
         )));
         $this->assertEquals(0, $r->faultCode());
         $this->assertEquals(0, $r->faultCode());
@@ -119,6 +122,6 @@ class DemoFilesTest extends PhpJsonRpc_WebTestCase
         /// @todo add a couple of proper jsonrpc calls, too
         $page = $this->request('?demo=server/proxy.php');
         $this->assertStringContainsString('"error": {', $page);
-        $this->assertRegexp('#"faultCode": 104#', $page);
+        $this->assertRegexp('#"code": -32700#', $page);
     }
 }
