@@ -4,11 +4,11 @@ namespace PhpXmlRpc\JsonRpc\Traits;
 
 trait JsonRpcVersionAware
 {
-    /** @var string */
+    /** @var string|null */
     protected $jsonrpc_version;
 
     /**
-     * @param string $jsonrpcVersion
+     * @param string|null $jsonrpcVersion Use NULL to let the global var PhpJsonRpc::$defaultJsonRpcVersion decide
      * @return void
      */
     public function setJsonRpcVersion($jsonrpcVersion)
@@ -17,7 +17,7 @@ trait JsonRpcVersionAware
     }
 
     /**
-     * @return string
+     * @return string|null NULL means let the global var PhpJsonRpc::$defaultJsonRpcVersion decide
      */
     public function getJsonRpcVersion()
     {
