@@ -220,9 +220,35 @@ class Parser
             if (!array_key_exists('id', $ok) || !array_key_exists('result', $ok) || !array_key_exists('error', $ok)
                 || ($ok['error'] !== null && $ok['result'] !== null)
             ) {
-                $this->_xh['isf'] = 2;
-                $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 response object';
-                return false;
+                // look for an array of responses, aka. "batch mode", trigger multicall
+                $isMultiCall = true;
+                $i = 0;
+                $multicallRespIds = array();
+                foreach ($ok as $key => $val) {
+                    if ($key !== $i || !is_array($val) || !array_key_exists('id', $val) || !array_key_exists('jsonrpc', $val) ||
+                        $val['jsonrpc'] != PhpJsonRpc::VERSION_2_0 || (!array_key_exists('error', $val) && !array_key_exists('result', $val))
+                    ) {
+                        $isMultiCall = false;
+                        break;
+                    } else {
+                        // store the req ids to be able to re-inject them later (and tell apart notifications)
+                        $multicallRespIds[] = array_key_exists('id', $val) ? $val['id']: null;
+                    }
+                    $i++;
+                }
+
+                if ($isMultiCall) {
+                    $ok = array(
+                        'result' => $ok
+                    );
+                    // we add a (flag) to _xh to indicate the multicall and prevent the lack of an id to be understood as
+                    // notification call
+                    $this->_xh['is_multicall'] = $multicallRespIds;
+                } else {
+                    $this->_xh['isf'] = 2;
+                    $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 response object';
+                    return false;
+                }
             }
         }
 

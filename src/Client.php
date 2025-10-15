@@ -26,8 +26,8 @@ class Client extends BaseClient
         self::OPT_JSONRPC_VERSION,
     );
 
-    // by default, no multicall exists for JSON-RPC, so do not try it
-    public $no_multicall = true;
+    // multicall exists for JSON-RPC 2.0, but not 1.0, so we add NULL as 3rd state
+    protected $no_multicall = null;
 
     // default return type of calls to json-rpc servers: jsonrpcvals
     public $return_type = Parser::RETURN_JSONRPCVALS;
@@ -79,7 +79,10 @@ class Client extends BaseClient
      */
     public function send($req, $timeout = 0, $method = '')
     {
+        $originalMulticall = $this->no_multicall;
+        $jsonrpcVersion = null;
         if ($this->jsonrpc_version != '') {
+            // force the json-rpc version onto all requests
             if (is_array($req)) {
                 foreach ($req as $i => $r) {
                     if (!is_string($r)) {
@@ -89,6 +92,29 @@ class Client extends BaseClient
             } elseif (!is_string($req)) {
                 $req->setJsonRpcVersion($this->jsonrpc_version);
             }
+
+            $jsonrpcVersion = $this->jsonrpc_version;
+        } else {
+            // check: this might be handled as a batch call, if we have an array of requests and all are json-rpc 2.0
+            if (is_array($req) && $this->no_multicall === null) {
+                $jsonrpcVersions = array();
+                foreach ($req as $i => $r) {
+                    if (!is_string($r)) {
+                        $jsonrpcVersions[$i] = $r->getJsonRpcVersion();
+                        if ($jsonrpcVersions[$i] == null) {
+                            $jsonrpcVersions[$i] = PhpJsonRpc::$defaultJsonrpcVersion;
+                        }
+                    }
+                }
+                $jsonrpcVersions = array_unique($jsonrpcVersions);
+                if (count($jsonrpcVersions) == 1) {
+                    $jsonrpcVersion = reset($jsonrpcVersions);
+                }
+            }
+        }
+
+        if (is_array($req) && $jsonrpcVersion === PhpJsonRpc::VERSION_2_0 && $this->no_multicall === null) {
+            $this->no_multicall = false;
         }
 
         /** @var Response $resp */
@@ -130,6 +156,12 @@ class Client extends BaseClient
             $req->resetParsedResponseIsFromServer();
         }
 
+        if (is_array($req) && $jsonrpcVersion === PhpJsonRpc::VERSION_2_0 && $originalMulticall === null) {
+            /// @todo we should skip resetting it back to null if it was set to false because server does not support
+            ///       batch calls
+            $this->no_multicall = null;
+        }
+
         return $resp;
     }
 
@@ -148,5 +180,143 @@ class Client extends BaseClient
                 $resp->errno = Interop::$xmlrpcerr[$errKeys[$errCode]];
             }
         }
+    }
+
+    /**
+     * Attempt to boxcar $reqs via a batch call.
+     *
+     * @param Request[] $reqs
+     * @param int $timeout
+     * @param string $method
+     * @return Response[]|Response a single Response when the call returned a fault / does not conform to what we expect
+     *                             from a multicall response
+     */
+    protected function _try_multicall($reqs, $timeout, $method)
+    {
+        if (!$reqs) {
+            $payload = '[]';
+        } else {
+            $payload = array();
+            foreach ($reqs as $req) {
+/// @todo retrieve the charset from ...?
+                $payload[] = $req->serialize();
+            }
+            $payload = "[\n" . implode(",\n", $payload) . "\n]";
+        }
+
+        $result = parent::send($payload);
+
+        if ($result->faultCode() != 0) {
+            // call to system.multicall failed
+            return $result;
+        }
+
+        // Unpack responses.
+        $rets = $result->value();
+        $response = array();
+
+        if ($this->return_type == 'xml' || $this->return_type == 'json') {
+            for ($i = 0; $i < count($reqs); $i++) {
+                /// @todo can we do better? we set the complete json into each response...
+                $response[] = new static::$responseClass($rets, 0, '', 'json', null, $result->httpResponse());
+            }
+
+        } elseif ($this->return_type == 'phpvals') {
+            if (!is_array($rets)) {
+                // bad return type
+                return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['multicall_error'],
+                    PhpXmlRpc::$xmlrpcstr['multicall_error'] . ': not an array', 'phpvals', null, $result->httpResponse());
+            }
+            $numRets = count($rets);
+            if ($numRets > count($reqs)) {
+                // wrong number of return values.
+                return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['multicall_error'],
+                    PhpXmlRpc::$xmlrpcstr['multicall_error'] . ': incorrect number of responses', 'phpvals', null,
+                    $result->httpResponse());
+            }
+
+            for ($i = 0; $i < $numRets; $i++) {
+                $val = $rets[$i];
+                if (!is_array($val)) {
+                    return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['multicall_error'],
+                        PhpXmlRpc::$xmlrpcstr['multicall_error'] . ": response element $i is not an array or struct",
+                        'phpvals', null, $result->httpResponse());
+                }
+                if (array_key_exists('result', $val)) {
+                    // Normal return value
+                    $response[$i] = new static::$responseClass($val['result'], 0, '', 'phpvals', null, $result->httpResponse());
+                } elseif (array_key_exists('error', $val)) {
+                    /// @todo remove usage of @: it is apparently quite slow
+                    $code = @$val['error']['code'];
+                    if (!is_int($code)) {
+                        /// @todo should we check that it is != 0?
+                        return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['multicall_error'],
+                            PhpXmlRpc::$xmlrpcstr['multicall_error'] . ": response element $i has invalid or no error code",
+                            'phpvals', null, $result->httpResponse());
+                    }
+                    $str = @$val['error']['message'];
+                    if (!is_string($str)) {
+                        return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['multicall_error'],
+                            PhpXmlRpc::$xmlrpcstr['multicall_error'] . ": response element $i has invalid or no error message",
+                            'phpvals', null, $result->httpResponse());
+                    }
+                    $response[$i] = new static::$responseClass(0, $code, $str, 'phpvals', $result->httpResponse());
+                } else {
+                    return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['multicall_error'],
+                        PhpXmlRpc::$xmlrpcstr['multicall_error'] . ": response element $i has neither result nor error",
+                        'phpvals', null, $result->httpResponse());
+                }
+            }
+
+        } else {
+            // return type == 'jsonrpcvals'
+            if ($rets->kindOf() != 'array') {
+                return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['multicall_error'],
+                    PhpXmlRpc::$xmlrpcstr['multicall_error'] . ": response element is not an array", 'xmlrpcvals',
+                    null, $result->httpResponse());
+            }
+            $numRets = $rets->count();
+            if ($numRets > count($reqs)) {
+                // wrong number of return values.
+                return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['multicall_error'],
+                    PhpXmlRpc::$xmlrpcstr['multicall_error'] . ': incorrect number of responses', 'xmlrpcvals', null,
+                    $result->httpResponse());
+            }
+
+            foreach ($rets as $i => $val) {
+                if ($val->kindOf() == 'struct') {
+                    if (isset($val['result'])) {
+                        $response[] = new static::$responseClass($val['result'], 0, '', 'jsonrpcvals', null, $result->httpResponse());
+                    } elseif (isset($val['error'])) {
+                        /** @var Value $code */
+                        $code = @$val['error']['code'];
+                        if (!$code || $code->kindOf() != 'scalar' || $code->scalarTyp() != 'int') {
+                            return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['multicall_error'],
+                                PhpXmlRpc::$xmlrpcstr['multicall_error'] . ": response element $i has invalid or no code",
+                                'xmlrpcvals', null, $result->httpResponse());
+                        }
+                        /** @var Value $str */
+                        $str = @$val['error']['message'];
+                        if (!$str || $str->kindOf() != 'scalar' || $str->scalarTyp() != 'string') {
+                            return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['multicall_error'],
+                                PhpXmlRpc::$xmlrpcstr['multicall_error'] . ": response element $i has invalid or no message",
+                                'xmlrpcvals', null, $result->httpResponse());
+                        }
+                        $response[] = new static::$responseClass(null, $code->scalarval(), $str->scalarval(),
+                            'jsonrpcvals', null, $result->httpResponse());
+                    } else {
+                        return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['multicall_error'],
+                            PhpXmlRpc::$xmlrpcstr['multicall_error'] . ": response element $i has neither result nor error",
+                            'phpvals', null, $result->httpResponse());
+                    }
+                } else {
+                    return new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['multicall_error'],
+                        PhpXmlRpc::$xmlrpcstr['multicall_error'] . ": response element $i is not a struct",
+                        'xmlrpcvals', null, $result->httpResponse());
+                }
+            }
+        }
+
+        return $response;
     }
 }

@@ -514,22 +514,22 @@ And turned it into nylon';
         $v = $this->send($m, $expectedReturn);
     }
 
-/*
     public function testClientMulticall1()
     {
-        // NB: This test will NOT pass if server does not support system.multicall.
+        // NB: This test will NOT pass if server does not support batch requests
 
         $noMultiCall = $this->client->no_multicall;
         $this->client->no_multicall = false;
 
+        $encoder = new Encoder();
         $good1 = new Request('system.methodHelp',
-            array(php_xmlrpc_encode('system.listMethods')));
+            array($encoder->encode('system.listMethods')));
         $bad = new Request('test.nosuch',
-            array(php_xmlrpc_encode(1), php_xmlrpc_encode(2)));
+            array($encoder->encode(1), $encoder->encode(2)));
         $recursive = new Request('system.multicall',
             array(new Value(array(), 'array')));
         $good2 = new Request('system.methodSignature',
-            array(php_xmlrpc_encode('system.listMethods'))
+            array($encoder->encode('system.listMethods'))
         );
 
         $r = $this->send(array($good1, $bad, $recursive, $good2));
@@ -561,19 +561,20 @@ And turned it into nylon';
 
     public function testClientMulticall2()
     {
-        // NB: This test will NOT pass if server does not support system.multicall.
+        // NB: This test will NOT pass if server does not support batch requests
 
         $noMultiCall = $this->client->no_multicall;
         $this->client->no_multicall = true;
 
+        $encoder = new Encoder();
         $good1 = new Request('system.methodHelp',
-            array(php_xmlrpc_encode('system.listMethods')));
+            array($encoder->encode('system.listMethods')));
         $bad = new Request('test.nosuch',
-            array(php_xmlrpc_encode(1), php_xmlrpc_encode(2)));
+            array($encoder->encode(1), $encoder->encode(2)));
         $recursive = new Request('system.multicall',
             array(new Value(array(), 'array')));
         $good2 = new Request('system.methodSignature',
-            array(php_xmlrpc_encode('system.listMethods'))
+            array($encoder->encode('system.listMethods'))
         );
 
         $r = $this->send(array($good1, $bad, $recursive, $good2));
@@ -601,7 +602,7 @@ And turned it into nylon';
 
     public function testClientMulticall3()
     {
-        // NB: This test will NOT pass if server does not support system.multicall.
+        // NB: This test will NOT pass if server does not support batch requests
 
         $noMultiCall = $this->client->no_multicall;
         $returnType = $this->client->return_type;
@@ -609,14 +610,15 @@ And turned it into nylon';
         $this->client->return_type = 'phpvals';
         $this->client->no_multicall = false;
 
+        $encoder = new Encoder();
         $good1 = new Request('system.methodHelp',
-            array(php_xmlrpc_encode('system.listMethods')));
+            array($encoder->encode('system.listMethods')));
         $bad = new Request('test.nosuch',
-            array(php_xmlrpc_encode(1), php_xmlrpc_encode(2)));
+            array($encoder->encode(1), $encoder->encode(2)));
         $recursive = new Request('system.multicall',
             array(new Value(array(), 'array')));
         $good2 = new Request('system.methodSignature',
-            array(php_xmlrpc_encode('system.listMethods'))
+            array($encoder->encode('system.listMethods'))
         );
 
         $r = $this->send(array($good1, $bad, $recursive, $good2));
@@ -642,7 +644,7 @@ And turned it into nylon';
 
     public function testClientMulticall4()
     {
-        // NB: This test will NOT pass if server does not support system.multicall.
+        // NB: This test will NOT pass if server does not support batch requests
 
         $noMultiCall = $this->client->no_multicall;
         $returnType = $this->client->return_type;
@@ -650,10 +652,11 @@ And turned it into nylon';
         $this->client->return_type = 'xml';
         $this->client->no_multicall = false;
 
+        $encoder = new Encoder();
         $good1 = new Request('system.methodHelp',
-            array(php_xmlrpc_encode('system.listMethods')));
+            array($encoder->encode('system.listMethods')));
         $good2 = new Request('system.methodSignature',
-            array(php_xmlrpc_encode('system.listMethods'))
+            array($encoder->encode('system.listMethods'))
         );
 
         $r = $this->send(array($good1, $good2));
@@ -670,7 +673,6 @@ And turned it into nylon';
         $this->client->return_type = $returnType;
         $this->client->no_multicall = $noMultiCall;
     }
-*/
 
     /**
      * @dataProvider getAvailableJsonRpcVersions
