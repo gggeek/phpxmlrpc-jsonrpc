@@ -518,7 +518,7 @@ And turned it into nylon';
     {
         // NB: This test will NOT pass if server does not support batch requests
 
-        $noMultiCall = $this->client->no_multicall;
+        //$noMultiCall = $this->client->no_multicall;
         $this->client->no_multicall = false;
 
         $encoder = new Encoder();
@@ -556,14 +556,14 @@ And turned it into nylon';
         // if the test server does not support system.multicall.
         $this->assertEquals(false, $this->client->no_multicall, "server does not support system.multicall");
 
-        $this->client->no_multicall = $noMultiCall;
+        //$this->client->no_multicall = $noMultiCall;
     }
 
     public function testClientMulticall2()
     {
         // NB: This test will NOT pass if server does not support batch requests
 
-        $noMultiCall = $this->client->no_multicall;
+        //$noMultiCall = $this->client->no_multicall;
         $this->client->no_multicall = true;
 
         $encoder = new Encoder();
@@ -597,15 +597,15 @@ And turned it into nylon';
             $this->assertEquals('array', $val->kindOf(), "good2 did not return array");
         }
 
-        $this->client->no_multicall = $noMultiCall;
+        //$this->client->no_multicall = $noMultiCall;
     }
 
     public function testClientMulticall3()
     {
         // NB: This test will NOT pass if server does not support batch requests
 
-        $noMultiCall = $this->client->no_multicall;
-        $returnType = $this->client->return_type;
+        //$noMultiCall = $this->client->no_multicall;
+        //$returnType = $this->client->return_type;
 
         $this->client->return_type = 'phpvals';
         $this->client->no_multicall = false;
@@ -638,16 +638,16 @@ And turned it into nylon';
             $this->assertIsArray($val, "good2 did not return array");
         }
 
-        $this->client->return_type = $returnType;
-        $this->client->no_multicall = $noMultiCall;
+        //$this->client->return_type = $returnType;
+        //$this->client->no_multicall = $noMultiCall;
     }
 
     public function testClientMulticall4()
     {
         // NB: This test will NOT pass if server does not support batch requests
 
-        $noMultiCall = $this->client->no_multicall;
-        $returnType = $this->client->return_type;
+        //$noMultiCall = $this->client->no_multicall;
+        //$returnType = $this->client->return_type;
 
         $this->client->return_type = 'xml';
         $this->client->no_multicall = false;
@@ -670,8 +670,22 @@ And turned it into nylon';
         $this->assertEquals(200, $hr['status_code'], "http response of multicall has no status code");
         $this->assertEquals($r[0]->httpResponse(), $r[1]->httpResponse(), "http response of multicall items differs");
 
-        $this->client->return_type = $returnType;
-        $this->client->no_multicall = $noMultiCall;
+        //$this->client->return_type = $returnType;
+        //$this->client->no_multicall = $noMultiCall;
+    }
+
+    /**
+     * Test multicall (batch) calls with no requests
+     * NB: this is a deviation from the spec, which says an error should be returned instead
+     */
+    public function testClientMulticallEmpty()
+    {
+        $this->client->no_multicall = false;
+        $r = $this->send(array());
+        $this->assertEquals(array(), $r);
+        $this->client->no_multicall = true;
+        $r = $this->send(array());
+        $this->assertEquals(array(), $r);
     }
 
     /**

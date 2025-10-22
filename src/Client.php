@@ -71,7 +71,9 @@ class Client extends BaseClient
     }
 
     /**
-     * @param \PhpXmlRpc\JsonRpc\Request|\PhpXmlRpc\JsonRpc\Request[]|string $req
+     * @param \PhpXmlRpc\JsonRpc\Request|\PhpXmlRpc\JsonRpc\Request[]|string $req NB: when sending an empty array, an
+     *        empty array is returned, even though, according to the spec, an error response is returned by the
+     *        server
      * @param int $timeout deprecated
      * @param string $method deprecated
      * @return \PhpXmlRpc\JsonRpc\Response|true|\PhpXmlRpc\JsonRpc\Response[] true for notification calls, if the server
@@ -113,8 +115,16 @@ class Client extends BaseClient
             }
         }
 
-        if (is_array($req) && $jsonrpcVersion === PhpJsonRpc::VERSION_2_0 && $this->no_multicall === null) {
-            $this->no_multicall = false;
+        if (is_array($req) && $this->no_multicall === null) {
+            if ($jsonrpcVersion === PhpJsonRpc::VERSION_2_0) {
+                $this->no_multicall = false;
+
+                /// @todo since batch calling is part of the spec, we should disable falling back to many single calls
+
+            } else {
+                // there is no batch calling nor system.multicall in json-rpc 1.0 - it is something only we provide
+                $this->no_multicall = true;
+            }
         }
 
         /** @var Response $resp */
@@ -156,7 +166,7 @@ class Client extends BaseClient
             $req->resetParsedResponseIsFromServer();
         }
 
-        if (is_array($req) && $jsonrpcVersion === PhpJsonRpc::VERSION_2_0 && $originalMulticall === null) {
+        if (is_array($req) && $originalMulticall === null) {
             /// @todo we should skip resetting it back to null if it was set to false because server does not support
             ///       batch calls
             $this->no_multicall = null;
@@ -207,7 +217,7 @@ class Client extends BaseClient
         $result = parent::send($payload);
 
         if ($result->faultCode() != 0) {
-            // call to system.multicall failed
+            // batch call failed
             return $result;
         }
 
