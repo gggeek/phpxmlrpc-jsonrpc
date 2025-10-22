@@ -1,10 +1,10 @@
 <?php
 /**
- * JSON extension to the PHP-XMLRPC lib
+ * JSON-RPC extension to the PHP-XMLRPC lib
  *
  * For more info see:
+ * http://www.jsonrpc.org/
  * http://www.json.org/
- * http://json-rpc.org/
  *
  * @author Gaetano Giunta
  * @copyright (c) 2005-2025 G. Giunta
@@ -27,11 +27,11 @@ include_once(__DIR__.'/../src/Traits/SerializerAware.php');
 include_once(__DIR__.'/../src/Helper/Charset.php');
 include_once(__DIR__.'/../src/Helper/Parser.php');
 include_once(__DIR__.'/../src/Helper/Serializer.php');
-include_once(__DIR__.'/../src/Value.php');
-include_once(__DIR__.'/../src/Request.php');
-include_once(__DIR__.'/../src/Response.php');
 include_once(__DIR__.'/../src/Client.php');
 include_once(__DIR__.'/../src/Encoder.php');
+include_once(__DIR__.'/../src/Request.php');
+include_once(__DIR__.'/../src/Response.php');
+include_once(__DIR__.'/../src/Value.php');
 
 use PhpXmlRpc\JsonRpc\Encoder;
 use PhpXmlRpc\JsonRpc\Helper\Charset;
@@ -250,7 +250,7 @@ function jsonrpc_parse_resp($data, $return_phpvals = false, $use_extension = tru
 function serialize_jsonrpcresp($resp, $id = null, $charset_encoding = '')
 {
     $serializer = new Serializer();
-    return $serializer->serializeResponse($resp, $id, $charset_encoding);
+    return $serializer->serializeResponse($resp, $charset_encoding, $id);
 }
 
 function serialize_jsonrpcval($value, $charset_encoding = '')

@@ -494,7 +494,7 @@ class Server extends BaseServer
                 }
                 // since json-rpc 1.0 does not specify batch call support, we force responses to be json-rpc 2.0
                 $subResp->setJsonRpcVersion(PhpJsonRpc::VERSION_2_0);
-                $payloads[] = $serializer->serializeResponse($subResp, $id, $respCharset);
+                $payloads[] = $serializer->serializeResponse($subResp, $respCharset);
             }
 
             return $payloads ? ("[\n" . implode(",\n", $payloads) . "\n]") : '';

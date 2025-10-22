@@ -169,7 +169,7 @@ class Request extends BaseRequest
         else
             $this->content_type = 'application/json';
 
-        $this->payload = $this->getSerializer()->serializeRequest($this, $this->id, $charsetEncoding);
+        $this->payload = $this->getSerializer()->serializeRequest($this, $charsetEncoding);
     }
 
     /**

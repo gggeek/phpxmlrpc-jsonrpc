@@ -88,7 +88,7 @@ class Response extends BaseResponse
         else
             $this->content_type = 'application/json';
 
-        $this->payload = $this->getSerializer()->serializeResponse($this, $this->id, $charsetEncoding);
+        $this->payload = $this->getSerializer()->serializeResponse($this, $charsetEncoding);
         return $this->payload;
     }
 

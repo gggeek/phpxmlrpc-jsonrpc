@@ -124,11 +124,11 @@ class Serializer
 
     /**
      * @param \PhpXmlRpc\Request $req
-     * @param mixed $id
      * @param string $charsetEncoding
+     * @param mixed $id to be used only for \PhpXmlRpc\Request, as PhpXmlRpc\JsonRpc\Request do have an Id already
      * @return string
      */
-    public function serializeRequest($req, $id = null, $charsetEncoding = '')
+    public function serializeRequest($req, $charsetEncoding = '', $id = null)
     {
         // @todo: verify if all chars are allowed for method names or can we just skip the js encoding on it?
         $result = "{\n";
@@ -184,7 +184,15 @@ class Serializer
             $result = substr($result, 0, -1) . "\n]";
         }
 
-        // In jsonrpc 2.0 null ids are omitted. In 1.0, they are not
+        if (is_callable([$req, 'id'])) {
+            if ($id === null) {
+                $id = $req->id();
+            } elseif ($req->id() != $id) {
+/// @todo log a warning
+            }
+        }
+
+        // In json-rpc 2.0 null ids are omitted. In 1.0, they are not
         if ($id !== null || $jsonRpcVersion != PhpJsonRpc::VERSION_2_0) {
             $result .= ",\n\"id\": ";
             switch (true) {
@@ -214,12 +222,12 @@ class Serializer
      * Moved outside the corresponding class to ease multi-serialization of xml-rpc response objects.
      *
      * @param \PhpXmlRpc\Response $resp
-     * @param mixed $id
      * @param string $charsetEncoding
+     * @param mixed $id to be used only for \PhpXmlRpc\Response, as PhpXmlRpc\JsonRpc\Response do have an Id already
      * @return string
      * @throws \Exception
      */
-    public function serializeResponse($resp, $id = null, $charsetEncoding = '')
+    public function serializeResponse($resp, $charsetEncoding = '', $id = null)
     {
         $jsonRpcVersion = null;
         if (is_callable([$resp, 'getJsonRpcVersion'])) {
@@ -242,7 +250,15 @@ class Serializer
                 break;
         }
 
-        // NB: NULL id has different meaning in jsonrpc 1.0 vs 2.0
+        if (is_callable([$resp, 'id'])) {
+            if ($id === null) {
+                $id = $resp->id();
+            } elseif ($resp->id() != $id) {
+/// @todo log a warning
+            }
+        }
+
+        // NB: NULL id has different meaning in json-rpc 1.0 vs 2.0
         $result .= "\"id\": ";
         switch (true) {
             case $id === null:
