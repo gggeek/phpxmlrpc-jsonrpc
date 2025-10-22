@@ -21,11 +21,14 @@
 - breaking change: when a Client sends invalid json, the returned response will sport a faultCode of 100+X, with X
   corresponding to the value returned by php function `json_last_error`, eg. 104 for no data, instead of previous 5
 
-- breaking change: `Parser::parseRequest()` and `Parser::parseResponse()` have changed the order of their arguments,
-  and they always return an array, even on failure. Also, direct access to `$parser->_xh` his deprecated
+- breaking change: `Parser::parseRequest()` and `Parser::parseResponse()` always return an array, even on failure.
+  Also, direct access to `$parser->_xh` his deprecated
 
 - breaking change: classes `Request` and `Response` method and disallow access to the `$id` member. They gained an
   accessor method `id()` to retrieve the id
+
+- breaking change: `Serializer::serializeRequest()` and `Serializer::serializeResponse()` have had the order of their
+  arguments changed
 
 - fixed: when receiving empty requests, the returned response's error code is now the same on php 5 as it is on
   later php versions

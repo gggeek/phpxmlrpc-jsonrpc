@@ -7,6 +7,7 @@ use PhpXmlRpc\JsonRpc\Encoder;
 use PhpXmlRpc\JsonRpc\PhpJsonRpc;
 use PhpXmlRpc\JsonRpc\Value;
 use PhpXmlRpc\Traits\CharsetEncoderAware;
+use PhpXmlRpc\Traits\LoggerAware;
 
 /**
  * @todo implement a CharsetEncoderAware trait (as soon as there is a 2nd user of Charset)
@@ -14,6 +15,7 @@ use PhpXmlRpc\Traits\CharsetEncoderAware;
 class Serializer
 {
     use CharsetEncoderAware;
+    use LoggerAware;
 
     /**
      * Reimplemented to make us use the correct parser type.
@@ -188,7 +190,7 @@ class Serializer
             if ($id === null) {
                 $id = $req->id();
             } elseif ($req->id() != $id) {
-/// @todo log a warning
+                $this->getLogger()->warning('JSON-RPC: ' . __METHOD__ . ": id argument differs from request id");
             }
         }
 
@@ -254,7 +256,7 @@ class Serializer
             if ($id === null) {
                 $id = $resp->id();
             } elseif ($resp->id() != $id) {
-/// @todo log a warning
+                $this->getLogger()->warning('JSON-RPC: ' . __METHOD__ . ": id argument differs from response id");
             }
         }
 

@@ -8,9 +8,7 @@ use PhpXmlRpc\JsonRpc\Request;
 use PhpXmlRpc\JsonRpc\Response;
 use PhpXmlRpc\JsonRpc\Traits\EncoderAware;
 use PhpXmlRpc\JsonRpc\Value;
-use PhpXmlRpc\PhpXmlRpc;
 use PhpXmlRpc\Traits\DeprecationLogger;
-use PhpXmlRpc\Traits\LoggerAware;
 
 /**
  * @see https://www.jsonrpc.org/specification_v1, https://www.jsonrpc.org/specification
