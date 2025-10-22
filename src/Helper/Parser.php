@@ -9,6 +9,7 @@ use PhpXmlRpc\JsonRpc\Response;
 use PhpXmlRpc\JsonRpc\Traits\EncoderAware;
 use PhpXmlRpc\JsonRpc\Value;
 use PhpXmlRpc\PhpXmlRpc;
+use PhpXmlRpc\Traits\DeprecationLogger;
 use PhpXmlRpc\Traits\LoggerAware;
 
 /**
@@ -25,7 +26,7 @@ use PhpXmlRpc\Traits\LoggerAware;
 class Parser
 {
     use EncoderAware;
-    use LoggerAware;
+    use DeprecationLogger;
 
     const RETURN_JSONRPCVALS = 'jsonrpcvals';
     const RETURN_PHP = 'phpvals';
@@ -33,7 +34,7 @@ class Parser
     /**
      * @see \PhpXmlRpc\XMLParser
      */
-    public $_xh = array(
+    protected $_xh = array(
         // 3: json parsing fault, 2: invalid json-rpc, 1: fault response
         'isf' => 0,
         'isf_reason' => '',
@@ -57,7 +58,7 @@ class Parser
      *                       string keys:
      *                       - source_charset (string)
      *                       - target_charset (string)
-     * @return false|array
+     * @return array
      * @throws \Exception this can happen if a callback function is set and it does throw (i.e. we do not catch exceptions)
      *
      * @todo checks missing:
@@ -75,13 +76,13 @@ class Parser
 
         $ok = $this->jsonDecode($data, $options);
         if ($this->_xh['isf'] !== 0) {
-            return false;
+            return $this->_xh;
         }
 
         if (!is_array($ok) || !count($ok)) {
             $this->_xh['isf'] = 2;
             $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc request object';
-            return false;
+            return $this->_xh;
         }
 
         if (array_key_exists('jsonrpc', $ok) && $ok['jsonrpc'] === '2.0') {
@@ -91,7 +92,7 @@ class Parser
             ) {
                 $this->_xh['isf'] = 2;
                 $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 2.0 request object';
-                return false;
+                return $this->_xh;
             }
         } else {
             if (!array_key_exists('method', $ok) || !is_string($ok['method']) ||
@@ -127,7 +128,7 @@ class Parser
                 } else {
                     $this->_xh['isf'] = 2;
                     $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 request object';
-                    return false;
+                    return $this->_xh;
                 }
             }
         }
@@ -182,7 +183,7 @@ class Parser
      * @param $data
      * @param string $returnType
      * @param array $options
-     * @return false|array
+     * @return array
      *
      * @todo checks missing:
      *       - no extra members in response
@@ -199,13 +200,13 @@ class Parser
 
         $ok = $this->jsonDecode($data, $options);
         if ($this->_xh['isf'] !== 0) {
-            return false;
+            return $this->_xh;
         }
 
         if (!is_array($ok)) {
             $this->_xh['isf'] = 2;
             $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc response object';
-            return false;
+            return $this->_xh;
         }
         if (array_key_exists('jsonrpc', $ok) && $ok['jsonrpc'] === '2.0') {
             if (!array_key_exists('id', $ok) || (!array_key_exists('result', $ok) && !array_key_exists('error', $ok))
@@ -214,7 +215,7 @@ class Parser
             ) {
                 $this->_xh['isf'] = 2;
                 $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 2.0 response object';
-                return false;
+                return $this->_xh;
             }
         } else {
             if (!array_key_exists('id', $ok) || !array_key_exists('result', $ok) || !array_key_exists('error', $ok)
@@ -247,7 +248,7 @@ class Parser
                 } else {
                     $this->_xh['isf'] = 2;
                     $this->_xh['isf_reason'] = 'JSON parsing did not return correct json-rpc 1.0 response object';
-                    return false;
+                    return $this->_xh;
                 }
             }
         }
@@ -588,6 +589,81 @@ class Parser
                     $this->convertEncoding($val, $targetCharset);
                 }
                 break;
+        }
+    }
+
+    // *** BC layer ***
+
+    /**
+     * xml parser handler function for opening element tags.
+     * Used in decoding xml chunks that might represent single xml-rpc values as well as requests, responses.
+     * @deprecated
+     *
+     * @param resource $parser
+     * @param $name
+     * @param $attrs
+     * @return void
+     */
+    public function xmlrpc_se_any($parser, $name, $attrs)
+    {
+        // this will be spamming the log if this method is in use...
+        $this->logDeprecation('Method ' . __METHOD__ . ' is deprecated');
+
+        $this->xmlrpc_se($parser, $name, $attrs, true);
+    }
+
+    public function &__get($name)
+    {
+        switch ($name) {
+            case '_xh':
+                $this->logDeprecation('Getting property XMLParser::' . $name . ' is deprecated');
+                return $this->$name;
+            default:
+                /// @todo throw instead? There are very few other places where the lib trigger errors which can potentially reach stdout...
+                $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
+                trigger_error('Undefined property via __get(): ' . $name . ' in ' . $trace[0]['file'] . ' on line ' . $trace[0]['line'], E_USER_WARNING);
+                $result = null;
+                return $result;
+        }
+    }
+
+    public function __set($name, $value)
+    {
+        switch ($name) {
+            // this should only ever be called by subclasses which overtook `parse()`
+            case '_xh':
+                $this->logDeprecation('Setting property XMLParser::' . $name . ' is deprecated');
+                $this->$name = $value;
+                break;
+            default:
+                /// @todo throw instead? There are very few other places where the lib trigger errors which can potentially reach stdout...
+                $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
+                trigger_error('Undefined property via __set(): ' . $name . ' in ' . $trace[0]['file'] . ' on line ' . $trace[0]['line'], E_USER_WARNING);
+        }
+    }
+
+    public function __isset($name)
+    {
+        switch ($name) {
+            case '_xh':
+                $this->logDeprecation('Checking property XMLParser::' . $name . ' is deprecated');
+                return isset($this->$name);
+            default:
+                return false;
+        }
+    }
+
+    public function __unset($name)
+    {
+        switch ($name) {
+            case '_xh':
+                $this->logDeprecation('Unsetting property XMLParser::' . $name . ' is deprecated');
+                unset($this->$name);
+                break;
+            default:
+                /// @todo throw instead? There are very few other places where the lib trigger errors which can potentially reach stdout...
+                $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
+                trigger_error('Undefined property via __unset(): ' . $name . ' in ' . $trace[0]['file'] . ' on line ' . $trace[0]['line'], E_USER_WARNING);
         }
     }
 }

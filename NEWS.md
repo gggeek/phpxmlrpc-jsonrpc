@@ -21,6 +21,12 @@
 - breaking change: when a Client sends invalid json, the returned response will sport a faultCode of 100+X, with X
   corresponding to the value returned by php function `json_last_error`, eg. 104 for no data, instead of previous 5
 
+- breaking change: `Parser::parseRequest()` and `Parser::parseResponse()` always return an array, even on failure.
+  Also, direct access to `$parser->_xh` his deprecated
+
+- breaking change: classes `Request` and `Response` method and disallow access to the `$id` member. They gained an
+  accessor method `id()` to retrieve the id
+
 - fixed: when receiving empty requests, the returned response's error code is now the same on php 5 as it is on
   later php versions
 
@@ -32,7 +38,6 @@
 
 - other API changes:
   - classes `Client`, `Request` and `Response` gained methods `getJsonRcVersion` and `setjsonRpcVersion`
-  - classes `Request` and `Response` gained an `id()` method and disallow access to the `$id` member
   - class `Request` has gained a 5th constructor argument: `$jsonrpcVersion = null`
   - class `Request` has gained a method: `getParamName($i)`, useful for dealing with named-arguments requests.
     Also, its method `addParam` gained a 2nd argument: `$name=null`
@@ -40,9 +45,10 @@
   - visibility of `Request::$content_type` has been lowered from public to protected
   - method `Server::execute()` has gained a 5th param: `$jsonrpcVersion = null`
   - class `Server` now overrides more of the parent's methods
-  - member `Client::$no_multicall` defaults to `null`, as the support for multicall calls depends on the json-rpc version
+  - member `client->$no_multicall` defaults to `null`, as the support for multicall calls depends on the json-rpc version
     in use (version 2.0 does support it via "batch" calls)
-  - member `Parser::$_xh` has gained new elements
+  - member `$parser->_xh` has gained new elements
+
 
 ## JSON-RPC for PHP version 1.0-beta2 - 2024/4/15
 

@@ -366,16 +366,18 @@ class Server extends BaseServer
         } catch (NoSuchMethodException $e) {
             // inject both the req. id and protocol version
             // NB: even if this was a notification, we send back a full response
-            $resp = new static::$responseClass(0, $e->getCode(), $e->getMessage(), '', $parser->_xh['id']);
-            $resp->setJsonRpcVersion($parser->_xh['jsonrpc_version']);
+            // NB: we access directly $parser->_xh because the assignment above did not execute
+            $_xh = $parser->_xh;
+            $resp = new static::$responseClass(0, $e->getCode(), $e->getMessage(), '', $_xh['id']);
+            $resp->setJsonRpcVersion($_xh['jsonrpc_version']);
             $this->fixErrorCodeIfNeeded($resp);
             return $resp;
         }
 
-        // BC we now get false|array, we did use to get true/false
+        // BC we now get an array, we did use to get true/false
         if (is_array($ok)) {
             $_xh = $ok;
-            $ok = $parser->_xh['isf'] == 0;
+            $ok = $_xh['isf'] == 0;
         } else {
             $_xh = $parser->_xh;
         }
@@ -384,10 +386,10 @@ class Server extends BaseServer
                 /// @see error values from https://www.php.net/manual/en/function.json-last-error.php
                 ///      The values are known to go from 1 (JSON_ERROR_DEPTH) to 16 (JSON_ERROR_NON_BACKED_ENUM)
                 $r = new static::$responseClass(0, PhpXmlRpc::$xmlrpcerrxml + (int)$matches[1],
-                    $_xh['isf_reason'], '', $parser->_xh['id']);
+                    $_xh['isf_reason'], '', $_xh['id']);
             } else {
                 $r = new static::$responseClass(0, PhpXmlRpc::$xmlrpcerr['invalid_request'],
-                    PhpXmlRpc::$xmlrpcstr['invalid_request'] . ' ' . $_xh['isf_reason'], '', $parser->_xh['id']);
+                    PhpXmlRpc::$xmlrpcstr['invalid_request'] . ' ' . $_xh['isf_reason'], '', $_xh['id']);
             }
             $this->fixErrorCodeIfNeeded($r);
         } else {
