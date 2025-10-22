@@ -1,6 +1,9 @@
 ## JSON-RPC for PHP version XX (unreleased)
 
-- new: default the code to use jsonrpc version 2.0 protocol, while allowing usage of json-rpc 1.0 too
+- new: default the code to use json-rpc version 2.0 protocol, while allowing usage of json-rpc 1.0 too.
+
+  The easiest way to switch everything to keep using version 1.0 is to add a call
+  `PhpJsonRpc::$defaultJsonrpcVersion = PhpJsonRpc::VERSION_1_0;` at the beginning of your code
 
 - new: added a `Notification` class, to be used for sending json-rpc notification calls
 
@@ -18,8 +21,8 @@
 - breaking change: when a Client sends invalid json, the returned response will sport a faultCode of 100+X, with X
   corresponding to the value returned by php function `json_last_error`, eg. 104 for no data, instead of previous 5
 
-- fixed: when receiving empty requests, make sure the returned response's error code is the same on php 5 as it is
-  on later php versions
+- fixed: when receiving empty requests, the returned response's error code is now the same on php 5 as it is on
+  later php versions
 
 - fixed: removed warnings when running on php 8.5
 
@@ -27,6 +30,19 @@
 
 - bumped the minimum required version of phpxmlrpc/phpxmlrpc to 4.11.4
 
+- other API changes:
+  - classes `Client`, `Request` and `Response` gained methods `getJsonRcVersion` and `setjsonRpcVersion`
+  - classes `Request` and `Response` gained an `id()` method and disallow access to the `$id` member
+  - class `Request` has gained a 5th constructor argument: `$jsonrpcVersion = null`
+  - class `Request` has gained a method: `getParamName($i)`, useful for dealing with named-arguments requests.
+    Also, its method `addParam` gained a 2nd argument: `$name=null`
+  - class `Request` has gained a protected method: `generateId()`
+  - visibility of `Request::$content_type` has been lowered from public to protected
+  - method `Server::execute()` has gained a 5th param: `$jsonrpcVersion = null`
+  - class `Server` now overrides more of the parent's methods
+  - member `Client::$no_multicall` defaults to `null`, as the support for multicall calls depends on the json-rpc version
+    in use (version 2.0 does support it via "batch" calls)
+  - member `Parser::$_xh` has gained new elements
 
 ## JSON-RPC for PHP version 1.0-beta2 - 2024/4/15
 

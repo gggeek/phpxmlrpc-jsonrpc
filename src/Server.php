@@ -220,6 +220,8 @@ class Server extends BaseServer
         // if debug level is 3 or above, we also serialize them in the response as comments
         self::$_xmlrpcs_prev_ehandler = set_error_handler(array('\PhpXmlRpc\JsonRpc\Server', '_xmlrpcs_errorHandler'));
 
+        /// @todo what about using output-buffering as well, in case user code echoes anything to screen?
+
         try {
             if (is_object($req)) {
                 if ($sysCall) {
