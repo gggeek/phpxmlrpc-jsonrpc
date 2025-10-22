@@ -1,0 +1,73 @@
+'''{
+"jsonrpc": "2.0",
+"method": "discuss.addComment",
+"params": [ 
+  "commentUser_4045352856559282901",
+  "commentId_3896205868363007710",
+  "This comment text contains random number 1546120454901692180"
+],
+"id": "1"
+}
+''{
+"jsonrpc": "2.0",
+"method": "discuss.getComments",
+"params": [ 
+  "commentId_3896205868363007710"
+],
+"id": "2"
+}
+''''''{
+"jsonrpc": "2.0",
+"method": "discuss.addComment",
+"params": [ 
+  "commentUser_7521515778726068740",
+  "commentId_5920856497577571934",
+  "This comment text contains random number 8156551711635655409"
+],
+"id": "1"
+}
+''{
+"jsonrpc": "2.0",
+"method": "discuss.getComments",
+"params": [ 
+  "commentId_5920856497577571934"
+],
+"id": "2"
+}
+''''''''''{
+"jsonrpc": "2.0",
+"method": "discuss.addComment",
+"params": { 
+  "name": "commentUser_4552802473915114566",
+  "msgID": "commentId_15553623701884177",
+  "comment": "This comment text contains random number 8365062103657275100"
+},
+"id": "1"
+}
+''{
+"jsonrpc": "2.0",
+"method": "discuss.getComments",
+"params": [ 
+  "commentId_15553623701884177"
+],
+"id": "2"
+}
+''''''{
+"jsonrpc": "2.0",
+"method": "discuss.addComment",
+"params": { 
+  "name": "commentUser_1226103489454920567",
+  "msgID": "commentId_2808799856764328507",
+  "comment": "This comment text contains random number 4014882596274107258"
+},
+"id": "1"
+}
+''{
+"jsonrpc": "2.0",
+"method": "discuss.getComments",
+"params": [ 
+  "commentId_2808799856764328507"
+],
+"id": "2"
+}
+'''

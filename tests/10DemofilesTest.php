@@ -101,18 +101,22 @@ class DemoFilesTest extends PhpJsonRpc_WebTestCase
 
         $c = $this->newClient('?demo=server/discuss.php');
 
+        $user = 'commentUser_' . rand(0, PHP_INT_MAX);
+        $id = 'commentId_' . rand(0, PHP_INT_MAX);
+        $comment = 'This comment text contains random number ' . rand(0, PHP_INT_MAX);
+        // we use the 'named args' calling convention, to additionally test that arg swapping does work
         $r = $c->send(new Request('discuss.addComment', array(
-            new Value('aCommentId'),
-            new Value('aCommentUser'),
-            new Value('a Comment')
+            'name' => new Value($user),
+            'msgID' => new Value($id),
+            'comment' => new Value($comment)
         )));
         $this->assertEquals(0, $r->faultCode());
         $this->assertGreaterThanOrEqual(1, $r->value()->scalarval());
 
         $r = $c->send(new Request('discuss.getComments', array(
-            new Value('aCommentId')
+            new Value($id)
         )));
-        $this->assertEquals(0, $r->faultCode());
+
         $this->assertEquals(0, $r->faultCode());
         $this->assertGreaterThanOrEqual(1, count($r->value()));
     }

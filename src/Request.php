@@ -59,7 +59,7 @@ class Request extends BaseRequest
         $this->methodname = $methodName;
 
         $useNamedParams = false;
-        if ($jsonrpcVersion == PhpJsonRpc::VERSION_2_0 && count($params)) {
+        if ($this->jsonrpc_version == PhpJsonRpc::VERSION_2_0 && count($params)) {
             $i = 0;
             foreach($params as $name => $param) {
                 if ($name !== $i) {
@@ -69,6 +69,7 @@ class Request extends BaseRequest
                 $i++;
             }
         }
+
         foreach ($params as $name => $param) {
             $this->addParam($param, $useNamedParams ? $name : null);
         }
