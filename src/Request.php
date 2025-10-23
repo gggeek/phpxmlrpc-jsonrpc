@@ -47,7 +47,7 @@ class Request extends BaseRequest
         if ($id === null) {
             $id = $this->generateId();
         }
-        /// @todo if the version is 2.0, id should not be a bool value. Log a warning if it is
+        /// @todo if the version is 2.0, id should not be a bool value, nor a float. Log a warning if it is
         $this->id = $id;
 
         if ($jsonrpcVersion !== null) {
@@ -75,19 +75,6 @@ class Request extends BaseRequest
         foreach ($params as $name => $param) {
             $this->addParam($param, $useNamedParams ? $name : null);
         }
-    }
-
-    /**
-     * Reimplemented to make us use the correct parser type.
-     *
-     * @return Charset
-     */
-    public function getCharsetEncoder()
-    {
-        if (self::$charsetEncoder === null) {
-            self::$charsetEncoder = Charset::instance();
-        }
-        return self::$charsetEncoder;
     }
 
     /**
@@ -120,6 +107,19 @@ class Request extends BaseRequest
             $this->paramnames[] = $name;
         }
         return $ok;
+    }
+
+    /**
+     * Reimplemented to make us use the correct parser type.
+     *
+     * @return Charset
+     */
+    public function getCharsetEncoder()
+    {
+        if (self::$charsetEncoder === null) {
+            self::$charsetEncoder = Charset::instance();
+        }
+        return self::$charsetEncoder;
     }
 
     /**
@@ -175,10 +175,10 @@ class Request extends BaseRequest
     }
 
     /**
-     * Parse the json-rpc response contained in the string $data and return a jsonrpcresp object.
+     * Parse the json-rpc response contained in the string $data and return a Response object.
      *
      * @param string $data the json-rpc response, possibly including http headers
-     * @param bool $headersProcessed when true prevents parsing HTTP headers for interpretation of content-encoding and conseuqent decoding
+     * @param bool $headersProcessed when true prevents parsing HTTP headers for interpretation of content-encoding and consequent decoding
      * @param string $returnType decides return type, i.e. content of response->value(). Either 'jsonrpcvals', 'json' or 'phpvals'
      * @return Response|true true when notifications are sent (and the server returns an http response with no body)
      *

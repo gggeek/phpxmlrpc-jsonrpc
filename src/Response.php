@@ -41,9 +41,16 @@ class Response extends BaseResponse
 
         $this->id = $id;
 
+        if ($fCode == 0 && $valType === 'xml') {
+            // if the user insists that she's passing in xml, test if it is in fact json
+            // (tolerate BOM for UTF-8/16/32 in all its gore)
+            if (substr(ltrim(substr($val, 0, 9), "\xEF\xBB\xBF\xFE\xFF\x00"), 0, 5) === '<?xml') {
+                $this->getLogger()->error('JSON-RPC: ' . __METHOD__ . ': string value passed in does look like xml rather than json');
+            }
+        }
+
         parent::__construct($val, $fCode, $fString, $valType, $httpResponse);
 
-        /// @todo throw exception if $valType is xml or xmlrpcvals ? Esp. valid for xml strings (test decoding them?)
         switch ($this->valtyp) {
             case 'xml':
                 $this->valtyp = 'json';
@@ -52,19 +59,6 @@ class Response extends BaseResponse
                 $this->valtyp = 'jsonrpcvals';
                 break;
         }
-    }
-
-    /**
-     * Reimplemented to make us use the correct parser type.
-     *
-     * @return Charset
-     */
-    public function getCharsetEncoder()
-    {
-        if (self::$charsetEncoder === null) {
-            self::$charsetEncoder = Charset::instance();
-        }
-        return self::$charsetEncoder;
     }
 
     /**
@@ -90,6 +84,19 @@ class Response extends BaseResponse
 
         $this->payload = $this->getSerializer()->serializeResponse($this, $charsetEncoding);
         return $this->payload;
+    }
+
+    /**
+     * Reimplemented to make us use the correct parser type.
+     *
+     * @return Charset
+     */
+    public function getCharsetEncoder()
+    {
+        if (self::$charsetEncoder === null) {
+            self::$charsetEncoder = Charset::instance();
+        }
+        return self::$charsetEncoder;
     }
 
     /**
