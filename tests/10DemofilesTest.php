@@ -104,12 +104,22 @@ class DemoFilesTest extends PhpJsonRpc_WebTestCase
         $user = 'commentUser_' . rand(0, PHP_INT_MAX);
         $id = 'commentId_' . rand(0, PHP_INT_MAX);
         $comment = 'This comment text contains random number ' . rand(0, PHP_INT_MAX);
-        // we use the 'named args' calling convention, to additionally test that arg swapping does work
-        $r = $c->send(new Request('discuss.addComment', array(
-            'name' => new Value($user),
-            'msgID' => new Value($id),
-            'comment' => new Value($comment)
-        )));
+        if (PHP_MAJOR_VERSION <= 5) {
+            // using 'named args' calling convention fails on php 5.4, 5.5
+            $params = array(
+                new Value($id),
+                new Value($user),
+                new Value($comment)
+            );
+        } else {
+            // we use the 'named args' calling convention, to additionally test that arg swapping does work
+            $params = array(
+                'name' => new Value($user),
+                'msgID' => new Value($id),
+                'comment' => new Value($comment)
+            );
+        }
+        $r = $c->send(new Request('discuss.addComment', $params));
         $this->assertEquals(0, $r->faultCode());
         $this->assertGreaterThanOrEqual(1, $r->value()->scalarval());
 
