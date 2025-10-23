@@ -1,10 +1,9 @@
 <?php
 /**
- * JSON extension to the PHP-XMLRPC lib: server components
+ * JSON-RPC extension to the PHP-XMLRPC lib: server components
  *
  * For more info see:
- * http://www.json.org/
- * http://json-rpc.org/
+ * https://www.jsonrpc.org/
  *
  * @author Gaetano Giunta
  * @copyright (c) 2005-2025 G. Giunta

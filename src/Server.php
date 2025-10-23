@@ -120,13 +120,13 @@ class Server extends BaseServer
     }
 
     /**
-     * Note: syntax differs from overridden method, by adding an ID param
+     * Note: syntax differs from overridden method, by adding msgID and jsonrpcVersion args.
      *
-     * @param Request|string $req
-     * @param mixed[] $params
-     * @param string[] $paramTypes
-     * @param mixed $msgID
-     * @param string $jsonrpcVersion
+     * @param Request|string $req either a Request obj or a method name
+     * @param null|mixed[] $params unlike the parent class, the array can have non-numeric keys
+     * @param null|string[] $paramTypes array with xml-rpc types of method parameters (only if $req is method name)
+     * @param mixed $msgID to be used when $req is a string, or when it is an xml-rpc request instead of a json-rpc one
+     * @param null|string $jsonrpcVersion when not set, the version from $req is used (if set), or the default one from PhpJsonRpc
      * @return Response
      * @throws \Exception
      */
@@ -136,9 +136,25 @@ class Server extends BaseServer
         static::$_xmlrpc_debuginfo = '';
 
         if (is_object($req)) {
-            /// @todo if $req is an xml-rpc request obj, this will raise a warning: no id member...
             $methodName = $req->method();
-            $msgID = $req->id();
+            if (is_callable(array($req, 'id'))) {
+                $reqId = $req->id();
+                if ($reqId !== null) {
+                    if ($msgID !== null) {
+/// @todo log an error if $msgID is not null and != $req->id()
+                    }
+                    $msgID = $reqId;
+                }
+            }
+            if (is_callable([$req, 'getJsonRpcVersion'])) {
+                $reqJsonRpcVersion = $req->getJsonRpcVersion();
+                if ($reqJsonRpcVersion !== null) {
+                    if ($jsonrpcVersion !== null) {
+/// @todo log an error
+                    }
+                    $jsonrpcVersion = $reqJsonRpcVersion;
+                }
+            }
         } else {
             $methodName = $req;
         }
@@ -241,6 +257,7 @@ class Server extends BaseServer
                 }
             } else {
                 // call a 'plain php' function
+/// @todo if php < 8.0 and $params is not numerically indexed, log an error message
                 if ($sysCall) {
                     array_unshift($params, $this);
                     $r = call_user_func_array($func, $params);
@@ -412,7 +429,7 @@ class Server extends BaseServer
                 $r = $this->execute($_xh['method'], $_xh['params'], $_xh['pt'], $_xh['id'], $_xh['jsonrpc_version']);
             } else {
                 // build a json-rpc Request object with data parsed from json
-                $m = new Request($_xh['method'], array(), $_xh['id']);
+                $m = new Request($_xh['method'], array(), $_xh['id'], $_xh['jsonrpc_version']);
                 // now add parameters in
                 /// @todo for more speed, we could just pass in the array to the constructor (and loose the type validation)...
                 $useNamedParams = false;
@@ -432,7 +449,7 @@ class Server extends BaseServer
                     $this->debugMsg("\n+++PARSED+++\n" . var_export($m, true) . "\n+++END+++");
                 }
 
-                $r = $this->execute($m, null, null, null, $_xh['jsonrpc_version']);
+                $r = $this->execute($m);
             }
         }
 
@@ -637,7 +654,7 @@ class Server extends BaseServer
 
         $req = new Request($methName->scalarVal());
         foreach ($params as $i => $param) {
-/// @todo allow support for named parameters, if this is a jsonrpc 2.0 call (which it should)
+/// @todo allow support for named parameters, if this is a jsonrpc 2.0 call (which it should, unless it is a system.multicall on 1.0...)
             if (!$req->addParam($param)) {
                 $i++; // for error message, we count params from 1
                 return static::_xmlrpcs_multicall_error(new static::$responseClass(0,
@@ -684,7 +701,6 @@ class Server extends BaseServer
             return static::_xmlrpcs_multicall_error('notarray');
         }
 
-        /* no base64 or datetime values in json-rpc
         // this is a simplistic hack, since we might have received
         // base64 or datetime values, but they will be listed as strings here...
         $pt = array();
@@ -697,7 +713,6 @@ class Server extends BaseServer
                 $pt[] = $wrapper->php2XmlrpcType(gettype($val));
             }
         }
-        */
 
         $result = $server->execute($call['methodName'], $call['params'], $pt);
 

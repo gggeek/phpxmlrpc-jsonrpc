@@ -3,8 +3,7 @@
  * JSON-RPC extension to the PHP-XMLRPC lib
  *
  * For more info see:
- * http://www.jsonrpc.org/
- * http://www.json.org/
+ * https://www.jsonrpc.org/
  *
  * @author Gaetano Giunta
  * @copyright (c) 2005-2025 G. Giunta

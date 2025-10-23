@@ -28,10 +28,12 @@ class Request extends BaseRequest
 
     /**
      * @param string $methodName the name of the method to invoke
-     * @param \PhpXmlRpc\Value[] $params array of parameters to be passed to the method (xmlrpcval objects).
+     * @param \PhpXmlRpc\Value[] $params array of parameters to be passed to the method (Value objects).
      *                                   For json-rpc 2.0 calls, the array keys should either be all consecutive integers
-     *                                   starting at 0, ar be all strings, in which case the named-parameters calling
+     *                                   starting at 0, or be all strings, in which case the named-parameters calling
      *                                   convention will be used instead of the positional parameters one.
+     *                                   For json-rpc 1.0 calls, the array keys get discarded, as only positional params
+     *                                   are supported by the protocol.
      *                                   Note that \PhpXmlRpc\Value of type DateTime and Base64 will be serialized as
      *                                   json strings, but not decoded into the correct type at the receiving end.
      * @param null|string $jsonrpcVersion pass either PhpJsonRpc::VERSION_2_0 or PhpJsonRpc::VERSION_1_0 to force a value.
