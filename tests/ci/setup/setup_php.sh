@@ -68,6 +68,9 @@ install_shivammatur() {
     if [ "${PHP_VERSION}" = 5.3 ] || [ "${PHP_VERSION}" = 5.4 ] || [ "${PHP_VERSION}" = 5.5 ]; then
 
         echo "Using PHP from shivammathur/php5-ubuntu..."
+
+        # @todo this set of packages has been tested on Bionic, Focal, Jammy and Noble so far - but it might still need
+        #       some tweaks, eg. adding readline-common
         if [ "${DEBIAN_VERSION}" = jammy ] || [ "${DEBIAN_VERSION}" = noble ]; then
             PACKAGES='enchant-2'
         else
@@ -83,7 +86,6 @@ install_shivammatur() {
         else
             PACKAGES="$PACKAGES libodbc1 libtinfo5"
         fi
-        # @todo this set of packages has only been tested on Bionic, Focal, Jammy and Noble so far
         apt-get install -y \
             curl \
             imagemagick \
@@ -100,6 +102,12 @@ install_shivammatur() {
         set +e
         curl -sSL https://github.com/shivammathur/php5-ubuntu/releases/latest/download/install.sh | bash -s "${PHP_VERSION}"
         set -e
+
+        # remove leftover stuff in /tmp, eg. php-5.4.tar.zst
+        rm -rf /tmp/php-"${PHP_VERSION}"*
+
+        # This seems to be required at least on Jammy
+        apt -y --fix-broken install
 
         # @todo check which php extensions are enabled, and disable all except the desired ones
     else
