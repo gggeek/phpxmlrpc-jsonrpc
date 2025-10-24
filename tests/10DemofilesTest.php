@@ -19,50 +19,34 @@ class DemoFilesTest extends PhpJsonRpc_WebTestCase
 
     // *** client ***
 
-    /*public function testAgeSort()
-    {
-        $page = $this->request('?demo=client/agesort.php');
-    }
-
     public function testCodegen()
     {
         $page = $this->request('?demo=client/codegen.php');
     }
 
-    public function testGetStateName()
-    {
-        $page = $this->request('?demo=client/getstatename.php');
-        $page = $this->request('?demo=client/getstatename.php', 'POST', array('stateno' => '1'));
-    }
-
-    public function testLoggerInjection()
+    /*public function testLoggerInjection()
     {
         $page = $this->request('?demo=client/loggerinjection.php');
-    }
+    }*/
 
     public function testIntrospect()
     {
         $page = $this->request('?demo=client/introspect.php');
     }
 
-    public function testParallel()
+    /*public function testParallel()
     {
         $page = $this->request('?demo=client/parallel.php');
-    }
+    }*/
 
     public function testProxy()
     {
         $page = $this->request('?demo=client/proxy.php', 'GET', null, true);
     }
 
-    public function testWhich()
+    /*public function testWhich()
     {
         $page = $this->request('?demo=client/which.php');
-    }
-
-    public function testWindowsCharset()
-    {
-        $page = $this->request('?demo=client/windowscharset.php');
     }
 
     public function testWrap()

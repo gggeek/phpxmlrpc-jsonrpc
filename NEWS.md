@@ -39,6 +39,8 @@
 
 - bumped the minimum required version of phpxmlrpc/phpxmlrpc to 4.11.4
 
+- improved: added demos for client-side usage
+
 - other API changes:
   - classes `Client`, `Request` and `Response` gained methods `getJsonRcVersion` and `setjsonRpcVersion`
   - class `Request` has gained a 5th constructor argument: `$jsonrpcVersion = null`

@@ -13,3 +13,17 @@ if (file_exists(__DIR__ . '/../../../../vendor/autoload.php')) {
 } else {
     include_once __DIR__ . '/../../vendor/autoload.php';
 }
+
+// Let unit tests run against localhost, 'plain' demos against a known public server
+if (isset($_SERVER['HTTPSERVER'])) {
+    define('JSONRPCSERVER', 'http://'.$_SERVER['HTTPSERVER'].'/demo/server/server.php');
+} else {
+    define('JSONRPCSERVER', 'http://gggeek.altervista.org/sw/xmlrpc/demo/server/server.php');
+}
+
+// A helper for cli vs web output:
+function output($text)
+{
+    /// @todo we should only strip html tags, and let through all xml tags
+    echo PHP_SAPI == 'cli' ? strip_tags(str_replace(array('<br/>','<br>'), "\n", $text)) : $text;
+}
