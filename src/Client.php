@@ -208,8 +208,7 @@ class Client extends BaseClient
         } else {
             $payload = array();
             foreach ($reqs as $req) {
-/// @todo retrieve the charset from ...?
-                $payload[] = $req->serialize();
+                $payload[] = $req->serialize($this->request_charset_encoding);
             }
             $payload = "[\n" . implode(",\n", $payload) . "\n]";
         }
