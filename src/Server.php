@@ -650,15 +650,19 @@ class Server extends BaseServer
             //return static::_xmlrpcs_multicall_error('noparams');
             $params = new Value(array(), 'array');
         }
-        if ($params->kindOf() != 'array') {
+        $pk = $params->kindOf();
+        if ($pk != 'array' && $pk != 'struct') {
             return static::_xmlrpcs_multicall_error('notarray');
         }
 
         $req = new Request($methName->scalarVal());
         foreach ($params as $i => $param) {
-            /// @todo allow support for named parameters, if this is a jsonrpc 2.0 call (which it should, unless it is a system.multicall on 1.0...)
-            if (!$req->addParam($param)) {
-                $i++; // for error message, we count params from 1
+            // allow support for named parameters, as this is a jsonrpc 2.0 call (which it should, unless it is a system.multicall on 1.0...)
+            if (!$req->addParam($param, $pk == 'struct' ? $i : null)) {
+                if ($pk != 'struct') {
+                    // for error message, we count params from 1
+                    $i++;
+                }
                 return static::_xmlrpcs_multicall_error(new static::$responseClass(0,
                     PhpXmlRpc::$xmlrpcerr['incorrect_params'],
                     PhpXmlRpc::$xmlrpcstr['incorrect_params'] . ": probable json error in param " . $i));

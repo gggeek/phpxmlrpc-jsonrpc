@@ -1276,6 +1276,21 @@ And turned it into nylon';
         $v = $this->send($m, 12345);
     }
 
+    public function testNamedParametersInMultiCall()
+    {
+        $this->client->no_multicall = false;
+
+        $m = new Request('tests.getStateName.13',
+            array('stateno' => new Value(rand(1, 50), 'int')),
+            null,
+            PhpJsonRpc::VERSION_2_0
+        );
+        $v = $this->send(array($m));
+        $this->assertEquals(0, $v[0]->faultCode());
+
+        /// @todo add a test which stresses the code path decoding multicalls to native phpvals server-side
+    }
+
     public function testNamedParametersFailureOnAutoDecodedArgs()
     {
         // tests.sleep is registered server-side using parameters_type = phpvals
