@@ -141,18 +141,20 @@ class Server extends BaseServer
                 $reqId = $req->id();
                 if ($reqId !== null) {
                     if ($msgID !== null) {
-/// @todo log an error if $msgID is not null and != $req->id()
+                        $this->getLogger()->warning("JSON-RPC: " . __METHOD__ . ": msgID arg $msgID differs from request Id $reqId");
+                    } else {
+                        $msgID = $reqId;
                     }
-                    $msgID = $reqId;
                 }
             }
             if (is_callable([$req, 'getJsonRpcVersion'])) {
                 $reqJsonRpcVersion = $req->getJsonRpcVersion();
                 if ($reqJsonRpcVersion !== null) {
                     if ($jsonrpcVersion !== null) {
-/// @todo log an error
+                        $this->getLogger()->warning("JSON-RPC: " . __METHOD__ . ": jsonrpcVersion arg $jsonrpcVersion differs from request version $reqJsonRpcVersion");
+                    } else {
+                        $jsonrpcVersion = $reqJsonRpcVersion;
                     }
-                    $jsonrpcVersion = $reqJsonRpcVersion;
                 }
             }
         } else {
@@ -654,7 +656,7 @@ class Server extends BaseServer
 
         $req = new Request($methName->scalarVal());
         foreach ($params as $i => $param) {
-/// @todo allow support for named parameters, if this is a jsonrpc 2.0 call (which it should, unless it is a system.multicall on 1.0...)
+            /// @todo allow support for named parameters, if this is a jsonrpc 2.0 call (which it should, unless it is a system.multicall on 1.0...)
             if (!$req->addParam($param)) {
                 $i++; // for error message, we count params from 1
                 return static::_xmlrpcs_multicall_error(new static::$responseClass(0,

@@ -479,8 +479,8 @@ class Parser
         if (json_last_error() !== JSON_ERROR_NONE) {
             $this->_xh['isf'] = 3;
             $this->_xh['isf_reason'] = 'JSON parsing failed. Error: ' . json_last_error();
-/// @todo the parent class does not log anything in this case...
-            $this->getLogger()->error($this->_xh['isf_reason']);
+            // we do as the xml-rpc xml parser and so not log anything in this case...
+            //$this->getLogger()->error($this->_xh['isf_reason']);
             // q: should we convert $out to the desired encoding and return it, even if there is a decoding error?
             //return false;
         }
@@ -494,8 +494,8 @@ class Parser
                 if ($dstEncoding == 'ISO-8859-1') {
                     $this->convertEncoding($out, false);
                 } else {
+                    /// @todo we should raise an error really, but the "parent" class (XMLParser) does not, either
                     $this->getLogger()->error('JSON-RPC: ' . __METHOD__ . ': unsupported internal charset encoding of application: ' . $dstEncoding);
-/// @todo should we flag a fault condition? Check what the parent class does
                 }
             }
         }

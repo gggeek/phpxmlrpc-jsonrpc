@@ -248,7 +248,7 @@ class Serializer
                 $result .= "\"jsonrpc\": \"2.0\",\n";
                 break;
             default:
-/// @todo throw
+                $this->getLogger()->error("JSON-RPC: " . __METHOD__ . ": unsupported json-rpc version: '$jsonRpcVersion'");
                 break;
         }
 

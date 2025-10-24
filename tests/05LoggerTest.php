@@ -34,7 +34,8 @@ class LoggerTest extends PhpXmlRpc_PolyfillTestCase
         Charset::setLogger($l);
     }
 
-    public function testParserAltLogger()
+    // The Parser does not log this error any more - it only logs errors in cases where mbstring is disabled
+    /*public function testParserAltLogger()
     {
         $xp = new Parser();
         $l = $xp->getLogger();
@@ -48,7 +49,7 @@ class LoggerTest extends PhpXmlRpc_PolyfillTestCase
         $this->assertStringContainsString("JSON parsing failed", $this->errorBuffer);
 
         Parser::setLogger($l);
-    }
+    }*/
 
     public function testDeprecations()
     {
