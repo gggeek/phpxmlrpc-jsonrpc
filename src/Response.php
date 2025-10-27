@@ -117,6 +117,9 @@ class Response extends BaseResponse
      * @return Response
      */
     public static function withId($resp, $id) {
-        return new self($resp->value(), $resp->faultCode(), $resp->faultString(), $resp->valueType(), $id, $resp->httpResponse());
+        $version = $resp->getJsonRpcVersion();
+        $resp = new self($resp->value(), $resp->faultCode(), $resp->faultString(), $resp->valueType(), $id, $resp->httpResponse());
+        $resp->setJsonRpcVersion($version);
+        return $resp;
     }
 }
