@@ -190,7 +190,7 @@ class Request extends BaseRequest
     {
         $this->parsedResponseIsFromServer = false;
 
-        if ($this->debug) {
+        if ($this->debug > 0) {
             $this->getLogger()->debug("---GOT---\n$data\n---END---");
         }
 
@@ -308,7 +308,7 @@ class Request extends BaseRequest
             $r = new Response(0, PhpXmlRpc::$xmlrpcerr['invalid_xml'],
                 PhpXmlRpc::$xmlrpcstr['invalid_xml'] . ' ' . $_xh['isf_reason'], '', $this->id, $httpResponse);
 
-            if ($this->debug) {
+            if ($this->debug > 0) {
                 $this->getLogger()->debug($_xh['isf_reason']);
             }
         }
