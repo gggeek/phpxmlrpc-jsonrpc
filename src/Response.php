@@ -120,8 +120,10 @@ class Response extends BaseResponse
      */
     public static function withId($resp, $id) {
         $version = $resp->getJsonRpcVersion();
+        $isFromServer = $resp->isFromServer();
         $resp = new self($resp->value(), $resp->faultCode(), $resp->faultString(), $resp->valueType(), $id, $resp->httpResponse());
         $resp->setJsonRpcVersion($version);
+        $resp->setIsFromServer($isFromServer);
         return $resp;
     }
 
