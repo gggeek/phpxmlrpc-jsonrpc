@@ -391,9 +391,10 @@ class ServerTest extends PhpJsonRpc_ServerAwareTestCase
         }
     }
 
-    /// @todo base64 strings are sent as strings, since there's no json primitive type for that.
-    ///       Add a server method that that accepts a string and does the base64 decoding, then enable this test
-    /*public function testBase64()
+    /**
+     * NB: base64 values are sent as strings, since there's no json primitive type for that.
+     */
+    public function testBase64()
     {
         $sendString = 'Mary had a little lamb,
 Whose fleece was white as snow,
@@ -415,7 +416,7 @@ And turned it into nylon';
                 $this->assertEquals(str_replace(array("\r\n", "\r"), array("\n", "\n"), $sendString), $v->scalarval());
             }
         }
-    }*/
+    }
 
     /**
      * @dataProvider getAvailableJsonRpcVersions

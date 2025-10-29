@@ -170,15 +170,15 @@ And the array will be returned with the entries sorted by their numbers.';
         return new Response(new Value($s));
     }
 
-    public static $echosixtyfour_sig = array(array('string', 'base64'));
-    public static $echosixtyfour_doc = 'Accepts a base64 parameter and returns it decoded as a string';
+    public static $echosixtyfour_sig = array(array('string', 'string'));
+    public static $echosixtyfour_doc = 'Accepts a base64-encoded string parameter and returns it decoded as a string';
     public static function echoSixtyFour($req)
     {
         // Accepts an encoded value, but sends it back as a normal string.
-        // This is to test that base64 encoding is working as expected
+        // This is a silly test carried over from xml-rpc where base64 is a native type
         $incoming = $req->getParam(0);
 
-        return new Response(new Value($incoming->scalarval(), Value::$xmlrpcString));
+        return new Response(new Value(base64_decode($incoming->scalarval()), Value::$xmlrpcString));
     }
 
     public static $bitflipper_sig = array(array('array', 'array'));
