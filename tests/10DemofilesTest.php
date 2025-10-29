@@ -34,6 +34,12 @@ class DemoFilesTest extends PhpJsonRpc_WebTestCase
         $page = $this->request('?demo=client/introspect.php');
     }
 
+    public function testNotification()
+    {
+        $page = $this->request('?demo=client/notification.php');
+        $this->assertStringContainsString('Notification sent', $page);
+    }
+
     public function testParallel()
     {
         $page = $this->request('?demo=client/parallel.php');
