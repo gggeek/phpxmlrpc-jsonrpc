@@ -4,6 +4,7 @@ namespace PhpXmlRpc\JsonRpc;
 
 use PhpXmlRpc\JsonRpc\Helper\Charset;
 use PhpXmlRpc\JsonRpc\Helper\Parser;
+use PhpXmlRpc\JsonRpc\Helper\Serializer;
 use PhpXmlRpc\PhpXmlRpc;
 
 class PhpJsonRpc
@@ -22,12 +23,17 @@ class PhpJsonRpc
     public static function setLogger($logger)
     {
         Charset::setLogger($logger);
-        Client::setLogger($logger);
         Parser::setLogger($logger);
-        Request::setLogger($logger);
-        Server::setLogger($logger);
-        Value::setLogger($logger);
-        Wrapper::setLogger($logger);
+        Serializer::setLogger($logger);
+
+        // These are all handled by the call to PhpXmlRpc::setLogger
+        //Client::setLogger($logger);
+        //Notification::setLogger($logger);
+        //Request::setLogger($logger);
+        //Response::setLogger($logger);
+        //Server::setLogger($logger);
+        //Value::setLogger($logger);
+        //Wrapper::setLogger($logger);
 
         PhpXmlRpc::setLogger($logger);
     }
