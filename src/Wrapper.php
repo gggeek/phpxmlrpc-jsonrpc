@@ -9,7 +9,9 @@ class Wrapper extends BaseWrapper
 {
     use JsonRpcVersionAware;
 
-    static protected $namespace = '\\PhpXmlRpc\\JsonRpc\\';
+    protected static $namespace = '\\PhpXmlRpc\\JsonRpc\\';
+    protected static $prefix = 'jsonrpc';
+    protected static $allowedResponseClass = '\\PhpXmlRpc\\Response';
 
     protected function buildClientWrapperCode($client, $verbatimClientCopy, $prefix = 'xmlrpc', $namespace = '\\PhpXmlRpc\\')
     {

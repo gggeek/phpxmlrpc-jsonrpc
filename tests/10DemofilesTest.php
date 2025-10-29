@@ -2,8 +2,8 @@
 
 include_once __DIR__ . '/WebTestCase.php';
 
-use \PhpXmlRpc\JsonRpc\Request;
-use \PhpXmlRpc\JsonRpc\Value;
+use PhpXmlRpc\JsonRpc\Request;
+use PhpXmlRpc\JsonRpc\Value;
 
 /**
  * Tests for php files in the 'demo' directory.
@@ -56,22 +56,21 @@ class DemoFilesTest extends PhpJsonRpc_WebTestCase
 
     // *** servers ***
 
-    /*public function testCodegenServer()
+    public function testCodegenServer()
     {
         if (!extension_loaded('sqlite3')) {
             $this->markTestSkipped('PHP extension sqlite3 is required for this test');
         }
 
-        $page = $this->request('?demo=server/codegen.php');
-        $this->assertStringContainsString('<name>faultCode</name>', $page);
-        $this->assertRegexp('#<int>10(5|3)</int>#', $page);
+        $page = $this->request('?demo=server/codegen.php&generate=1');
+        $this->assertStringContainsString('Code generated', $page);
 
         $c = $this->newClient('?demo=server/codegen.php');
         $r = $c->send(new Request('CommentManager.getComments', array(
             new Value('aCommentId')
         )));
         $this->assertEquals(0, $r->faultCode());
-    }*/
+    }
 
     public function testDiscussServer()
     {
