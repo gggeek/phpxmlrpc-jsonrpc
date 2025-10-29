@@ -5,36 +5,23 @@ A php library for building json-rpc clients and servers.
 
 Originally bundled as part of the [phpxmlrpc/extras](https://github.com/gggeek/phpxmlrpc-extras) package.
 
-It supports both version 2.0 and 1.0 of the JSON-RPC protocol.
+It supports both version 2.0 and 1.0 of the JSON-RPC protocol _over HTTP_.
 
 Requirements and Installation
 -----------------------------
 
 * PHP >= 5.4.0
 * PHP Json extension
-* phpxmlrpc/phpxmlrpc >= 4.11.4
+* phpxmlrpc/phpxmlrpc >= 4.11.4 (currently requires the master branch tip)
 
 The recommended way to install this library is using Composer.
-
-Known limitations
------------------
-
-Features still to be implemented are: socket communications (both the provided Client and Server classes only work
-over HTTP).
-
-The "params passed by-name" calling convention is fully supported (both Client and Server side) only with PHP 8.0 and
-later.
-
-For json-rpc 1.0,  support is also missing for:
-- `__jsonclass__` class hinting
-- bi-directional communications, ie. requests/notifications sent from the Server to the Client
 
 Documentation
 -------------
 
 * See the documentation page at [gggeek.github.io/phpxmlrpc-jsonrpc](https://gggeek.github.io/phpxmlrpc-jsonrpc)
-  for a list of the library main features and all project related information, including information about online
-  resources such as debuggers and demo servers.
+  for a list of the library main features, __known limitations__ and all project related information, including information
+  about online resources such as debuggers and demo servers.
 
 * Automatically-generated documentation for the API is available online at [http://gggeek.github.io/phpxmlrpc-jsonrpc/doc/api/index.html](http://gggeek.github.io/phpxmlrpc-jsonrpc/doc/api/index.html)
 
@@ -49,7 +36,7 @@ Documentation
 Extras
 ------
 
-* This library does include a visual debugger which can be used to troubleshoot connections to 3rd party xml-rpc servers.
+* This library does include a visual debugger which can be used to troubleshoot connections to 3rd party json-rpc servers.
   In case you'd like to use the debugger but do not have a working PHP installation, you can run it standalone as a
   Container image. Instructions can be found at https://github.com/gggeek/phpxmlrpc-debugger
 
