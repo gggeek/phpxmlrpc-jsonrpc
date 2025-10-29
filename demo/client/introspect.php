@@ -36,6 +36,9 @@ if ($resp->faultCode()) {
     $v = $resp->value();
 
     // check if the server supports 'system.multicall', and configure the client accordingly
+    // Note: this code makes sense only when talking to JSON-RPC 1.0 servers, as batch calling is part of the JSON-RPC 2.0 spec,
+    // and the Client is smart enough to switch between system.multicall and batch calls automatically based on the
+    // JSON-RPC version in use
     $avoidMulticall = true;
     foreach ($v as $methodName) {
         if ($methodName == 'system.multicall') {
