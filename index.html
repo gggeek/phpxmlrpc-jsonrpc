@@ -12,6 +12,7 @@
 <a href="#news">News</a> |
 <a href="#download">Download</a> |
 <a href="#features">Features</a> |
+<a href="#features">To be implemented</a> |
 <a href="#requirements">Requirements</a> |
 <a href="#documentation">Documentation</a> |
 <a href="#demoserver">Online demo server</a> |
@@ -33,10 +34,8 @@
 
 <h2><a id="features">Main Features</a></h2>
 <ul>
-<li>Support for creating both json-rpc clients and servers</li>
-<li>Fully automated or fully manual, fine-grained encoding and decoding from PHP values to json-rpc</li>
-<li>Support for UTF8, Latin-1 and ASCII character encodings. With the PHP mbstring extension enabled, even more character
-    sets are supported</li>
+<li>Support for JSON-RPC version 1.0 and 2.0 over HTTP, including Notifications and batch calls</li>
+<li>Support for creating both JSON-RPC clients and servers</li>
 <li>Support for http features including compression of both requests and responses, cookies, proxies, basic and digest auth,
     ntlm auth, https, http2, keepalives (some only with the PHP cURL extension)</li>
 <li>Possibility to register existing PHP function or class methods as webservices, extracting value-added information
@@ -44,8 +43,20 @@
 <li>Optional validation in the server of parameter types of incoming json-rpc request</li>
 <li>A web based visual debugger is included with the library. It is also available as self-contained Container from
     <a href="https://github.com/gggeek/phpxmlrpc-debugger/pkgs/container/phpxmlrpc-debugger">https://github.com/gggeek/phpxmlrpc-debugger/</a></li>
-<li>Other cool features are delivered with extra packages, such as a <a href="https://github.com/gggeek/phpxmlrpc-extras">
-    json-rpc server</a> that automatically generates html documentation of exposed webservices</li>
+<li>Not in the JSON-RPC spec, but inherited from the XML-RPC codebase: support for methods `system.listMethods`,
+    `system.methodHelp`, `system.methodSignature`, `system.getCapabilities` and `system.multicall`</li>
+<li>Support for UTF8, Latin-1 and ASCII character encodings. With the PHP mbstring extension enabled, even more character
+    sets are supported</li>
+<li>Fully automated or fully manual, fine-grained encoding and decoding from PHP values to json-rpc</li>
+<li>Other cool features are delivered with the <a href="https://github.com/gggeek/phpxmlrpc-extras">"extras"</a>, package
+    such as json-rpc server that automatically generates html documentation of exposed webservices</li>
+</ul>
+
+<h2><a id="missing">Not (yet?) implemented</a></h2>
+<ul>
+<li>socket communications - both the provided Client and Server classes only work over HTTP</li>
+<li>`__jsonclass__` class hinting for JSON-RPC 1.0</li>
+<li>JSON-RPC 1.0 bi-directional communications, ie. requests and notifications sent from the Server to the Client</li>
 </ul>
 
 <h2><a id="requirements">Requirements</a></h2>
@@ -68,14 +79,21 @@
 
 <h2><a id="news">News</a></h2>
 <p>The latest stable release is version <a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/releases/tag/1.0.0-beta2"><span class="evidence">1.0.0-beta2</span></a>
-    released on April. 15, 2024 (<a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/releases/tag/1.0.0-beta2">Release notes</a>)</p>
+    released on April. 15, 2024 (<a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/releases/tag/1.0.0-beta2">Release notes</a>)<br>
+    NB: as of November 2025 the `master` branch available on Github is much more advanced than this release in terms of features and test coverage,
+    and is in fact recommended for use.</p>
 
 <h2><a id="documentation">Documentation</a></h2>
 
 <h3>API manual</h3>
-    <p>Automatically generated <a href="doc/api/index.html">API docs</a> are available online.<br>
+<p>Automatically generated <a href="doc/api/index.html">API docs</a> are available online.<br>
     A good way to get started with API usage is to take a look at the <a href="https://github.com/gggeek/phpxmlrpc-jsonrpc/tree/master/demo">demo source code</a>,
     showcasing both Client and Server use cases.</p>
+
+<h3>PHPXMLRPC user manual</h3>
+<p>The PHPXMLRPC library, which this library extends, comes with an extended user manual. Many of the concepts exposed in
+    it also apply to the JSON-RPC codebase. It can be <a href="https://github.com/gggeek/phpxmlrpc/blob/master/doc/manual/phpxmlrpc_manual.adoc">viewed online</a>
+    or downloaded <a href="https://gggeek.github.io/phpxmlrpc/doc-4/phpxmlrpc_manual.pdf">in pdf format</a> from GitHub</p>
 
 <h3>Release Notes</h3>
 <p>The description of changes in each release is available as part of the distribution. It is also accessible
@@ -132,7 +150,7 @@ To contact the maintainers of the library please goto the library <a href="https
 <!--<a href="https://validator.w3.org/nu/?doc=http%3A%2F%2Fgggeek.github.io%2Fphpxmlrpc%2F"><img
     src="https://www.w3.org/Icons/valid-xhtml10" height="31" width="88"
     alt="Valid HTML 5"></a><br>-->
-Page last updated: 2025/10/5
+Page last updated: 2025/10/29
 
 </div>
 </body>
