@@ -12,7 +12,7 @@ use PhpXmlRpc\JsonRpc\Client;
 use PhpXmlRpc\JsonRpc\Wrapper;
 
 $w = new Wrapper();
-$code = $w->wrapXmlrpcServer(
+$code = $w->wrapJsonrpcServer(
     new Client(JSONRPCSERVER),
     array(
         'return_source' => true,

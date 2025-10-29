@@ -13,6 +13,22 @@ class Wrapper extends BaseWrapper
     protected static $prefix = 'jsonrpc';
     protected static $allowedResponseClass = '\\PhpXmlRpc\\Response';
 
+    /**
+     * @see Wrapper::wrapXmlrpcServer
+     */
+    public function wrapJsonrpcServer($client, $extraOptions = array())
+    {
+        return $this->wrapXmlrpcServer($client, $extraOptions);
+    }
+
+    /**
+     * @see Wrapper::wrapXmlrpcMethod
+     */
+    public function wrapJsonrpcMethod($client, $methodName, $extraOptions = array())
+    {
+        return $this->wrapXmlrpcMethod($client, $methodName, $extraOptions);
+    }
+
     protected function buildClientWrapperCode($client, $verbatimClientCopy, $prefix = 'xmlrpc', $namespace = '\\PhpXmlRpc\\')
     {
         $code = parent::buildClientWrapperCode($client, $verbatimClientCopy, $prefix, $namespace);

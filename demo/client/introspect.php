@@ -6,7 +6,7 @@ output('<html lang="en">
 <body>
 <h1>Introspect demo</h1>
 <h2>Query server for available methods, their description and their signatures</h2>
-<h3>The code demonstrates usage of multicall, introspection methods `system.listMethods` and co., which are implemented by our own Server, and `$client->return_type`</h3>
+<h3>The code demonstrates usage of batch calls, introspection methods `system.listMethods` and co., which are implemented by our own Server, and `$client->return_type`</h3>
 <p>You can see the source to this page here: <a href="introspect.php?showSource=1">introspect.php</a></p>
 ');
 
