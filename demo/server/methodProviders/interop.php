@@ -59,10 +59,9 @@ function i_echoParam($req)
 function i_whichToolkit($req)
 {
     $ret = array(
-/// @todo replace with JsonRpc info
-        "toolkitDocsUrl" => "https://gggeek.github.io/phpxmlrpc/",
-        "toolkitName" => PhpXmlRpc\PhpXmlRpc::$xmlrpcName,
-        "toolkitVersion" => PhpXmlRpc\PhpXmlRpc::$xmlrpcVersion,
+        "toolkitDocsUrl" => "https://gggeek.github.io/phpxmlrpc-jsonrpc/",
+        "toolkitName" => PhpXmlRpc\JsonRpc\PhpJsonRpc::$jsonrpcName,
+        "toolkitVersion" => PhpXmlRpc\JsonRpc\PhpJsonRpc::$jsonrpcVersion,
         "toolkitOperatingSystem" => $_SERVER['SERVER_SOFTWARE'],
     );
 
