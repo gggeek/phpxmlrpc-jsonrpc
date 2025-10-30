@@ -8,7 +8,7 @@
     {
         "php": "^5.4.0 || ^7.0 || ^8.0",
         "ext-json": "*",
-        "phpxmlrpc/phpxmlrpc": "dev-master as 4.11.4"
+        "phpxmlrpc/phpxmlrpc": "^4.11.4"
     },
     "require-dev": {
         "ext-curl": "*",
