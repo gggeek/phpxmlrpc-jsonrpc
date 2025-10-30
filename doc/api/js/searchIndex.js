@@ -26,6 +26,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Client.html#method_send"
         },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Client\u003A\u003AfixErrorCodeIfNeeded\u0028\u0029",
+            "name": "fixErrorCodeIfNeeded",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Client.html#method_fixErrorCodeIfNeeded"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Client\u003A\u003A_try_multicall\u0028\u0029",
+            "name": "_try_multicall",
+            "summary": "Attempt\u0020to\u0020boxcar\u0020\u0024reqs\u0020via\u0020a\u0020batch\u0020call.",
+            "url": "classes/PhpXmlRpc-JsonRpc-Client.html#method__try_multicall"
+        },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Client\u003A\u003AOPT_JSONRPC_VERSION",
             "name": "OPT_JSONRPC_VERSION",
             "summary": "",
@@ -45,11 +55,6 @@ Search.appendIndex(
             "name": "extra_options",
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Client.html#property_extra_options"
-        },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Client\u003A\u003A\u0024jsonrpc_version",
-            "name": "jsonrpc_version",
-            "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Client.html#property_jsonrpc_version"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Client\u003A\u003A\u0024no_multicall",
             "name": "no_multicall",
@@ -101,6 +106,11 @@ Search.appendIndex(
             "summary": "Encode\u0020php\u0020strings\u0020to\u0020valid\u0020JSON\u0020unicode\u0020representation.",
             "url": "classes/PhpXmlRpc-JsonRpc-Helper-Charset.html#method_encodeEntities"
         },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Charset\u003A\u003AknownCharsets\u0028\u0029",
+            "name": "knownCharsets",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Helper-Charset.html#method_knownCharsets"
+        },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Charset\u003A\u003A\u0024ecma262_iso88591_Entities",
             "name": "ecma262_iso88591_Entities",
             "summary": "",
@@ -151,6 +161,31 @@ Search.appendIndex(
             "summary": "Recursively\u0020convert\u0020charset\u0020encoding\u0020of\u0020data\u0020gotten\u0020from\u0020json\u0020decoding.",
             "url": "classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_convertEncoding"
         },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Parser\u003A\u003Axmlrpc_se_any\u0028\u0029",
+            "name": "xmlrpc_se_any",
+            "summary": "xml\u0020parser\u0020handler\u0020function\u0020for\u0020opening\u0020element\u0020tags.",
+            "url": "classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_xmlrpc_se_any"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Parser\u003A\u003A__get\u0028\u0029",
+            "name": "__get",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___get"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Parser\u003A\u003A__set\u0028\u0029",
+            "name": "__set",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___set"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Parser\u003A\u003A__isset\u0028\u0029",
+            "name": "__isset",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___isset"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Parser\u003A\u003A__unset\u0028\u0029",
+            "name": "__unset",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___unset"
+        },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Parser\u003A\u003ARETURN_JSONRPCVALS",
             "name": "RETURN_JSONRPCVALS",
             "summary": "",
@@ -178,13 +213,8 @@ Search.appendIndex(
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Serializer\u003A\u003AgetCharsetEncoder\u0028\u0029",
             "name": "getCharsetEncoder",
-            "summary": "",
+            "summary": "Reimplemented\u0020to\u0020make\u0020us\u0020use\u0020the\u0020correct\u0020parser\u0020type.",
             "url": "classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#method_getCharsetEncoder"
-        },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Serializer\u003A\u003AsetCharsetEncoder\u0028\u0029",
-            "name": "setCharsetEncoder",
-            "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#method_setCharsetEncoder"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Serializer\u003A\u003AserializeValue\u0028\u0029",
             "name": "serializeValue",
@@ -201,15 +231,10 @@ Search.appendIndex(
             "summary": "Serialize\u0020a\u0020Response\u0020as\u0020json.",
             "url": "classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#method_serializeResponse"
         },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Serializer\u003A\u003A\u0024charsetEncoder",
-            "name": "charsetEncoder",
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Serializer\u003A\u003A\u0024dateTimeFormat",
+            "name": "dateTimeFormat",
             "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#property_charsetEncoder"
-        },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Helper\\Serializer\u003A\u003A\u0024defaultJsonrpcVersion",
-            "name": "defaultJsonrpcVersion",
-            "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#property_defaultJsonrpcVersion"
+            "url": "classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#property_dateTimeFormat"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Notification",
             "name": "Notification",
@@ -218,7 +243,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Notification\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "",
+            "summary": "The\u0020constructor\u0020does\u0020not\u0020take\u0020a\u0020jsonRpcVersion\u0020arg,\u0020as\u0020this\u0020is\u0020a\u0020json\u002DRpc\u00202.0\u0020notification.",
             "url": "classes/PhpXmlRpc-JsonRpc-Notification.html#method___construct"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Notification\u003A\u003AgenerateId\u0028\u0029",
@@ -256,6 +281,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-PhpJsonRpc.html#property_jsonrpcVersion"
         },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\PhpJsonRpc\u003A\u003A\u0024defaultJsonrpcVersion",
+            "name": "defaultJsonrpcVersion",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-PhpJsonRpc.html#property_defaultJsonrpcVersion"
+        },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\PhpJsonRpc\u003A\u003A\u0024json_decode_flags",
             "name": "json_decode_flags",
             "summary": "",
@@ -281,25 +311,20 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Request.html#property_id"
         },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Request\u003A\u003AsetJsonRpcVersion\u0028\u0029",
-            "name": "setJsonRpcVersion",
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Request\u003A\u003AgetParamName\u0028\u0029",
+            "name": "getParamName",
             "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Request.html#method_setJsonRpcVersion"
-        },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Request\u003A\u003AgetJsonRpcVersion\u0028\u0029",
-            "name": "getJsonRpcVersion",
-            "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Request.html#method_getJsonRpcVersion"
-        },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Request\u003A\u003AgetParamNames\u0028\u0029",
-            "name": "getParamNames",
-            "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Request.html#method_getParamNames"
+            "url": "classes/PhpXmlRpc-JsonRpc-Request.html#method_getParamName"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Request\u003A\u003AaddParam\u0028\u0029",
             "name": "addParam",
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Request.html#method_addParam"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Request\u003A\u003AgetCharsetEncoder\u0028\u0029",
+            "name": "getCharsetEncoder",
+            "summary": "Reimplemented\u0020to\u0020make\u0020us\u0020use\u0020the\u0020correct\u0020parser\u0020type.",
+            "url": "classes/PhpXmlRpc-JsonRpc-Request.html#method_getCharsetEncoder"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Request\u003A\u003AgetParser\u0028\u0029",
             "name": "getParser",
@@ -308,7 +333,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Request\u003A\u003AparseResponse\u0028\u0029",
             "name": "parseResponse",
-            "summary": "Parse\u0020the\u0020json\u002Drpc\u0020response\u0020contained\u0020in\u0020the\u0020string\u0020\u0024data\u0020and\u0020return\u0020a\u0020jsonrpcresp\u0020object.",
+            "summary": "Parse\u0020the\u0020json\u002Drpc\u0020response\u0020contained\u0020in\u0020the\u0020string\u0020\u0024data\u0020and\u0020return\u0020a\u0020Response\u0020object.",
             "url": "classes/PhpXmlRpc-JsonRpc-Request.html#method_parseResponse"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Request\u003A\u003AgenerateId\u0028\u0029",
@@ -320,11 +345,6 @@ Search.appendIndex(
             "name": "content_type",
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Request.html#property_content_type"
-        },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Request\u003A\u003A\u0024jsonrpc_version",
-            "name": "jsonrpc_version",
-            "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Request.html#property_jsonrpc_version"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Request\u003A\u003A\u0024paramnames",
             "name": "paramnames",
@@ -356,60 +376,55 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Response.html#property_id"
         },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003AsetJsonRpcVersion\u0028\u0029",
-            "name": "setJsonRpcVersion",
-            "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Response.html#method_setJsonRpcVersion"
-        },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003AgetJsonRpcVersion\u0028\u0029",
-            "name": "getJsonRpcVersion",
-            "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Response.html#method_getJsonRpcVersion"
-        },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003Aserialize\u0028\u0029",
             "name": "serialize",
             "summary": "Returns\u0020json\u0020representation\u0020of\u0020the\u0020response.\u0020Sets\u0020\u0060payload\u0060\u0020and\u0020\u0060content_type\u0060\u0020properties.",
             "url": "classes/PhpXmlRpc-JsonRpc-Response.html#method_serialize"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003AgetCharsetEncoder\u0028\u0029",
+            "name": "getCharsetEncoder",
+            "summary": "Reimplemented\u0020to\u0020make\u0020us\u0020use\u0020the\u0020correct\u0020parser\u0020type.",
+            "url": "classes/PhpXmlRpc-JsonRpc-Response.html#method_getCharsetEncoder"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003Axml_header\u0028\u0029",
             "name": "xml_header",
             "summary": "Reimplemented\u0020for\u0020completeness.",
             "url": "classes/PhpXmlRpc-JsonRpc-Response.html#method_xml_header"
         },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003A__get\u0028\u0029",
-            "name": "__get",
-            "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Response.html#method___get"
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003AwithId\u0028\u0029",
+            "name": "withId",
+            "summary": "Duplicates\u0020a\u0020Response,\u0020injecting\u0020the\u0020id",
+            "url": "classes/PhpXmlRpc-JsonRpc-Response.html#method_withId"
         },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003A__set\u0028\u0029",
-            "name": "__set",
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003AisFromServer\u0028\u0029",
+            "name": "isFromServer",
             "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Response.html#method___set"
+            "url": "classes/PhpXmlRpc-JsonRpc-Response.html#method_isFromServer"
         },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003A__isset\u0028\u0029",
-            "name": "__isset",
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003AsetIsFromServer\u0028\u0029",
+            "name": "setIsFromServer",
             "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Response.html#method___isset"
-        },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003A__unset\u0028\u0029",
-            "name": "__unset",
-            "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Response.html#method___unset"
+            "url": "classes/PhpXmlRpc-JsonRpc-Response.html#method_setIsFromServer"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003A\u0024content_type",
             "name": "content_type",
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Response.html#property_content_type"
         },                {
-            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003A\u0024jsonrpc_version",
-            "name": "jsonrpc_version",
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Response\u003A\u003A\u0024is_from_server",
+            "name": "is_from_server",
             "summary": "",
-            "url": "classes/PhpXmlRpc-JsonRpc-Response.html#property_jsonrpc_version"
+            "url": "classes/PhpXmlRpc-JsonRpc-Response.html#property_is_from_server"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server",
             "name": "Server",
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Server.html"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003AgetCharsetEncoder\u0028\u0029",
+            "name": "getCharsetEncoder",
+            "summary": "Reimplemented\u0020to\u0020make\u0020us\u0020use\u0020the\u0020correct\u0020parser\u0020type.",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#method_getCharsetEncoder"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003AgetParser\u0028\u0029",
             "name": "getParser",
@@ -421,10 +436,40 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Server.html#method_serializeDebug"
         },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003Aservice\u0028\u0029",
+            "name": "service",
+            "summary": "Execute\u0020the\u0020json\u002Drpc\u0020request,\u0020printing\u0020the\u0020response.",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#method_service"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003AparseRequestHeaders\u0028\u0029",
+            "name": "parseRequestHeaders",
+            "summary": "Parse\u0020http\u0020headers\u0020received\u0020along\u0020with\u0020the\u0020json\u002Drpc\u0020request.\u0020If\u0020needed,\u0020inflate\u0020request.",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#method_parseRequestHeaders"
+        },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003Aexecute\u0028\u0029",
             "name": "execute",
-            "summary": "Note\u003A\u0020syntax\u0020differs\u0020from\u0020overridden\u0020method,\u0020by\u0020adding\u0020an\u0020ID\u0020param",
+            "summary": "Note\u003A\u0020syntax\u0020differs\u0020from\u0020overridden\u0020method,\u0020by\u0020adding\u0020msgID\u0020and\u0020jsonrpcVersion\u0020args.",
             "url": "classes/PhpXmlRpc-JsonRpc-Server.html#method_execute"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003AfixErrorCodeIfNeeded\u0028\u0029",
+            "name": "fixErrorCodeIfNeeded",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#method_fixErrorCodeIfNeeded"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003AgeneratePayload\u0028\u0029",
+            "name": "generatePayload",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#method_generatePayload"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003AinjectDebugInfo\u0028\u0029",
+            "name": "injectDebugInfo",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#method_injectDebugInfo"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003AprintPayload\u0028\u0029",
+            "name": "printPayload",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#method_printPayload"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003AmethodNameCallback\u0028\u0029",
             "name": "methodNameCallback",
@@ -440,6 +485,26 @@ Search.appendIndex(
             "name": "xml_header",
             "summary": "No\u0020xml\u0020header\u0020generated\u0020by\u0020the\u0020server,\u0020since\u0020we\u0020are\u0020sending\u0020json.",
             "url": "classes/PhpXmlRpc-JsonRpc-Server.html#method_xml_header"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003AisSyscall\u0028\u0029",
+            "name": "isSyscall",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#method_isSyscall"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003AgetOption\u0028\u0029",
+            "name": "getOption",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#method_getOption"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003AsetOption\u0028\u0029",
+            "name": "setOption",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#method_setOption"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003AOPT_DEBUG_FORMAT",
+            "name": "OPT_DEBUG_FORMAT",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#constant_OPT_DEBUG_FORMAT"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003A\u0024responseClass",
             "name": "responseClass",
@@ -461,6 +526,21 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Server.html#property_debug"
         },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003A\u0024is_servicing_notification",
+            "name": "is_servicing_notification",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#property_is_servicing_notification"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003A\u0024is_servicing_multicall",
+            "name": "is_servicing_multicall",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#property_is_servicing_multicall"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Server\u003A\u003A\u0024debug_format",
+            "name": "debug_format",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Server.html#property_debug_format"
+        },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Traits\\EncoderAware",
             "name": "EncoderAware",
             "summary": "",
@@ -480,6 +560,26 @@ Search.appendIndex(
             "name": "encoder",
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Traits-EncoderAware.html#property_encoder"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Traits\\JsonRpcVersionAware",
+            "name": "JsonRpcVersionAware",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Traits\\JsonRpcVersionAware\u003A\u003AsetJsonRpcVersion\u0028\u0029",
+            "name": "setJsonRpcVersion",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_setJsonRpcVersion"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Traits\\JsonRpcVersionAware\u003A\u003AgetJsonRpcVersion\u0028\u0029",
+            "name": "getJsonRpcVersion",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_getJsonRpcVersion"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Traits\\JsonRpcVersionAware\u003A\u003A\u0024jsonrpc_version",
+            "name": "jsonrpc_version",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#property_jsonrpc_version"
         },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Traits\\SerializerAware",
             "name": "SerializerAware",
@@ -506,6 +606,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Value.html"
         },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Value\u003A\u003AgetCharsetEncoder\u0028\u0029",
+            "name": "getCharsetEncoder",
+            "summary": "Reimplemented\u0020to\u0020make\u0020us\u0020use\u0020the\u0020correct\u0020parser\u0020type.",
+            "url": "classes/PhpXmlRpc-JsonRpc-Value.html#method_getCharsetEncoder"
+        },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Value\u003A\u003Aserialize\u0028\u0029",
             "name": "serialize",
             "summary": "Returns\u0020json\u0020representation\u0020of\u0020the\u0020value.",
@@ -516,10 +621,40 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Wrapper.html"
         },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Wrapper\u003A\u003AwrapJsonrpcServer\u0028\u0029",
+            "name": "wrapJsonrpcServer",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Wrapper.html#method_wrapJsonrpcServer"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Wrapper\u003A\u003AwrapJsonrpcMethod\u0028\u0029",
+            "name": "wrapJsonrpcMethod",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Wrapper.html#method_wrapJsonrpcMethod"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Wrapper\u003A\u003AbuildClientWrapperCode\u0028\u0029",
+            "name": "buildClientWrapperCode",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Wrapper.html#method_buildClientWrapperCode"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Wrapper\u003A\u003AcloneClientForClosure\u0028\u0029",
+            "name": "cloneClientForClosure",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Wrapper.html#method_cloneClientForClosure"
+        },                {
             "fqsen": "\\PhpXmlRpc\\JsonRpc\\Wrapper\u003A\u003A\u0024namespace",
             "name": "namespace",
             "summary": "",
             "url": "classes/PhpXmlRpc-JsonRpc-Wrapper.html#property_namespace"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Wrapper\u003A\u003A\u0024prefix",
+            "name": "prefix",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Wrapper.html#property_prefix"
+        },                {
+            "fqsen": "\\PhpXmlRpc\\JsonRpc\\Wrapper\u003A\u003A\u0024allowedResponseClass",
+            "name": "allowedResponseClass",
+            "summary": "",
+            "url": "classes/PhpXmlRpc-JsonRpc-Wrapper.html#property_allowedResponseClass"
         },                {
             "fqsen": "\\",
             "name": "\\",

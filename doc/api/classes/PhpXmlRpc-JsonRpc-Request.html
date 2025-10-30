@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
             <title>JSONRPC</title>
-
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
     <link rel="icon" href="images/favicon.ico"/>
@@ -25,7 +25,7 @@
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="index.html" class="phpdocumentor-title__link">JSONRPC 1.0.0-beta3</a></h1>
+    <h1 class="phpdocumentor-title"><a href="index.html" class="phpdocumentor-title__link">JSONRPC 1.0.0</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -62,7 +62,7 @@
     <ul class="phpdocumentor-list">
                     <li>
                 <a href="namespaces/phpxmlrpc-jsonrpc.html" class="">JsonRpc</a>
-
+                
             </li>
             </ul>
 
@@ -74,7 +74,7 @@
 </h4>
 
                         </section>
-
+            
     <section class="phpdocumentor-sidebar__category -reports">
         <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
                 <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
@@ -102,18 +102,18 @@
         <span class="phpdocumentor-element__extends">
         extends <abbr title="\PhpXmlRpc\Request">Request</abbr>
     </span>
-
+    
             <div class="phpdocumentor-element__package">
             in package
             <ul class="phpdocumentor-breadcrumbs">
                                     <li class="phpdocumentor-breadcrumb"><a href="packages/JSONRPC.html">JSONRPC</a></li>
                             </ul>
         </div>
-
-
+    
+    
             <span class="phpdocumentor-element__extends">
             uses
-                            <a href="classes/PhpXmlRpc-JsonRpc-Traits-SerializerAware.html"><abbr title="\PhpXmlRpc\JsonRpc\Traits\SerializerAware">SerializerAware</abbr></a>                    </span>
+                            <a href="classes/PhpXmlRpc-JsonRpc-Traits-SerializerAware.html"><abbr title="\PhpXmlRpc\JsonRpc\Traits\SerializerAware">SerializerAware</abbr></a>,                             <a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html"><abbr title="\PhpXmlRpc\JsonRpc\Traits\JsonRpcVersionAware">JsonRpcVersionAware</abbr></a>                    </span>
     </h2>
 
 <div class="phpdocumentor-label-line">
@@ -124,11 +124,11 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">12</span>
+    <span class="phpdocumentor-element-found-in__line">15</span>
 
     </aside>
 
-
+        
 
 
 
@@ -157,7 +157,7 @@
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
+            <dt class="phpdocumentor-table-of-contents__entry -property -protected">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Request.html#property_content_type">$content_type</a>
     <span>
                         &nbsp;: mixed            </span>
@@ -182,9 +182,9 @@
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -protected">
-    <a class="" href="classes/PhpXmlRpc-JsonRpc-Request.html#property_jsonrpc_version">$jsonrpc_version</a>
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#property_jsonrpc_version">$jsonrpc_version</a>
     <span>
-                        &nbsp;: string            </span>
+                        &nbsp;: string|null            </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -protected">
@@ -220,15 +220,22 @@
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/PhpXmlRpc-JsonRpc-Request.html#method_getJsonRpcVersion">getJsonRpcVersion()</a>
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Request.html#method_getCharsetEncoder">getCharsetEncoder()</a>
     <span>
-                                &nbsp;: string    </span>
+                                &nbsp;: <a href="classes/PhpXmlRpc-JsonRpc-Helper-Charset.html"><abbr title="\PhpXmlRpc\JsonRpc\Helper\Charset">Charset</abbr></a>    </span>
+</dt>
+<dd>Reimplemented to make us use the correct parser type.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_getJsonRpcVersion">getJsonRpcVersion()</a>
+    <span>
+                                &nbsp;: string|null    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/PhpXmlRpc-JsonRpc-Request.html#method_getParamNames">getParamNames()</a>
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Request.html#method_getParamName">getParamName()</a>
     <span>
-                                &nbsp;: array&lt;string|int, string&gt;    </span>
+                                &nbsp;: string    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
@@ -253,12 +260,12 @@
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Request.html#method_parseResponse">parseResponse()</a>
     <span>
-                                &nbsp;: <a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>    </span>
+                                &nbsp;: <a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>|true    </span>
 </dt>
-<dd>Parse the json-rpc response contained in the string $data and return a jsonrpcresp object.</dd>
+<dd>Parse the json-rpc response contained in the string $data and return a Response object.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/PhpXmlRpc-JsonRpc-Request.html#method_setJsonRpcVersion">setJsonRpcVersion()</a>
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_setJsonRpcVersion">setJsonRpcVersion()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
@@ -272,16 +279,16 @@
             <dt class="phpdocumentor-table-of-contents__entry -method -protected">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Request.html#method_generateId">generateId()</a>
     <span>
-                                &nbsp;: mixed    </span>
+                                &nbsp;: string|int    </span>
 </dt>
 
     </dl>
 
 
 
+        
 
-
-
+        
     <section class="phpdocumentor-properties">
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
@@ -292,7 +299,7 @@
         class="
             phpdocumentor-element
             -property
-            -public
+            -protected
                                                                     "
 >
     <h4 class="phpdocumentor-element__name" id="property_content_type">
@@ -305,25 +312,25 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">17</span>
+    <span class="phpdocumentor-element-found-in__line">21</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__visibility">protected</span>
             <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$content_type</span>
      = <span class="phpdocumentor-signature__default-value">&#039;application/json&#039;</span></code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
                     <article
@@ -343,25 +350,25 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">23</span>
+    <span class="phpdocumentor-element-found-in__line">25</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
         <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$currentIdCounter</span>
      = <span class="phpdocumentor-signature__default-value">1</span></code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
                     <article
@@ -381,25 +388,25 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">24</span>
+    <span class="phpdocumentor-element-found-in__line">26</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
         <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$currentIdPrefix</span>
      = <span class="phpdocumentor-signature__default-value">&#039;&#039;</span></code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
                     <article
@@ -419,25 +426,25 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">16</span>
+    <span class="phpdocumentor-element-found-in__line">20</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
             <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$id</span>
      = <span class="phpdocumentor-signature__default-value">null</span></code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
                     <article
@@ -449,33 +456,33 @@
 >
     <h4 class="phpdocumentor-element__name" id="property_jsonrpc_version">
         $jsonrpc_version
-        <a href="classes/PhpXmlRpc-JsonRpc-Request.html#property_jsonrpc_version" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#property_jsonrpc_version" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                                             </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="Traits/JsonRpcVersionAware.php"><a href="files/traits-jsonrpcversionaware.html"><abbr title="Traits/JsonRpcVersionAware.php">JsonRpcVersionAware.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">19</span>
+    <span class="phpdocumentor-element-found-in__line">8</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
-            <span class="phpdocumentor-signature__type">string</span>
+            <span class="phpdocumentor-signature__type">string|null</span>
     <span class="phpdocumentor-signature__name">$jsonrpc_version</span>
-     = <span class="phpdocumentor-signature__default-value">\PhpXmlRpc\JsonRpc\PhpJsonRpc::VERSION_2_0</span></code>
+    </code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
                     <article
@@ -495,25 +502,25 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">21</span>
+    <span class="phpdocumentor-element-found-in__line">23</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
             <span class="phpdocumentor-signature__type">array&lt;string|int, string&gt;</span>
     <span class="phpdocumentor-signature__name">$paramnames</span>
      = <span class="phpdocumentor-signature__default-value">array()</span></code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
                     <article
@@ -537,21 +544,21 @@
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
         <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$serializer</span>
     </code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
             </section>
@@ -576,19 +583,19 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">32</span>
+    <span class="phpdocumentor-element-found-in__line">44</span>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$methodName</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, <abbr title="\PhpXmlRpc\Value">Value</abbr>&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$params</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">array()</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$methodName</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, <abbr title="\PhpXmlRpc\Value">Value</abbr>&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$params</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">array()</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">null|string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$jsonrpcVersion</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -605,7 +612,14 @@
                 : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, <abbr title="\PhpXmlRpc\Value">Value</abbr>&gt;</span>
                  = <span class="phpdocumentor-signature__argument__default-value">array()</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>array of parameters to be passed to the method (xmlrpcval objects)</p>
+                    <section class="phpdocumentor-description"><p>array of parameters to be passed to the method (Value objects).
+For json-rpc 2.0 calls, the array keys should either be all consecutive integers
+starting at 0, or be all strings, in which case the named-parameters calling
+convention will be used instead of the positional parameters one.
+For json-rpc 1.0 calls, the array keys get discarded, as only positional params
+are supported by the protocol.
+Note that \PhpXmlRpc\Value of type DateTime and Base64 will be serialized as
+json strings, but not decoded into the correct type at the receiving end.</p>
 </section>
 
             </dd>
@@ -614,18 +628,29 @@
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>the id of the json-rpc request. NB: a NULL id is allowed, in which case an unique id will be
-generated. To send notifications, use the Notification class</p>
+                    <section class="phpdocumentor-description"><p>the id of the json-rpc request. A NULL value is allowed, in which case a unique id will be
+generated. To send notifications, use the Notification class instead.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$jsonrpcVersion</span>
+                : <span class="phpdocumentor-signature__argument__return-type">null|string</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>pass either PhpJsonRpc::VERSION_2_0 or PhpJsonRpc::VERSION_1_0 to force a value.
+If not set, the lib default value (set in PhpJsonRpc::$defaultJsonrpcVersion)
+will be used</p>
 </section>
 
             </dd>
             </dl>
 
+    
 
+    
 
-
-
-
+    
 </article>
                     <article
         class="phpdocumentor-element
@@ -641,19 +666,19 @@ generated. To send notifications, use the Notification class</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">79</span>
+    <span class="phpdocumentor-element-found-in__line">102</span>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">addParam</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$param</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$name</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -661,20 +686,22 @@ generated. To send notifications, use the Notification class</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$name</span>
                 : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Either all params should have a name, or none of them</p>
+</section>
 
             </dd>
             </dl>
 
+    
 
-
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
@@ -688,35 +715,36 @@ generated. To send notifications, use the Notification class</p>
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_getJsonRpcVersion">
-        getJsonRpcVersion()
-        <a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_getJsonRpcVersion" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_getCharsetEncoder">
+        getCharsetEncoder()
+        <a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_getCharsetEncoder" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">61</span>
+    <span class="phpdocumentor-element-found-in__line">116</span>
 
     </aside>
 
+        <p class="phpdocumentor-summary">Reimplemented to make us use the correct parser type.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getJsonRpcVersion</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">getCharsetEncoder</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/PhpXmlRpc-JsonRpc-Helper-Charset.html"><abbr title="\PhpXmlRpc\JsonRpc\Helper\Charset">Charset</abbr></a></span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
+    
+    
+    
+    
 
-
-
-
-
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">string</span>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/PhpXmlRpc-JsonRpc-Helper-Charset.html"><abbr title="\PhpXmlRpc\JsonRpc\Helper\Charset">Charset</abbr></a></span>
             </section>
 
 </article>
@@ -726,35 +754,92 @@ generated. To send notifications, use the Notification class</p>
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_getParamNames">
-        getParamNames()
-        <a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_getParamNames" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_getJsonRpcVersion">
+        getJsonRpcVersion()
+        <a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_getJsonRpcVersion" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Traits/JsonRpcVersionAware.php"><a href="files/traits-jsonrpcversionaware.html"><abbr title="Traits/JsonRpcVersionAware.php">JsonRpcVersionAware.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">22</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">getJsonRpcVersion</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string|null</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>NULL means let the global var PhpJsonRpc::$defaultJsonRpcVersion decide</p>
+</section>
+
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getParamName">
+        getParamName()
+        <a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_getParamName" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">69</span>
+    <span class="phpdocumentor-element-found-in__line">92</span>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getParamNames</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, string&gt;</span></code>
+                    <span class="phpdocumentor-signature__name">getParamName</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$i</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$i</span>
+                : <span class="phpdocumentor-signature__argument__return-type">int</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
 
+    
 
-
-
-
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">array&lt;string|int, string&gt;</span>
+        <span class="phpdocumentor-signature__response_type">string</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>A string is returned, as long as only string keys are used in the constructor and addParam calls.
+Does not check if the index is oyt of bounds.</p>
+</section>
+
             </section>
 
 </article>
@@ -772,7 +857,7 @@ generated. To send notifications, use the Notification class</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">94</span>
+    <span class="phpdocumentor-element-found-in__line">129</span>
 
     </aside>
 
@@ -784,12 +869,12 @@ generated. To send notifications, use the Notification class</p>
 
     <div class="phpdocumentor-label-line">
         </div>
+    
+    
+    
+    
 
-
-
-
-
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
@@ -815,21 +900,21 @@ generated. To send notifications, use the Notification class</p>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getSerializer</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
+    
+    
+    
+    
 
+    
 
-
-
-
-
-
-
+    
 </article>
                     <article
         class="phpdocumentor-element
@@ -845,25 +930,25 @@ generated. To send notifications, use the Notification class</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">44</span>
+    <span class="phpdocumentor-element-found-in__line">82</span>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">id</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
+    
+    
+    
+    
 
+    
 
-
-
-
-
-
-
+    
 </article>
                     <article
         class="phpdocumentor-element
@@ -879,20 +964,20 @@ generated. To send notifications, use the Notification class</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">153</span>
+    <span class="phpdocumentor-element-found-in__line">188</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Parse the json-rpc response contained in the string $data and return a jsonrpcresp object.</p>
+        <p class="phpdocumentor-summary">Parse the json-rpc response contained in the string $data and return a Response object.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">parseResponse</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$data</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$headersProcessed</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$returnType</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">Parser::RETURN_JSONRPCVALS</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a></span></code>
+                    <span class="phpdocumentor-signature__name">parseResponse</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$data</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$headersProcessed</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$returnType</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">Parser::RETURN_JSONRPCVALS</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>|true</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -909,7 +994,7 @@ generated. To send notifications, use the Notification class</p>
                 : <span class="phpdocumentor-signature__argument__return-type">bool</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>when true prevents parsing HTTP headers for interpretation of content-encoding and conseuqent decoding</p>
+                    <section class="phpdocumentor-description"><p>when true prevents parsing HTTP headers for interpretation of content-encoding and consequent decoding</p>
 </section>
 
             </dd>
@@ -924,7 +1009,7 @@ generated. To send notifications, use the Notification class</p>
             </dd>
             </dl>
 
-
+    
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
         <a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_parseResponse#tags" class="headerlink"><i class="fas fa-link"></i></a>
@@ -935,7 +1020,7 @@ generated. To send notifications, use the Notification class</p>
                     <span class="phpdocumentor-tag__name">todo</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-
+                                                                                
                                                  <section class="phpdocumentor-description"><p>move more of this parsing into the parent class (split method in smaller ones)</p>
 </section>
 
@@ -944,7 +1029,7 @@ generated. To send notifications, use the Notification class</p>
                     <span class="phpdocumentor-tag__name">todo</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-
+                                                                                
                                                  <section class="phpdocumentor-description"><p>throw when $returnType == 'xmlrpcvals', 'epivals' or 'xml'</p>
 </section>
 
@@ -953,18 +1038,22 @@ generated. To send notifications, use the Notification class</p>
                     <span class="phpdocumentor-tag__name">todo</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-
+                                                                                
                                                  <section class="phpdocumentor-description"><p>we should check that the received Id is the same s the one sent</p>
 </section>
 
                                     </dd>
                                             </dl>
 
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type"><a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a></span>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>|true</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>true when notifications are sent (and the server returns an http response with no body)</p>
+</section>
+
             </section>
 
 </article>
@@ -976,41 +1065,43 @@ generated. To send notifications, use the Notification class</p>
 >
     <h4 class="phpdocumentor-element__name" id="method_setJsonRpcVersion">
         setJsonRpcVersion()
-        <a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_setJsonRpcVersion" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_setJsonRpcVersion" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="Traits/JsonRpcVersionAware.php"><a href="files/traits-jsonrpcversionaware.html"><abbr title="Traits/JsonRpcVersionAware.php">JsonRpcVersionAware.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">53</span>
+    <span class="phpdocumentor-element-found-in__line">14</span>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">setJsonRpcVersion</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$jsonrpcVersion</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+                    <span class="phpdocumentor-signature__name">setJsonRpcVersion</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$jsonrpcVersion</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$jsonrpcVersion</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Use NULL to let the global var PhpJsonRpc::$defaultJsonRpcVersion decide</p>
+</section>
 
             </dd>
             </dl>
 
+    
 
+    
 
-
-
-
+    
 </article>
                     <article
         class="phpdocumentor-element
@@ -1030,15 +1121,15 @@ generated. To send notifications, use the Notification class</p>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">setSerializer</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serializer</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1046,15 +1137,15 @@ generated. To send notifications, use the Notification class</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
             </dl>
 
+    
 
+    
 
-
-
-
+    
 </article>
                     <article
         class="phpdocumentor-element
@@ -1070,24 +1161,28 @@ generated. To send notifications, use the Notification class</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Request.php"><a href="files/request.html">Request.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">318</span>
+    <span class="phpdocumentor-element-found-in__line">378</span>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">protected</span>
-                    <span class="phpdocumentor-signature__name">generateId</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">generateId</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|int</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
+    
+    
+    
+    
 
+    
 
-
-
-
-
-
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string|int</span>
+            </section>
 
 </article>
             </section>
@@ -1189,7 +1284,7 @@ generated. To send notifications, use the Notification class</p>
     </article>
                                 </section>
                 <section class="phpdocumentor-on-this-page__sidebar">
-
+                                
     <section class="phpdocumentor-on-this-page__content">
         <strong class="phpdocumentor-on-this-page__title">On this page</strong>
 
@@ -1201,7 +1296,7 @@ generated. To send notifications, use the Notification class</p>
                                                             <li><a href="classes/PhpXmlRpc-JsonRpc-Request.html#toc-methods">Methods</a></li>
                                     </ul>
             </li>
-
+            
                             <li class="phpdocumentor-on-this-page-section__title">Properties</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
@@ -1209,24 +1304,25 @@ generated. To send notifications, use the Notification class</p>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#property_currentIdCounter">$currentIdCounter</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#property_currentIdPrefix">$currentIdPrefix</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#property_id">$id</a></li>
-                                                    <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#property_jsonrpc_version">$jsonrpc_version</a></li>
+                                                    <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#property_jsonrpc_version">$jsonrpc_version</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#property_paramnames">$paramnames</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-SerializerAware.html#property_serializer">$serializer</a></li>
                                             </ul>
                 </li>
-
+            
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#method___construct">__construct()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_addParam">addParam()</a></li>
-                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_getJsonRpcVersion">getJsonRpcVersion()</a></li>
-                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_getParamNames">getParamNames()</a></li>
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_getCharsetEncoder">getCharsetEncoder()</a></li>
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_getJsonRpcVersion">getJsonRpcVersion()</a></li>
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_getParamName">getParamName()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_getParser">getParser()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-SerializerAware.html#method_getSerializer">getSerializer()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_id">id()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_parseResponse">parseResponse()</a></li>
-                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_setJsonRpcVersion">setJsonRpcVersion()</a></li>
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_setJsonRpcVersion">setJsonRpcVersion()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-SerializerAware.html#method_setSerializer">setSerializer()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Request.html#method_generateId">generateId()</a></li>
                                     </ul>

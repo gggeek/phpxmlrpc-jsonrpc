@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
             <title>JSONRPC</title>
-
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
     <link rel="icon" href="images/favicon.ico"/>
@@ -25,7 +25,7 @@
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="index.html" class="phpdocumentor-title__link">JSONRPC 1.0.0-beta3</a></h1>
+    <h1 class="phpdocumentor-title"><a href="index.html" class="phpdocumentor-title__link">JSONRPC 1.0.0</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -62,7 +62,7 @@
     <ul class="phpdocumentor-list">
                     <li>
                 <a href="namespaces/phpxmlrpc-jsonrpc.html" class="">JsonRpc</a>
-
+                
             </li>
             </ul>
 
@@ -74,7 +74,7 @@
 </h4>
 
                         </section>
-
+            
     <section class="phpdocumentor-sidebar__category -reports">
         <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
                 <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
@@ -100,15 +100,18 @@
         <h2 class="phpdocumentor-content__title">
     Serializer
 
-
+    
             <div class="phpdocumentor-element__package">
             in package
             <ul class="phpdocumentor-breadcrumbs">
                                     <li class="phpdocumentor-breadcrumb"><a href="packages/JSONRPC.html">JSONRPC</a></li>
                             </ul>
         </div>
-
-
+    
+    
+            <span class="phpdocumentor-element__extends">
+            uses
+                            <abbr title="\PhpXmlRpc\Traits\CharsetEncoderAware">CharsetEncoderAware</abbr>,                             <abbr title="\PhpXmlRpc\Traits\LoggerAware">LoggerAware</abbr>                    </span>
     </h2>
 
 <div class="phpdocumentor-label-line">
@@ -119,11 +122,11 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Serializer.php"><a href="files/helper-serializer.html"><abbr title="Helper/Serializer.php">Serializer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">13</span>
+    <span class="phpdocumentor-element-found-in__line">15</span>
 
     </aside>
 
-
+        
 
 
 
@@ -137,7 +140,7 @@
                     <span class="phpdocumentor-tag__name">todo</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-
+                                                                                
                                                  <section class="phpdocumentor-description"><p>implement a CharsetEncoderAware trait (as soon as there is a 2nd user of Charset)</p>
 </section>
 
@@ -168,16 +171,10 @@
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#property_defaultJsonrpcVersion">$defaultJsonrpcVersion</a>
-    <span>
-                        &nbsp;: mixed            </span>
-</dt>
-
             <dt class="phpdocumentor-table-of-contents__entry -property -protected">
-    <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#property_charsetEncoder">$charsetEncoder</a>
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#property_dateTimeFormat">$dateTimeFormat</a>
     <span>
-                        &nbsp;: mixed            </span>
+                        &nbsp;: string            </span>
 </dt>
 
     </dl>
@@ -191,8 +188,9 @@
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#method_getCharsetEncoder">getCharsetEncoder()</a>
     <span>
-                                &nbsp;: mixed    </span>
+                                &nbsp;: <a href="classes/PhpXmlRpc-JsonRpc-Helper-Charset.html"><abbr title="\PhpXmlRpc\JsonRpc\Helper\Charset">Charset</abbr></a>    </span>
 </dt>
+<dd>Reimplemented to make us use the correct parser type.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#method_serializeRequest">serializeRequest()</a>
@@ -214,19 +212,13 @@
 </dt>
 <dd>Serialize a json-rpc Value (or xml-rpc Value) as json.</dd>
 
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#method_setCharsetEncoder">setCharsetEncoder()</a>
-    <span>
-                                &nbsp;: mixed    </span>
-</dt>
-
     </dl>
 
 
 
+        
 
-
-
+        
     <section class="phpdocumentor-properties">
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
@@ -237,50 +229,12 @@
         class="
             phpdocumentor-element
             -property
-            -public
-            -static                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="property_defaultJsonrpcVersion">
-        $defaultJsonrpcVersion
-        <a href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#property_defaultJsonrpcVersion" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                                            </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="Helper/Serializer.php"><a href="files/helper-serializer.html"><abbr title="Helper/Serializer.php">Serializer.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">17</span>
-
-    </aside>
-
-
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">$defaultJsonrpcVersion</span>
-     = <span class="phpdocumentor-signature__default-value">\PhpXmlRpc\JsonRpc\PhpJsonRpc::VERSION_2_0</span></code>
-
-
-
-
-
-
-
-
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
             -protected
-            -static                                                        "
+                                                                    "
 >
-    <h4 class="phpdocumentor-element__name" id="property_charsetEncoder">
-        $charsetEncoder
-        <a href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#property_charsetEncoder" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="property_dateTimeFormat">
+        $dateTimeFormat
+        <a href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#property_dateTimeFormat" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                                             </span>
@@ -288,25 +242,27 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Serializer.php"><a href="files/helper-serializer.html"><abbr title="Helper/Serializer.php">Serializer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">15</span>
+    <span class="phpdocumentor-element-found-in__line">21</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
-        <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">$charsetEncoder</span>
-    </code>
+            <span class="phpdocumentor-signature__type">string</span>
+    <span class="phpdocumentor-signature__name">$dateTimeFormat</span>
+     = <span class="phpdocumentor-signature__default-value">&#039;Ymd\TH:i:s&#039;</span></code>
 
+    
+        <section class="phpdocumentor-description"><p>used when serializing Value objs of type datetime, which is a feature from xml-rpc not found in json-rpc</p>
+</section>
 
+    
 
+    
 
-
-
-
-
+    
 
 </article>
             </section>
@@ -331,24 +287,29 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Serializer.php"><a href="files/helper-serializer.html"><abbr title="Helper/Serializer.php">Serializer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">19</span>
+    <span class="phpdocumentor-element-found-in__line">28</span>
 
     </aside>
 
+        <p class="phpdocumentor-summary">Reimplemented to make us use the correct parser type.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getCharsetEncoder</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">getCharsetEncoder</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/PhpXmlRpc-JsonRpc-Helper-Charset.html"><abbr title="\PhpXmlRpc\JsonRpc\Helper\Charset">Charset</abbr></a></span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
+    
+    
+    
+    
 
+    
 
-
-
-
-
-
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/PhpXmlRpc-JsonRpc-Helper-Charset.html"><abbr title="\PhpXmlRpc\JsonRpc\Helper\Charset">Charset</abbr></a></span>
+            </section>
 
 </article>
                     <article
@@ -365,19 +326,19 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Serializer.php"><a href="files/helper-serializer.html"><abbr title="Helper/Serializer.php">Serializer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">132</span>
+    <span class="phpdocumentor-element-found-in__line">151</span>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">serializeRequest</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\PhpXmlRpc\Request">Request</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$req</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$charsetEncoding</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">serializeRequest</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\PhpXmlRpc\Request">Request</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$req</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$charsetEncoding</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -385,27 +346,29 @@
                 : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\PhpXmlRpc\Request">Request</abbr></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$id</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$charsetEncoding</span>
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$id</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>to be used only for \PhpXmlRpc\Request, as PhpXmlRpc\JsonRpc\Request do have an Id already</p>
+</section>
 
             </dd>
             </dl>
 
+    
 
-
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
@@ -427,7 +390,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Serializer.php"><a href="files/helper-serializer.html"><abbr title="Helper/Serializer.php">Serializer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">223</span>
+    <span class="phpdocumentor-element-found-in__line">250</span>
 
     </aside>
 
@@ -435,12 +398,12 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">serializeResponse</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\PhpXmlRpc\Response">Response</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$resp</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$charsetEncoding</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">serializeResponse</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\PhpXmlRpc\Response">Response</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$resp</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$charsetEncoding</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-        <section class="phpdocumentor-description"><p>Moved outside the corresponding class to ease multi-serialization of xmlrpc response objects.</p>
+    
+        <section class="phpdocumentor-description"><p>Moved outside the corresponding class to ease multi-serialization of xml-rpc response objects.</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -450,25 +413,27 @@
                 : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\PhpXmlRpc\Response">Response</abbr></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$id</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$charsetEncoding</span>
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$id</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>to be used only for \PhpXmlRpc\Response, as PhpXmlRpc\JsonRpc\Response do have an Id already</p>
+</section>
 
             </dd>
             </dl>
 
-
+    
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
         <a href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#method_serializeResponse#tags" class="headerlink"><i class="fas fa-link"></i></a>
@@ -480,12 +445,12 @@
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                 <span class="phpdocumentor-tag-link"><abbr title="\Exception">Exception</abbr></span>
-
-
+                                                            
+                                             
                                     </dd>
                                             </dl>
 
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
@@ -507,7 +472,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Serializer.php"><a href="files/helper-serializer.html"><abbr title="Helper/Serializer.php">Serializer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">40</span>
+    <span class="phpdocumentor-element-found-in__line">44</span>
 
     </aside>
 
@@ -519,7 +484,7 @@
 
     <div class="phpdocumentor-label-line">
         </div>
-
+    
         <section class="phpdocumentor-description"><p>Moved outside the corresponding class to ease multi-serialization of xml-rpc value objects</p>
 </section>
 
@@ -530,69 +495,25 @@
                 : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\PhpXmlRpc\Value">Value</abbr></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$charsetEncoding</span>
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
             </dl>
 
+    
 
-
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
         <span class="phpdocumentor-signature__response_type">string</span>
             </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_setCharsetEncoder">
-        setCharsetEncoder()
-        <a href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#method_setCharsetEncoder" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="Helper/Serializer.php"><a href="files/helper-serializer.html"><abbr title="Helper/Serializer.php">Serializer.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">27</span>
-
-    </aside>
-
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">setCharsetEncoder</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$charsetEncoder</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-
-
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$charsetEncoder</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-
-            </dd>
-            </dl>
-
-
-
-
-
 
 </article>
             </section>
@@ -694,7 +615,7 @@
     </article>
                                 </section>
                 <section class="phpdocumentor-on-this-page__sidebar">
-
+                                
     <section class="phpdocumentor-on-this-page__content">
         <strong class="phpdocumentor-on-this-page__title">On this page</strong>
 
@@ -706,15 +627,14 @@
                                                             <li><a href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#toc-methods">Methods</a></li>
                                     </ul>
             </li>
-
+            
                             <li class="phpdocumentor-on-this-page-section__title">Properties</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#property_defaultJsonrpcVersion">$defaultJsonrpcVersion</a></li>
-                                                    <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#property_charsetEncoder">$charsetEncoder</a></li>
+                                                    <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#property_dateTimeFormat">$dateTimeFormat</a></li>
                                             </ul>
                 </li>
-
+            
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
@@ -722,7 +642,6 @@
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#method_serializeRequest">serializeRequest()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#method_serializeResponse">serializeResponse()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#method_serializeValue">serializeValue()</a></li>
-                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Serializer.html#method_setCharsetEncoder">setCharsetEncoder()</a></li>
                                     </ul>
             </li>
                     </ul>

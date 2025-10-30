@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
             <title>JSONRPC</title>
-
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
     <link rel="icon" href="images/favicon.ico"/>
@@ -25,7 +25,7 @@
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="index.html" class="phpdocumentor-title__link">JSONRPC 1.0.0-beta3</a></h1>
+    <h1 class="phpdocumentor-title"><a href="index.html" class="phpdocumentor-title__link">JSONRPC 1.0.0</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -62,7 +62,7 @@
     <ul class="phpdocumentor-list">
                     <li>
                 <a href="namespaces/phpxmlrpc-jsonrpc.html" class="">JsonRpc</a>
-
+                
             </li>
             </ul>
 
@@ -74,7 +74,7 @@
 </h4>
 
                         </section>
-
+            
     <section class="phpdocumentor-sidebar__category -reports">
         <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
                 <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
@@ -100,18 +100,18 @@
         <h2 class="phpdocumentor-content__title">
     Parser
 
-
+    
             <div class="phpdocumentor-element__package">
             in package
             <ul class="phpdocumentor-breadcrumbs">
                                     <li class="phpdocumentor-breadcrumb"><a href="packages/JSONRPC.html">JSONRPC</a></li>
                             </ul>
         </div>
-
-
+    
+    
             <span class="phpdocumentor-element__extends">
             uses
-                            <a href="classes/PhpXmlRpc-JsonRpc-Traits-EncoderAware.html"><abbr title="\PhpXmlRpc\JsonRpc\Traits\EncoderAware">EncoderAware</abbr></a>,                             <abbr title="\PhpXmlRpc\Traits\LoggerAware">LoggerAware</abbr>                    </span>
+                            <a href="classes/PhpXmlRpc-JsonRpc-Traits-EncoderAware.html"><abbr title="\PhpXmlRpc\JsonRpc\Traits\EncoderAware">EncoderAware</abbr></a>,                             <abbr title="\PhpXmlRpc\Traits\DeprecationLogger">DeprecationLogger</abbr>                    </span>
     </h2>
 
 <div class="phpdocumentor-label-line">
@@ -122,11 +122,11 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">23</span>
+    <span class="phpdocumentor-element-found-in__line">24</span>
 
     </aside>
 
-
+        
 
 
 
@@ -141,7 +141,7 @@
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                     <span class="phpdocumentor-tag-link"><a href="https://www.jsonrpc.org/specification_v1,">https://www.jsonrpc.org/specification_v1,</a></span>
-
+                                        
                                                  <section class="phpdocumentor-description"><p>https://www.jsonrpc.org/specification</p>
 </section>
 
@@ -150,7 +150,7 @@
                     <span class="phpdocumentor-tag__name">todo</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-
+                                                                                
                                                  <section class="phpdocumentor-description"><p>add support for <strong>jsonclass</strong></p>
 </section>
 
@@ -159,7 +159,7 @@
                     <span class="phpdocumentor-tag__name">todo</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-
+                                                                                
                                                  <section class="phpdocumentor-description"><p>add support for json-rpc 1.1 ? see: https://jsonrpc.org/historical/json-rpc-1-1-wd.html and
 https://jsonrpc.org/historical/json-rpc-1-1-alt.html</p>
 </section>
@@ -169,7 +169,7 @@ https://jsonrpc.org/historical/json-rpc-1-1-alt.html</p>
                     <span class="phpdocumentor-tag__name">todo</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-
+                                                                                
                                                  <section class="phpdocumentor-description"><p>add a ParseValue method ?</p>
 </section>
 
@@ -178,7 +178,7 @@ https://jsonrpc.org/historical/json-rpc-1-1-alt.html</p>
                     <span class="phpdocumentor-tag__name">todo</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-
+                                                                                
                                                  <section class="phpdocumentor-description"><p>add a Parse method (same as XMLParser) ?</p>
 </section>
 
@@ -187,8 +187,17 @@ https://jsonrpc.org/historical/json-rpc-1-1-alt.html</p>
                     <span class="phpdocumentor-tag__name">todo</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-
+                                                                                
                                                  <section class="phpdocumentor-description"><p>add a constructor which can be used to set default options</p>
+</section>
+
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">todo</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>introduce $responseClass, to allow subclasses to produce different types of response?</p>
 </section>
 
                                     </dd>
@@ -237,7 +246,7 @@ https://jsonrpc.org/historical/json-rpc-1-1-alt.html</p>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
+            <dt class="phpdocumentor-table-of-contents__entry -property -protected">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#property__xh">$_xh</a>
     <span>
                         &nbsp;: mixed            </span>
@@ -263,6 +272,30 @@ https://jsonrpc.org/historical/json-rpc-1-1-alt.html</p>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___get">__get()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___isset">__isset()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___set">__set()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___unset">__unset()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_decodeJson">decodeJson()</a>
     <span>
@@ -293,14 +326,14 @@ appropriate object (a.k.a. deserialize).</dd>
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_parseRequest">parseRequest()</a>
     <span>
-                                &nbsp;: false|array&lt;string|int, mixed&gt;    </span>
+                                &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
 <dd>Parse a json string, expected to be in json-rpc request format.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_parseResponse">parseResponse()</a>
     <span>
-                                &nbsp;: false|array&lt;string|int, mixed&gt;    </span>
+                                &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
 <dd>Parse a json string, expected to be in json-rpc response format.</dd>
 
@@ -317,6 +350,13 @@ return corresponding phpxmlrpc type.</dd>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="-deprecated" href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_xmlrpc_se_any">xmlrpc_se_any()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>xml parser handler function for opening element tags.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -protected">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_convertEncoding">convertEncoding()</a>
@@ -337,7 +377,7 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</dd>
 
 
 
-
+        
     <section class="phpdocumentor-constants">
         <h3 class="phpdocumentor-elements__header" id="constants">
             Constants
@@ -354,12 +394,12 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">28</span>
+    <span class="phpdocumentor-element-found-in__line">29</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
@@ -368,11 +408,11 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</dd>
 </code>
 
 
+    
+    
+    
 
-
-
-
-
+    
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
@@ -385,12 +425,12 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">29</span>
+    <span class="phpdocumentor-element-found-in__line">30</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
@@ -399,16 +439,16 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</dd>
 </code>
 
 
+    
+    
+    
 
-
-
-
-
+    
 
 </article>
             </section>
 
-
+        
     <section class="phpdocumentor-properties">
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
@@ -419,7 +459,7 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</dd>
         class="
             phpdocumentor-element
             -property
-            -public
+            -protected
                                                                     "
 >
     <h4 class="phpdocumentor-element__name" id="property__xh">
@@ -432,14 +472,14 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">34</span>
+    <span class="phpdocumentor-element-found-in__line">35</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__visibility">protected</span>
             <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$_xh</span>
      = <span class="phpdocumentor-signature__default-value">array(
@@ -452,11 +492,12 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</dd>
     &#039;pt&#039; =&gt; array(),
     &#039;id&#039; =&gt; null,
     &#039;jsonrpc_version&#039; =&gt; \PhpXmlRpc\JsonRpc\PhpJsonRpc::VERSION_1_0,
+    &#039;is_multicall&#039; =&gt; false,
 )</span></code>
 
-
-
-
+    
+    
+    
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
         <a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#property__xh#tags" class="headerlink"><i class="fas fa-link"></i></a>
@@ -468,14 +509,14 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</dd>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                     <span class="phpdocumentor-tag-link"><abbr title="\PhpXmlRpc\XMLParser">XMLParser</abbr></span>
-
-
+                                        
+                                             
                                     </dd>
                                             </dl>
 
+    
 
-
-
+    
 
 </article>
                     <article
@@ -499,21 +540,21 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</dd>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
         <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$encoder</span>
     </code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
                     <article
@@ -533,25 +574,25 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">46</span>
+    <span class="phpdocumentor-element-found-in__line">48</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
             <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$returnTypeOverride</span>
      = <span class="phpdocumentor-signature__default-value">null</span></code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
             </section>
@@ -568,6 +609,189 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</dd>
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method___get">
+        __get()
+        <a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___get" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">613</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__reference-operator">&amp;</span>    <span class="phpdocumentor-signature__name">__get</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$name</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$name</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method___isset">
+        __isset()
+        <a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___isset" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">643</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">__isset</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$name</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$name</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method___set">
+        __set()
+        <a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___set" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">628</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">__set</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$name</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$value</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$name</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$value</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method___unset">
+        __unset()
+        <a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___unset" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">654</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">__unset</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$name</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$name</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_decodeJson">
         decodeJson()
         <a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_decodeJson" class="headerlink"><i class="fas fa-link"></i></a>
@@ -576,7 +800,7 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">266</span>
+    <span class="phpdocumentor-element-found-in__line">325</span>
 
     </aside>
 
@@ -589,7 +813,7 @@ appropriate object (a.k.a. deserialize).</p>
 
     <div class="phpdocumentor-label-line">
         </div>
-
+    
         <section class="phpdocumentor-description"><p>Please note that there is no way to distinguish the serialized representation of a single json val of type object
 which has the 3 appropriate members from the serialization of a method call or method response.
 In such a case, the function will return a json-rpc Request or json-rpc Response</p>
@@ -602,7 +826,7 @@ In such a case, the function will return a json-rpc Request or json-rpc Response
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$options</span>
@@ -615,9 +839,9 @@ In such a case, the function will return a json-rpc Request or json-rpc Response
             </dd>
             </dl>
 
+    
 
-
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
@@ -643,19 +867,19 @@ In such a case, the function will return a json-rpc Request or json-rpc Response
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">140</span>
+    <span class="phpdocumentor-element-found-in__line">173</span>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">forceReturnType</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$returnType</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -663,15 +887,15 @@ In such a case, the function will return a json-rpc Request or json-rpc Response
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
             </dl>
 
+    
 
+    
 
-
-
-
+    
 </article>
                     <article
         class="phpdocumentor-element
@@ -691,21 +915,21 @@ In such a case, the function will return a json-rpc Request or json-rpc Response
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getEncoder</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
+    
+    
+    
+    
 
+    
 
-
-
-
-
-
-
+    
 </article>
                     <article
         class="phpdocumentor-element
@@ -721,7 +945,7 @@ In such a case, the function will return a json-rpc Request or json-rpc Response
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">428</span>
+    <span class="phpdocumentor-element-found-in__line">516</span>
 
     </aside>
 
@@ -733,7 +957,7 @@ In such a case, the function will return a json-rpc Request or json-rpc Response
 
     <div class="phpdocumentor-label-line">
         </div>
-
+    
         <section class="phpdocumentor-description"><p>We opt instead to &quot;respect&quot; - but log as error - any charset declared via the content-type http header or the BOM...</p>
 </section>
 
@@ -744,7 +968,7 @@ In such a case, the function will return a json-rpc Request or json-rpc Response
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$jsonChunk</span>
@@ -757,7 +981,7 @@ In such a case, the function will return a json-rpc Request or json-rpc Response
             </dd>
             </dl>
 
-
+    
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
         <a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_guessEncoding#tags" class="headerlink"><i class="fas fa-link"></i></a>
@@ -768,14 +992,14 @@ In such a case, the function will return a json-rpc Request or json-rpc Response
                     <span class="phpdocumentor-tag__name">todo</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-
+                                                                                
                                                  <section class="phpdocumentor-description"><p>should we return 'UTF-8' or '' by default?</p>
 </section>
 
                                     </dd>
                                             </dl>
 
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
@@ -797,7 +1021,7 @@ In such a case, the function will return a json-rpc Request or json-rpc Response
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">63</span>
+    <span class="phpdocumentor-element-found-in__line">65</span>
 
     </aside>
 
@@ -805,12 +1029,12 @@ In such a case, the function will return a json-rpc Request or json-rpc Response
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">parseRequest</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$data</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$returnType</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">self::RETURN_JSONRPCVALS</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">array()</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">false|array&lt;string|int, mixed&gt;</span></code>
+                    <span class="phpdocumentor-signature__name">parseRequest</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$data</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$returnType</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">self::RETURN_JSONRPCVALS</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">array()</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -818,14 +1042,14 @@ In such a case, the function will return a json-rpc Request or json-rpc Response
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$returnType</span>
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                  = <span class="phpdocumentor-signature__argument__default-value">self::RETURN_JSONRPCVALS</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$options</span>
@@ -843,7 +1067,7 @@ string keys:</p>
             </dd>
             </dl>
 
-
+    
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
         <a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_parseRequest#tags" class="headerlink"><i class="fas fa-link"></i></a>
@@ -855,7 +1079,7 @@ string keys:</p>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                 <span class="phpdocumentor-tag-link"><abbr title="\Exception">Exception</abbr></span>
-
+                                                            
                                                  <section class="phpdocumentor-description"><p>this can happen if a callback function is set and it does throw (i.e. we do not catch exceptions)</p>
 </section>
 
@@ -864,7 +1088,7 @@ string keys:</p>
                     <span class="phpdocumentor-tag__name">todo</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-
+                                                                                
                                                  <section class="phpdocumentor-description"><p>checks missing:</p>
 <ul>
 <li>no extra members in request</li>
@@ -874,11 +1098,11 @@ string keys:</p>
                                     </dd>
                                             </dl>
 
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">false|array&lt;string|int, mixed&gt;</span>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
             </section>
 
 </article>
@@ -896,7 +1120,7 @@ string keys:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">156</span>
+    <span class="phpdocumentor-element-found-in__line">189</span>
 
     </aside>
 
@@ -904,12 +1128,12 @@ string keys:</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">parseResponse</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$data</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$returnType</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">self::RETURN_JSONRPCVALS</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">array()</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">false|array&lt;string|int, mixed&gt;</span></code>
+                    <span class="phpdocumentor-signature__name">parseResponse</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$data</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$returnType</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">self::RETURN_JSONRPCVALS</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">array()</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -917,25 +1141,25 @@ string keys:</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$returnType</span>
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                  = <span class="phpdocumentor-signature__argument__default-value">self::RETURN_JSONRPCVALS</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$options</span>
                 : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                  = <span class="phpdocumentor-signature__argument__default-value">array()</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
             </dl>
 
-
+    
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
         <a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_parseResponse#tags" class="headerlink"><i class="fas fa-link"></i></a>
@@ -946,7 +1170,7 @@ string keys:</p>
                     <span class="phpdocumentor-tag__name">todo</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-
+                                                                                
                                                  <section class="phpdocumentor-description"><p>checks missing:</p>
 <ul>
 <li>no extra members in response</li>
@@ -956,11 +1180,11 @@ string keys:</p>
                                     </dd>
                                             </dl>
 
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">false|array&lt;string|int, mixed&gt;</span>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
             </section>
 
 </article>
@@ -978,7 +1202,7 @@ string keys:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">326</span>
+    <span class="phpdocumentor-element-found-in__line">402</span>
 
     </aside>
 
@@ -991,7 +1215,7 @@ return corresponding phpxmlrpc type.</p>
 
     <div class="phpdocumentor-label-line">
         </div>
-
+    
         <section class="phpdocumentor-description"><p>NB: for php 'resource' types returns empty string, since resources cannot be serialized;
 for php class names returns 'struct', since php objects can be serialized as json structs;
 for php arrays always return 'array', even though arrays sometimes serialize as json structs</p>
@@ -1004,13 +1228,13 @@ for php arrays always return 'array', even though arrays sometimes serialize as 
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
             </dl>
 
+    
 
-
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
@@ -1036,15 +1260,15 @@ for php arrays always return 'array', even though arrays sometimes serialize as 
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">setEncoder</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$encoder</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1052,15 +1276,82 @@ for php arrays always return 'array', even though arrays sometimes serialize as 
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
             </dl>
 
+    
 
+    
 
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+            -deprecated                                            "
+>
+    <h4 class="phpdocumentor-element__name" id="method_xmlrpc_se_any">
+        xmlrpc_se_any()
+        <a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_xmlrpc_se_any" class="headerlink"><i class="fas fa-link"></i></a>
 
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">605</span>
 
+    </aside>
 
+        <p class="phpdocumentor-summary">xml parser handler function for opening element tags.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature -deprecated">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">xmlrpc_se_any</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">resource&nbsp;</span><span class="phpdocumentor-signature__argument__name">$parser</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$name</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$attrs</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+                <div class="phpdocumentor-admonition">
+        <svg class="phpdocumentor-admonition__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            <article>
+                
+            </article>
+        </div>
+    
+        <section class="phpdocumentor-description"><p>Used in decoding xml chunks that might represent single xml-rpc values as well as requests, responses.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$parser</span>
+                : <span class="phpdocumentor-signature__argument__return-type">resource</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$name</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$attrs</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+    
 </article>
                     <article
         class="phpdocumentor-element
@@ -1076,7 +1367,7 @@ for php arrays always return 'array', even though arrays sometimes serialize as 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">486</span>
+    <span class="phpdocumentor-element-found-in__line">574</span>
 
     </aside>
 
@@ -1088,8 +1379,8 @@ for php arrays always return 'array', even though arrays sometimes serialize as 
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1097,7 +1388,7 @@ for php arrays always return 'array', even though arrays sometimes serialize as 
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$targetCharset</span>
@@ -1110,11 +1401,11 @@ for php arrays always return 'array', even though arrays sometimes serialize as 
             </dd>
             </dl>
 
+    
 
+    
 
-
-
-
+    
 </article>
                     <article
         class="phpdocumentor-element
@@ -1130,7 +1421,7 @@ for php arrays always return 'array', even though arrays sometimes serialize as 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Helper/Parser.php"><a href="files/helper-parser.html"><abbr title="Helper/Parser.php">Parser.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">366</span>
+    <span class="phpdocumentor-element-found-in__line">442</span>
 
     </aside>
 
@@ -1143,8 +1434,8 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</p>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1152,22 +1443,22 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$options</span>
                 : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                  = <span class="phpdocumentor-signature__argument__default-value">array()</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
             </dl>
 
+    
 
+    
 
-
-
-
+    
 </article>
             </section>
 
@@ -1268,7 +1559,7 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</p>
     </article>
                                 </section>
                 <section class="phpdocumentor-on-this-page__sidebar">
-
+                                
     <section class="phpdocumentor-on-this-page__content">
         <strong class="phpdocumentor-on-this-page__title">On this page</strong>
 
@@ -1288,7 +1579,7 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</p>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#constant_RETURN_PHP">RETURN_PHP</a></li>
                                             </ul>
                 </li>
-
+            
                             <li class="phpdocumentor-on-this-page-section__title">Properties</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
@@ -1297,10 +1588,14 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</p>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#property_returnTypeOverride">$returnTypeOverride</a></li>
                                             </ul>
                 </li>
-
+            
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___get">__get()</a></li>
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___isset">__isset()</a></li>
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___set">__set()</a></li>
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method___unset">__unset()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_decodeJson">decodeJson()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_forceReturnType">forceReturnType()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-EncoderAware.html#method_getEncoder">getEncoder()</a></li>
@@ -1309,6 +1604,7 @@ $this-&gt;_xh[&#039;isf&#039;] on errors.</p>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_parseResponse">parseResponse()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_php2JsonrpcType">php2JsonrpcType()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-EncoderAware.html#method_setEncoder">setEncoder()</a></li>
+                                            <li class="-deprecated"><a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_xmlrpc_se_any">xmlrpc_se_any()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_convertEncoding">convertEncoding()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Helper-Parser.html#method_jsonDecode">jsonDecode()</a></li>
                                     </ul>

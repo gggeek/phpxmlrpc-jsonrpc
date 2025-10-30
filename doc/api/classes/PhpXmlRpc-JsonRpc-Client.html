@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
             <title>JSONRPC</title>
-
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
     <link rel="icon" href="images/favicon.ico"/>
@@ -25,7 +25,7 @@
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="index.html" class="phpdocumentor-title__link">JSONRPC 1.0.0-beta3</a></h1>
+    <h1 class="phpdocumentor-title"><a href="index.html" class="phpdocumentor-title__link">JSONRPC 1.0.0</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -62,7 +62,7 @@
     <ul class="phpdocumentor-list">
                     <li>
                 <a href="namespaces/phpxmlrpc-jsonrpc.html" class="">JsonRpc</a>
-
+                
             </li>
             </ul>
 
@@ -74,7 +74,7 @@
 </h4>
 
                         </section>
-
+            
     <section class="phpdocumentor-sidebar__category -reports">
         <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
                 <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
@@ -102,15 +102,18 @@
         <span class="phpdocumentor-element__extends">
         extends <abbr title="\PhpXmlRpc\Client">Client</abbr>
     </span>
-
+    
             <div class="phpdocumentor-element__package">
             in package
             <ul class="phpdocumentor-breadcrumbs">
                                     <li class="phpdocumentor-breadcrumb"><a href="packages/JSONRPC.html">JSONRPC</a></li>
                             </ul>
         </div>
-
-
+    
+    
+            <span class="phpdocumentor-element__extends">
+            uses
+                            <a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html"><abbr title="\PhpXmlRpc\JsonRpc\Traits\JsonRpcVersionAware">JsonRpcVersionAware</abbr></a>                    </span>
     </h2>
 
 <div class="phpdocumentor-label-line">
@@ -121,11 +124,11 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">14</span>
+    <span class="phpdocumentor-element-found-in__line">16</span>
 
     </aside>
 
-
+        
 
 
 
@@ -139,7 +142,7 @@
                     <span class="phpdocumentor-tag__name">todo</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-
+                                                                                
                                                  <section class="phpdocumentor-description"><p>the JSON proposed RFC states that when making json calls, we should specify an 'accept: application/json'
 http header. Currently, we either do not output an 'accept' header or specify 'any' (in curl mode)</p>
 </section>
@@ -185,12 +188,6 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/PhpXmlRpc-JsonRpc-Client.html#property_no_multicall">$no_multicall</a>
-    <span>
-                        &nbsp;: mixed            </span>
-</dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Client.html#property_request_charset_encoding">$request_charset_encoding</a>
     <span>
                         &nbsp;: mixed            </span>
@@ -209,9 +206,15 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -protected">
-    <a class="" href="classes/PhpXmlRpc-JsonRpc-Client.html#property_jsonrpc_version">$jsonrpc_version</a>
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#property_jsonrpc_version">$jsonrpc_version</a>
     <span>
                         &nbsp;: string|null            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -protected">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Client.html#property_no_multicall">$no_multicall</a>
+    <span>
+                        &nbsp;: mixed            </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -protected">
@@ -241,6 +244,12 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_getJsonRpcVersion">getJsonRpcVersion()</a>
+    <span>
+                                &nbsp;: string|null    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Client.html#method_getOption">getOption()</a>
     <span>
                                 &nbsp;: mixed    </span>
@@ -249,7 +258,13 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Client.html#method_send">send()</a>
     <span>
-                                &nbsp;: <a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>|array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>&gt;    </span>
+                                &nbsp;: <a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>|true|array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>&gt;    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_setJsonRpcVersion">setJsonRpcVersion()</a>
+    <span>
+                                &nbsp;: void    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
@@ -258,11 +273,24 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
                                 &nbsp;: mixed    </span>
 </dt>
 
+            <dt class="phpdocumentor-table-of-contents__entry -method -protected">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Client.html#method__try_multicall">_try_multicall()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>&gt;|<a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>    </span>
+</dt>
+<dd>Attempt to boxcar $reqs via a batch call.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -protected">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Client.html#method_fixErrorCodeIfNeeded">fixErrorCodeIfNeeded()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+
     </dl>
 
 
 
-
+        
     <section class="phpdocumentor-constants">
         <h3 class="phpdocumentor-elements__header" id="constants">
             Constants
@@ -279,12 +307,12 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">19</span>
+    <span class="phpdocumentor-element-found-in__line">23</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
@@ -293,60 +321,22 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
 </code>
 
 
+    
+    
+    
 
-
-
-
-
+    
 
 </article>
             </section>
 
-
+        
     <section class="phpdocumentor-properties">
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
             <a href="classes/PhpXmlRpc-JsonRpc-Client.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_no_multicall">
-        $no_multicall
-        <a href="classes/PhpXmlRpc-JsonRpc-Client.html#property_no_multicall" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                                            </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">29</span>
-
-    </aside>
-
-
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">$no_multicall</span>
-     = <span class="phpdocumentor-signature__default-value">true</span></code>
-
-
-
-
-
-
-
-
-
-</article>
                     <article
         class="
             phpdocumentor-element
@@ -364,25 +354,25 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">35</span>
+    <span class="phpdocumentor-element-found-in__line">36</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$request_charset_encoding</span>
      = <span class="phpdocumentor-signature__default-value">&#039;UTF-8&#039;</span></code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
                     <article
@@ -402,25 +392,25 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">32</span>
+    <span class="phpdocumentor-element-found-in__line">33</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$return_type</span>
      = <span class="phpdocumentor-signature__default-value">\PhpXmlRpc\JsonRpc\Helper\Parser::RETURN_JSONRPCVALS</span></code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
                     <article
@@ -440,25 +430,25 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">21</span>
+    <span class="phpdocumentor-element-found-in__line">25</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
         <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$extra_options</span>
      = <span class="phpdocumentor-signature__default-value">array(self::OPT_JSONRPC_VERSION)</span></code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
                     <article
@@ -470,7 +460,45 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
 >
     <h4 class="phpdocumentor-element__name" id="property_jsonrpc_version">
         $jsonrpc_version
-        <a href="classes/PhpXmlRpc-JsonRpc-Client.html#property_jsonrpc_version" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#property_jsonrpc_version" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                                            </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Traits/JsonRpcVersionAware.php"><a href="files/traits-jsonrpcversionaware.html"><abbr title="Traits/JsonRpcVersionAware.php">JsonRpcVersionAware.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">8</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">protected</span>
+            <span class="phpdocumentor-signature__type">string|null</span>
+    <span class="phpdocumentor-signature__name">$jsonrpc_version</span>
+    </code>
+
+    
+    
+    
+
+    
+
+    
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -protected
+                                                                    "
+>
+    <h4 class="phpdocumentor-element__name" id="property_no_multicall">
+        $no_multicall
+        <a href="classes/PhpXmlRpc-JsonRpc-Client.html#property_no_multicall" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                                             </span>
@@ -478,25 +506,25 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">26</span>
+    <span class="phpdocumentor-element-found-in__line">30</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
-            <span class="phpdocumentor-signature__type">string|null</span>
-    <span class="phpdocumentor-signature__name">$jsonrpc_version</span>
-     = <span class="phpdocumentor-signature__default-value">\PhpXmlRpc\JsonRpc\PhpJsonRpc::VERSION_2_0</span></code>
+            <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">$no_multicall</span>
+     = <span class="phpdocumentor-signature__default-value">null</span></code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
                     <article
@@ -516,25 +544,25 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">16</span>
+    <span class="phpdocumentor-element-found-in__line">20</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
         <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$requestClass</span>
      = <span class="phpdocumentor-signature__default-value">&#039;\PhpXmlRpc\JsonRpc\Request&#039;</span></code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
                     <article
@@ -554,25 +582,25 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">17</span>
+    <span class="phpdocumentor-element-found-in__line">21</span>
 
     </aside>
 
-
-
+    
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
         <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$responseClass</span>
      = <span class="phpdocumentor-signature__default-value">&#039;\PhpXmlRpc\JsonRpc\Response&#039;</span></code>
 
+    
+    
+    
 
+    
 
-
-
-
-
-
+    
 
 </article>
             </section>
@@ -597,19 +625,19 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">37</span>
+    <span class="phpdocumentor-element-found-in__line">38</span>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$path</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$server</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$port</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$method</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -617,35 +645,77 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$server</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$port</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$method</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
             </dl>
 
+    
 
+    
 
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getJsonRpcVersion">
+        getJsonRpcVersion()
+        <a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_getJsonRpcVersion" class="headerlink"><i class="fas fa-link"></i></a>
 
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Traits/JsonRpcVersionAware.php"><a href="files/traits-jsonrpcversionaware.html"><abbr title="Traits/JsonRpcVersionAware.php">JsonRpcVersionAware.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">22</span>
 
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">getJsonRpcVersion</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string|null</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>NULL means let the global var PhpJsonRpc::$defaultJsonRpcVersion decide</p>
+</section>
+
+            </section>
 
 </article>
                     <article
@@ -662,19 +732,19 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">63</span>
+    <span class="phpdocumentor-element-found-in__line">64</span>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getOption</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$name</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -688,7 +758,7 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
             </dd>
             </dl>
 
-
+    
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
         <a href="classes/PhpXmlRpc-JsonRpc-Client.html#method_getOption#tags" class="headerlink"><i class="fas fa-link"></i></a>
@@ -700,16 +770,16 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                 <span class="phpdocumentor-tag-link"><abbr title="\PhpXmlRpc\Exception\ValueErrorException">ValueErrorException</abbr></span>
-
+                                                            
                                                  <section class="phpdocumentor-description"><p>on unsupported option</p>
 </section>
 
                                     </dd>
                                             </dl>
 
+    
 
-
-
+    
 </article>
                     <article
         class="phpdocumentor-element
@@ -725,19 +795,19 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">78</span>
+    <span class="phpdocumentor-element-found-in__line">82</span>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">send</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/PhpXmlRpc-JsonRpc-Request.html"><abbr title="\PhpXmlRpc\JsonRpc\Request">Request</abbr></a>|array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Request.html"><abbr title="\PhpXmlRpc\JsonRpc\Request">Request</abbr></a>&gt;|string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$req</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$timeout</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">0</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$method</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>|array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>&gt;</span></code>
+                    <span class="phpdocumentor-signature__name">send</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/PhpXmlRpc-JsonRpc-Request.html"><abbr title="\PhpXmlRpc\JsonRpc\Request">Request</abbr></a>|array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Request.html"><abbr title="\PhpXmlRpc\JsonRpc\Request">Request</abbr></a>&gt;|string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$req</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$timeout</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">0</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$method</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>|true|array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>&gt;</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -745,6 +815,10 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
                 : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/PhpXmlRpc-JsonRpc-Request.html"><abbr title="\PhpXmlRpc\JsonRpc\Request">Request</abbr></a>|array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Request.html"><abbr title="\PhpXmlRpc\JsonRpc\Request">Request</abbr></a>&gt;|string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>NB: when sending an empty array, an
+empty array is returned, even though, according to the spec, an error response is returned by the
+server</p>
+</section>
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
@@ -767,15 +841,66 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
             </dd>
             </dl>
 
+    
 
-
-
+    
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type"><a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>|array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>&gt;</span>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>|true|array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>true for notification calls, if the server
+returns an empty http response body</p>
+</section>
+
             </section>
 
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_setJsonRpcVersion">
+        setJsonRpcVersion()
+        <a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_setJsonRpcVersion" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Traits/JsonRpcVersionAware.php"><a href="files/traits-jsonrpcversionaware.html"><abbr title="Traits/JsonRpcVersionAware.php">JsonRpcVersionAware.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">14</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">setJsonRpcVersion</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$jsonrpcVersion</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$jsonrpcVersion</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Use NULL to let the global var PhpJsonRpc::$defaultJsonRpcVersion decide</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+    
+
+    
 </article>
                     <article
         class="phpdocumentor-element
@@ -791,19 +916,19 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">48</span>
+    <span class="phpdocumentor-element-found-in__line">49</span>
 
     </aside>
 
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">setOption</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$name</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$value</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-
-
+    
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -811,22 +936,134 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$value</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-
+                
             </dd>
             </dl>
 
+    
 
+    
 
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -protected
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method__try_multicall">
+        _try_multicall()
+        <a href="classes/PhpXmlRpc-JsonRpc-Client.html#method__try_multicall" class="headerlink"><i class="fas fa-link"></i></a>
 
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">202</span>
 
+    </aside>
 
+        <p class="phpdocumentor-summary">Attempt to boxcar $reqs via a batch call.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">protected</span>
+                    <span class="phpdocumentor-signature__name">_try_multicall</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Request.html"><abbr title="\PhpXmlRpc\JsonRpc\Request">Request</abbr></a>&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$reqs</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$timeout</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$method</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>&gt;|<a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$reqs</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Request.html"><abbr title="\PhpXmlRpc\JsonRpc\Request">Request</abbr></a>&gt;</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$timeout</span>
+                : <span class="phpdocumentor-signature__argument__return-type">int</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$method</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>&gt;|<a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a></span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>a single Response when the call returned a fault / does not conform to what we expect
+from a multicall response</p>
+</section>
+
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -protected
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_fixErrorCodeIfNeeded">
+        fixErrorCodeIfNeeded()
+        <a href="classes/PhpXmlRpc-JsonRpc-Client.html#method_fixErrorCodeIfNeeded" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Client.php"><a href="files/client.html">Client.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">180</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">protected</span>
+                    <span class="phpdocumentor-signature__name">fixErrorCodeIfNeeded</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$resp</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$resp</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/PhpXmlRpc-JsonRpc-Response.html"><abbr title="\PhpXmlRpc\JsonRpc\Response">Response</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+    
 </article>
             </section>
 
@@ -927,7 +1164,7 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
     </article>
                                 </section>
                 <section class="phpdocumentor-on-this-page__sidebar">
-
+                                
     <section class="phpdocumentor-on-this-page__content">
         <strong class="phpdocumentor-on-this-page__title">On this page</strong>
 
@@ -946,27 +1183,31 @@ http header. Currently, we either do not output an 'accept' header or specify 'a
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#constant_OPT_JSONRPC_VERSION">OPT_JSONRPC_VERSION</a></li>
                                             </ul>
                 </li>
-
+            
                             <li class="phpdocumentor-on-this-page-section__title">Properties</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#property_no_multicall">$no_multicall</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#property_request_charset_encoding">$request_charset_encoding</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#property_return_type">$return_type</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#property_extra_options">$extra_options</a></li>
-                                                    <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#property_jsonrpc_version">$jsonrpc_version</a></li>
+                                                    <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#property_jsonrpc_version">$jsonrpc_version</a></li>
+                                                    <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#property_no_multicall">$no_multicall</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#property_requestClass">$requestClass</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#property_responseClass">$responseClass</a></li>
                                             </ul>
                 </li>
-
+            
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#method___construct">__construct()</a></li>
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_getJsonRpcVersion">getJsonRpcVersion()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#method_getOption">getOption()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#method_send">send()</a></li>
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-JsonRpcVersionAware.html#method_setJsonRpcVersion">setJsonRpcVersion()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#method_setOption">setOption()</a></li>
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#method__try_multicall">_try_multicall()</a></li>
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Client.html#method_fixErrorCodeIfNeeded">fixErrorCodeIfNeeded()</a></li>
                                     </ul>
             </li>
                     </ul>

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
             <title>    JSONRPC &raquo; Markers
 </title>
-
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
     <link rel="icon" href="images/favicon.ico"/>
@@ -26,7 +26,7 @@
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="index.html" class="phpdocumentor-title__link">JSONRPC 1.0.0-beta3</a></h1>
+    <h1 class="phpdocumentor-title"><a href="index.html" class="phpdocumentor-title__link">JSONRPC 1.0.0</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -63,7 +63,7 @@
     <ul class="phpdocumentor-list">
                     <li>
                 <a href="namespaces/phpxmlrpc-jsonrpc.html" class="">JsonRpc</a>
-
+                
             </li>
             </ul>
 
@@ -75,7 +75,7 @@
 </h4>
 
                         </section>
-
+            
     <section class="phpdocumentor-sidebar__category -reports">
         <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
                 <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
@@ -110,11 +110,11 @@
                             </tr>
                                                                                                 <tr>
                                 <td class="phpdocumentor-cell"><a href="reports/markers.html#Helper/Charset.php">Helper/Charset.php</a></td>
-                                <td class="phpdocumentor-cell">1</td>
+                                <td class="phpdocumentor-cell">5</td>
                             </tr>
                                                                                                 <tr>
                                 <td class="phpdocumentor-cell"><a href="reports/markers.html#Helper/Parser.php">Helper/Parser.php</a></td>
-                                <td class="phpdocumentor-cell">8</td>
+                                <td class="phpdocumentor-cell">9</td>
                             </tr>
                                                                                                 <tr>
                                 <td class="phpdocumentor-cell"><a href="reports/markers.html#Helper/Serializer.php">Helper/Serializer.php</a></td>
@@ -129,7 +129,7 @@
                                 <td class="phpdocumentor-cell">6</td>
                             </tr>
                                                             </table>
-
+            
                             <a id="Client.php"></a>
                 <h3><abbr title="Client.php">Client.php</abbr></h3>
                 <table>
@@ -143,7 +143,7 @@
                     <tbody>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">14</td>
+                            <td class="phpdocumentor-cell">16</td>
                             <td class="phpdocumentor-cell">the JSON proposed RFC states that when making json calls, we should specify an &#039;accept: application/json&#039;
 http header. Currently, we either do not output an &#039;accept&#039; header or specify &#039;any&#039; (in curl mode)</td>
                         </tr>
@@ -193,6 +193,27 @@ http header. Currently, we either do not output an &#039;accept&#039; header or 
                             <td class="phpdocumentor-cell">11</td>
                             <td class="phpdocumentor-cell">implement an Interface</td>
                         </tr>
+                                            <tr>
+                            <td class="phpdocumentor-cell">TODO</td>
+                            <td class="phpdocumentor-cell">79</td>
+                            <td class="phpdocumentor-cell">make use of iconv when it is available and mbstring is not</td>
+                        </tr>
+                                            <tr>
+                            <td class="phpdocumentor-cell">TODO</td>
+                            <td class="phpdocumentor-cell">79</td>
+                            <td class="phpdocumentor-cell">support aliases for charset names, eg ASCII, LATIN1, ISO-88591 (see f.e. polyfill-iconv for a list),
+but then take those into account as well in other methods, ie. isValidCharset)</td>
+                        </tr>
+                                            <tr>
+                            <td class="phpdocumentor-cell">TODO</td>
+                            <td class="phpdocumentor-cell">79</td>
+                            <td class="phpdocumentor-cell">when converting to ASCII, allow to choose whether to escape the range 0-31,127 (non-print chars) or not</td>
+                        </tr>
+                                            <tr>
+                            <td class="phpdocumentor-cell">TODO</td>
+                            <td class="phpdocumentor-cell">79</td>
+                            <td class="phpdocumentor-cell">allow picking different strategies to deal w. invalid chars? eg. source in latin-1 and chars 128-159</td>
+                        </tr>
                                         </tbody>
                 </table>
                             <a id="Helper/Parser.php"></a>
@@ -208,45 +229,50 @@ http header. Currently, we either do not output an &#039;accept&#039; header or 
                     <tbody>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">23</td>
+                            <td class="phpdocumentor-cell">24</td>
                             <td class="phpdocumentor-cell">add support for __jsonclass__</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">23</td>
+                            <td class="phpdocumentor-cell">24</td>
                             <td class="phpdocumentor-cell">add support for json-rpc 1.1 ? see: https://jsonrpc.org/historical/json-rpc-1-1-wd.html and
 https://jsonrpc.org/historical/json-rpc-1-1-alt.html</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">23</td>
+                            <td class="phpdocumentor-cell">24</td>
                             <td class="phpdocumentor-cell">add a ParseValue method ?</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">23</td>
+                            <td class="phpdocumentor-cell">24</td>
                             <td class="phpdocumentor-cell">add a Parse method (same as XMLParser) ?</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">23</td>
+                            <td class="phpdocumentor-cell">24</td>
                             <td class="phpdocumentor-cell">add a constructor which can be used to set default options</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">63</td>
+                            <td class="phpdocumentor-cell">24</td>
+                            <td class="phpdocumentor-cell">introduce $responseClass, to allow subclasses to produce different types of response?</td>
+                        </tr>
+                                            <tr>
+                            <td class="phpdocumentor-cell">TODO</td>
+                            <td class="phpdocumentor-cell">65</td>
                             <td class="phpdocumentor-cell">checks missing:
 - no extra members in request</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">156</td>
+                            <td class="phpdocumentor-cell">189</td>
                             <td class="phpdocumentor-cell">checks missing:
 - no extra members in response</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">428</td>
+                            <td class="phpdocumentor-cell">516</td>
                             <td class="phpdocumentor-cell">should we return &#039;UTF-8&#039; or &#039;&#039; by default?</td>
                         </tr>
                                         </tbody>
@@ -264,7 +290,7 @@ https://jsonrpc.org/historical/json-rpc-1-1-alt.html</td>
                     <tbody>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">13</td>
+                            <td class="phpdocumentor-cell">15</td>
                             <td class="phpdocumentor-cell">implement a CharsetEncoderAware trait (as soon as there is a 2nd user of Charset)</td>
                         </tr>
                                         </tbody>
@@ -282,17 +308,17 @@ https://jsonrpc.org/historical/json-rpc-1-1-alt.html</td>
                     <tbody>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">153</td>
+                            <td class="phpdocumentor-cell">188</td>
                             <td class="phpdocumentor-cell">move more of this parsing into the parent class (split method in smaller ones)</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">153</td>
+                            <td class="phpdocumentor-cell">188</td>
                             <td class="phpdocumentor-cell">throw when $returnType == &#039;xmlrpcvals&#039;, &#039;epivals&#039; or &#039;xml&#039;</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">153</td>
+                            <td class="phpdocumentor-cell">188</td>
                             <td class="phpdocumentor-cell">we should check that the received Id is the same s the one sent</td>
                         </tr>
                                         </tbody>
@@ -310,33 +336,33 @@ https://jsonrpc.org/historical/json-rpc-1-1-alt.html</td>
                     <tbody>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">19</td>
+                            <td class="phpdocumentor-cell">20</td>
                             <td class="phpdocumentor-cell">implement dispatching of multicall requests, json way</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">19</td>
+                            <td class="phpdocumentor-cell">20</td>
                             <td class="phpdocumentor-cell">test system.XXX methods, with special care to multicall</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">19</td>
+                            <td class="phpdocumentor-cell">20</td>
                             <td class="phpdocumentor-cell">support &#039;notification&#039; calls, i.e. if id is null, echo back nothing</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">19</td>
+                            <td class="phpdocumentor-cell">20</td>
                             <td class="phpdocumentor-cell">should we override all parent&#039;s methods related to multicall which do not work for us?</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">55</td>
+                            <td class="phpdocumentor-cell">81</td>
                             <td class="phpdocumentor-cell">allow to (optionally) send comments as top-level json element, since 99.99% of json parsers will barf on js comments...</td>
                         </tr>
                                             <tr>
                             <td class="phpdocumentor-cell">TODO</td>
-                            <td class="phpdocumentor-cell">365</td>
-                            <td class="phpdocumentor-cell">if building json-rpc-only webservers, you should at least undeclare the xmlrpc capability:
+                            <td class="phpdocumentor-cell">648</td>
+                            <td class="phpdocumentor-cell">if building json-rpc-only webservers, you should at least undeclare the xml-rpc capability:
 unset($outAr[&#039;xmlrpc&#039;]);</td>
                         </tr>
                                         </tbody>
