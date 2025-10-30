@@ -22,7 +22,7 @@
   corresponding to the value returned by php function `json_last_error`, eg. 104 for no data, instead of previous 5
 
 - breaking change: `Parser::parseRequest()` and `Parser::parseResponse()` always return an array, even on failure.
-  Also, direct access to `$parser->_xh` his deprecated
+  Also, direct access to `$parser->_xh` is deprecated
 
 - breaking change: classes `Request` and `Response` method and disallow access to the `$id` member. They gained an
   accessor method `id()` to retrieve the id
@@ -33,13 +33,22 @@
 - fixed: when receiving empty requests, the returned response's error code is now the same on php 5 as it is on
   later php versions
 
+- fixed: `PhpJsonRpc::setLogger()` was not injecting the logger into the `Serializer` class
+
 - fixed: removed warnings when running on php 8.5
+
+- improved: the data returned by json-rpc method "interop.whichToolkit" now reports info about this package instead
+  of info related to phpxmlrpc
+
+- improved: added demos for client-side usage, as well as demos for symfony integration of both client and server
+
+- improved: support for `Value` objects of type 'dateTime.iso8601' - even though datetimes are not part of JSON-RPC or JSON
+
+- improved: more warnings are emitted in unexpected/unsupported scenarios (to the php error log by default)
 
 - improved: added CI testing on php 8.4 and 8.5. Default the local testing container to using PHP 8.1 on Ubuntu Jammy
 
 - bumped the minimum required version of phpxmlrpc/phpxmlrpc to 4.11.4
-
-- improved: added demos for client-side usage
 
 - other API changes:
   - classes `Client`, `Request` and `Response` gained methods `getJsonRcVersion` and `setjsonRpcVersion`
@@ -48,12 +57,14 @@
     Also, its method `addParam` gained a 2nd argument: `$name=null`
   - class `Request` has gained a protected method: `generateId()`
   - visibility of `Request::$content_type` has been lowered from public to protected
+  - class `Response` has gained a methods `isFromServer` and `setIsFromServer($value)`
   - method `Server::execute()` has gained a 5th param: `$jsonrpcVersion = null`
   - class `Server` now overrides more of the parent's methods
   - member `client->$no_multicall` defaults to `null`, as the support for multicall calls depends on the json-rpc version
     in use (version 2.0 does support it via "batch" calls)
   - member `$parser->_xh` has gained new elements
-
+  - class `Wrapper` gained methods `wrapJsonrpcServer` and `wrapJsonrpcMethod` as aliases for existing methods, as well
+    as members `$prefix` and `$allowedResponseClass`
 
 ## JSON-RPC for PHP version 1.0-beta2 - 2024/4/15
 

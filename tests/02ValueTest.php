@@ -6,7 +6,7 @@ use PhpXmlRpc\JsonRpc\Value;
 
 /**
  * Tests involving the Value class.
- * NB: these tests do not involve the parsing of xml into Value objects - look in 04ParsingTest for that
+ * NB: these tests do not involve the parsing of json into Value objects - look in 04ParsingTest for that
  */
 class ValueTest extends PhpJsonRpc_LoggerAwareTestCase
 {
@@ -70,6 +70,57 @@ class ValueTest extends PhpJsonRpc_LoggerAwareTestCase
         $v = new Value('hello world', 'int');
         $s = $v->serialize();
         $this->assertEquals("0", $s);
+    }
+
+    public function testBool()
+    {
+        $v = new Value(true, 'boolean');
+        $s = $v->serialize();
+        $this->assertEquals("true", $s);
+
+        $v = new Value(false, 'boolean');
+        $s = $v->serialize();
+        $this->assertEquals("false", $s);
+    }
+
+    public function testNull()
+    {
+        $v = new Value(null, 'null');
+        $s = $v->serialize();
+        $this->assertEquals("null", $s);
+    }
+
+    public function testInt()
+    {
+        $v = new Value(1, 'int');
+        $s = $v->serialize();
+        $this->assertEquals("1", $s);
+
+        $v = new Value(1, 'i4');
+        $s = $v->serialize();
+        $this->assertEquals("1", $s);
+
+        $v = new Value(1, 'i8');
+        $s = $v->serialize();
+        $this->assertEquals("1", $s);
+    }
+
+    public function testDoubleWithZero()
+    {
+        $v = new Value(1, 'double');
+        $s = $v->serialize();
+        $this->assertEquals("1.0", $s);
+    }
+
+    public function testDateTime()
+    {
+        $time = time();
+        $t1 = new Value($time, 'dateTime.iso8601');
+        $t2 = new Value(\PhpXmlRpc\Helper\Date::iso8601Encode($time), 'dateTime.iso8601');
+        $this->assertEquals($t1->serialize(), $t2->serialize());
+        $datetime = new DateTime();
+        $t3 = new Value($datetime->setTimestamp($time), 'dateTime.iso8601');
+        $this->assertEquals($t1->serialize(), $t3->serialize());
     }
 
     public function testStructMemExists()
