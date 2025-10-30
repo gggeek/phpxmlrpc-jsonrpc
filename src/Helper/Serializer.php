@@ -17,6 +17,9 @@ class Serializer
     use CharsetEncoderAware;
     use LoggerAware;
 
+    /** @var string used when serializing Value objs of type datetime, which is a feature from xml-rpc not found in json-rpc */
+    protected $dateTimeFormat = 'Ymd\TH:i:s';
+
     /**
      * Reimplemented to make us use the correct parser type.
      *
@@ -55,17 +58,11 @@ class Serializer
                     case Value::$xmlrpcI8:
                         $rs .= (int)$val;
                         break;
-                    case Value::$xmlrpcDateTime:
-                        // quote date as a json string.
-                        // assumes date format is valid and will not break js...
-/// @todo check: how to handle the cases where $val is a timestamp or a DateTimeInterface?
-                        $rs .= '"' . $val . '"';
-                        break;
                     case Value::$xmlrpcDouble:
-                        // add a .0 in case value is integer.
+                        // add a .0 in case value is float.
                         // This helps us to carry around floats in js, and keep them separated from ints
                         $sval = strval((float)$val); // convert to string
-                        // fix usage of comma, in case of eg. german locale
+                        // fix usage of comma, in case of eg. german locale (todo: is this still required?)
                         $sval = str_replace(',', '.', $sval);
                         if (strpos($sval, '.') !== false || strpos($sval, 'e') !== false) {
                             $rs .= $sval;
@@ -76,11 +73,32 @@ class Serializer
                     case Value::$xmlrpcBoolean:
                         $rs .= ($val ? 'true' : 'false');
                         break;
+                    case Value::$xmlrpcNull:
+                        $rs .= "null";
+                        break;
+
                     case Value::$xmlrpcBase64:
                         // treat base 64 values as strings
                         $rs .= '"' . base64_encode($val) . '"';
                         break;
+                    case Value::$xmlrpcDateTime:
+                        // quote date as a json string.
+                        // assumes date format is valid and will not break js...
+                        if (is_string($val)) {
+                            $rs = '"' . $this->getCharsetEncoder()->encodeEntities($val, null, $charsetEncoding) . '"';
+                            // DateTimeInterface is not present in php 5.4...
+                        } elseif (is_a($val, 'DateTimeInterface') || is_a($val, 'DateTime')) {
+                            $rs = '"' . $val->format($this->dateTimeFormat) . '"';
+                        } elseif (is_int($val)) {
+                            $rs = '"' . date($this->dateTimeFormat, $val) . '"';
+                        } else {
+                            // not really a good idea here: but what should we output anyway?
+                            $this->getLogger()->warning('JSON-RPC: ' . __METHOD__ . ": the datetime Value to be serialized is of unsupported php type " . gettype($val));
+                            $rs .= '"' . $val . '"';
+                        }
+                        break;
                     default:
+                        $this->getLogger()->warning('JSON-RPC: ' . __METHOD__ . ": the Value to be serialized is of unsupported type '$typ'");
                         $rs .= "null";
                 }
                 break;

@@ -127,7 +127,8 @@ class Encoder
                     $jsonrpcVal = $phpVal;
                     // BC with php 5.4
                 } else if ((is_a($phpVal, 'DateTimeInterface') || is_a($phpVal, 'DateTime')) && in_array('auto_dates', $options)) {
-                    $jsonrpcVal = new Value($phpVal->format('Ymd\TH:i:s'), Value::$xmlrpcDateTime);
+                    // we leave the serialization to a specific string format to later code
+                    $jsonrpcVal = new Value($phpVal, Value::$xmlrpcDateTime);
                 } else {
                     $arr = array();
                     foreach($phpVal as $k => $v) {
