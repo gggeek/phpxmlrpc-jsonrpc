@@ -515,6 +515,9 @@ And turned it into nylon';
         $v = $this->send($m, $expectedReturn);
     }
 
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
     public function testClientMulticall1()
     {
         // NB: This test will NOT pass if server does not support batch requests
@@ -560,6 +563,9 @@ And turned it into nylon';
         //$this->client->no_multicall = $noMultiCall;
     }
 
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
     public function testClientMulticall2()
     {
         // NB: This test will NOT pass if server does not support batch requests
@@ -601,6 +607,9 @@ And turned it into nylon';
         //$this->client->no_multicall = $noMultiCall;
     }
 
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
     public function testClientMulticall3()
     {
         // NB: This test will NOT pass if server does not support batch requests
@@ -643,6 +652,9 @@ And turned it into nylon';
         //$this->client->no_multicall = $noMultiCall;
     }
 
+    /**
+     * @dataProvider getAvailableJsonRpcVersions
+     */
     public function testClientMulticall4()
     {
         // NB: This test will NOT pass if server does not support batch requests
