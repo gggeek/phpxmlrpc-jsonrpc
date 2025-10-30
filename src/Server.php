@@ -22,6 +22,8 @@ class Server extends BaseServer
     use EncoderAware;
     use SerializerAware;
 
+    const OPT_DEBUG_FORMAT = 'debug_format';
+
     protected static $responseClass = '\\PhpXmlRpc\\JsonRpc\\Response';
 
     //public $allow_system_funcs = false;
@@ -41,6 +43,9 @@ class Server extends BaseServer
     protected $is_servicing_notification = null;
     /** @var null|false|array */
     protected $is_servicing_multicall = null;
+
+    /** @var string either 'json5' or 'extra_member' */
+    protected $debug_format = 'json5';
 
     /**
      * Reimplemented to make us use the correct parser type.
@@ -69,18 +74,33 @@ class Server extends BaseServer
     }
 
     /**
+     * @string $charsetEncoding
+     * @string $format either 'comment' (will generate js comments) or 'string' (will generate a js string)
      * @todo allow to (optionally) send comments as top-level json element, since 99.99% of json parsers will barf on js comments...
      */
-    public function serializeDebug($charsetEncoding = '')
+    public function serializeDebug($charsetEncoding = '', $format = 'comment')
     {
         $out = '';
         if ($this->debug_info != '') {
-            $out .= "/* SERVER DEBUG INFO (BASE64 ENCODED):\n" . base64_encode($this->debug_info) . "\n*/\n";
+            if ($format === 'string') {
+                $out .= "SERVER DEBUG INFO (BASE64 ENCODED): " . base64_encode($this->debug_info);
+            } else {
+                $out .= "/* SERVER DEBUG INFO (BASE64 ENCODED):\n" . base64_encode($this->debug_info) . "\n*/\n";
+            }
         }
         if (static::$_xmlrpc_debuginfo != '') {
-            // make sure the user's comments can not break the JS comment
-            $out .= "/* DEBUG INFO:\n\n" . str_replace('*/', '*\u002f', Charset::instance()->encodeEntities(static::$_xmlrpc_debuginfo, PhpXmlRpc::$xmlrpc_internalencoding, $charsetEncoding)) . "\n*/\n";
+            if ($format === 'string') {
+                $out .= ($out === '' ? '' : ' ') . "DEBUG INFO: " . Charset::instance()->encodeEntities(static::$_xmlrpc_debuginfo, PhpXmlRpc::$xmlrpc_internalencoding, $charsetEncoding);
+            } else {
+                // make sure the user's comments can not break the JS comment
+                $out .= "/* DEBUG INFO:\n\n" . str_replace('*/', '*\u002f', Charset::instance()->encodeEntities(static::$_xmlrpc_debuginfo, PhpXmlRpc::$xmlrpc_internalencoding, $charsetEncoding)) . "\n*/\n";
+            }
         }
+
+        if ($format === 'string' && $out !== '') {
+            $out = '"' . $out . '"';
+        }
+
         return $out;
     }
 
@@ -490,10 +510,9 @@ class Server extends BaseServer
     protected function generatePayload($resp, $respCharset)
     {
         if ($this->is_servicing_notification) {
-            return '';
-        }
+            $payload = '';
 
-        if ($this->is_servicing_multicall) {
+        } elseif ($this->is_servicing_multicall) {
             $serializer = $this->getSerializer();
             $payloads = [];
 
@@ -516,10 +535,61 @@ class Server extends BaseServer
                 $payloads[] = $serializer->serializeResponse($subResp, $respCharset);
             }
 
-            return $payloads ? ("[\n" . implode(",\n", $payloads) . "\n]") : '';
+/// @todo what about injecting debug info?
+            $payload = $payloads ? ("[\n" . implode(",\n", $payloads) . "\n]") : '';
+        } else {
+            // instead of calling parent::generatePayload we do it online, as we have a different way of mixing debug info
+            // into the output
+
+            // Do not create response serialization if it has already happened.
+            /// @todo what if the payload was created targeting a different charset than $respCharset?
+            ///       Also, if we do not call serialize(), the request will not set its content-type to have the charset declared
+            $payload = $resp->getPayload();
+            if (empty($payload)) {
+                $payload = $resp->serialize($respCharset);
+            }
         }
 
-        return parent::generatePayload($resp, $respCharset);
+        if ($this->debug > 0) {
+            $payload = $this->injectDebugInfo($payload, $respCharset);
+        }
+
+        return $payload;
+    }
+
+    /**
+     * @param string $payload
+     * @param string $respCharset
+     * @return string
+     */
+    protected function injectDebugInfo($payload, $respCharset)
+    {
+        switch ($this->debug_format) {
+            case 'json5':
+            case 'above':
+                return $this->serializeDebug($respCharset) . $payload;
+            case 'inline':
+            case 'extra_member':
+                if (strlen($payload)) {
+                    if ($payload[0] === '{') {
+                        // 'plain' response
+                        return "{\n\"debug_info\": " . $this->serializeDebug($respCharset, 'string') . "," .substr($payload, 1);
+                    } elseif ($payload[0] === '[') {
+                        // 'batch' response
+/// @todo is this a good idea? How will the client cope with an extra string in the array?
+                        return "[\n" . $this->serializeDebug($respCharset, 'string') . "," . substr($payload, 1);
+                    } else {
+                        $this->getLogger()->warning("JSON-RPC: " . __METHOD__ . ": unsupported response payload starting with '$payload[0]'");
+                        return $this->serializeDebug($respCharset) . $payload;
+                    }
+                } else {
+                    // notification response
+                    return "{\ndebug_info: " . $this->serializeDebug($respCharset, 'string') . "\n}";
+                }
+            default:
+                $this->getLogger()->warning("JSON-RPC: " . __METHOD__ . ": unsupported format {$this->debug_format}");
+                return $this->serializeDebug($respCharset) . $payload;
+        }
     }
 
     /**
@@ -749,5 +819,26 @@ class Server extends BaseServer
         $struct['faultString'] = new Value($str, 'string');
 
         return new Value($struct, 'struct');
+    }
+
+    public function getOption($name)
+    {
+        switch ($name) {
+            case self::OPT_DEBUG_FORMAT:
+                return $this->$name;
+            default:
+                return parent::getOption($name);
+        }
+    }
+
+    public function setOption($name, $value)
+    {
+        switch ($name) {
+            case self::OPT_DEBUG_FORMAT:
+                $this->$name = $value;
+                break;
+            default:
+                return parent::setOption($name, $value);
+        }
     }
 }

@@ -37,6 +37,10 @@
 
 - fixed: removed warnings when running on php 8.5
 
+- improved: it is now possible to set the Server option `OPT_DEBUG_FORMAT` to value 'extra_member', to have the debug
+  info (emitted when the server debug level is > 2) serialized as an extra member in the response, rather than as
+  a js comment, which requires a json5 parser or this library's client
+
 - improved: the data returned by json-rpc method "interop.whichToolkit" now reports info about this package instead
   of info related to phpxmlrpc
 
