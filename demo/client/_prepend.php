@@ -18,10 +18,11 @@ if (file_exists(__DIR__ . '/../../../../vendor/autoload.php')) {
 if (isset($_SERVER['HTTPSERVER'])) {
     define('JSONRPCSERVER', 'http://'.$_SERVER['HTTPSERVER'].'/demo/server/server.php');
 } else {
+    # @todo fix - this url is not a working json-rpc server
     define('JSONRPCSERVER', 'http://gggeek.altervista.org/sw/xmlrpc/demo/server/server.php');
 }
 
-// A helper for cli vs web output:
+// A helper for cli vs web output
 function output($text)
 {
     /// @todo we should only strip html tags, and let through all xml tags

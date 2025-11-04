@@ -88,16 +88,21 @@ function setup_tools() {
 }
 
 function build_api() {
-    PHPDOC='build/phpdocumentor'
+    PHPDOC='./build/phpdocumentor'
     #PHPDOC='php build/vendor/bin/phpdoc'
 
-    $PHPDOC run --cache-folder 'build/.phpdoc' -d "$(realpath ../src/)" -t 'api' --title JSONRPC --defaultpackagename JSONRPC
+    # @todo move to using a config file, as it gives more options and work better with relative paths
+
+    # @todo for completeness, we should add to the API docs the documentation of the superclasses. However, currently
+    #       phpdocumentor does not allow to document code in vendor/ as belonging to separate packages, which makes
+    #       the generated docs unfriendly... See https://github.com/phpDocumentor/phpDocumentor/issues/3999
+    $PHPDOC run --cache-folder 'build/.phpdoc' -d "$(realpath ../src/)" -t 'api' --title PHPJSONRPC --defaultpackagename PHPJSONRPC
 
     # manually mangle the index.html file to add generation date, lib version, etc...
     TAG=$(grep 'public \+static \+$jsonrpcVersion *=' ../src/PhpJsonRpc.php | sed 's/public \+static \+$jsonrpcVersion *= *//' | tr -d ' ' | tr -d \" | tr -d ';' | tr -d "'")
-    sed -r -i -e "s|<h2>Documentation</h2>|<h2>Documentation for the <a href=\"https://gggeek.github.io/phpxmlrpc/\">JSONRPC</a> library, ver. ${TAG}</h2><p>Built on $(date +%Y/%m/%d)</p>|g" ./api/index.html
+    sed -r -i -e "s|<h2>Documentation</h2>|<h2>Documentation for the <a href=\"https://gggeek.github.io/phpxmlrpc-jsonrpc/\">PHPJSONRPC</a> library, ver. ${TAG}</h2><p>Built on $(date +%Y/%m/%d)</p>|g" ./api/index.html
     find api -name '*.html' | xargs sed -r -i -e 's|<a href="" class="phpdocumentor-title__link">|<a href="index.html" class="phpdocumentor-title__link">|g'
-    find api -name '*.html' | xargs sed -r -i -e "s|>JSONRPC</a></h1>|>JSONRPC ${TAG}</a></h1>|g"
+    find api -name '*.html' | xargs sed -r -i -e "s|>PHPJSONRPC</a></h1>|>PHPJSONRPC ${TAG}</a></h1>|g"
     #find api -name '*.html' | fgrep -v 'api/index.html' | xargs sed -r -i -e "s|...|...|g"
 
     if [ ! -d api/images ]; then
