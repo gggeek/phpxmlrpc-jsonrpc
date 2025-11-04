@@ -1,3 +1,9 @@
+## JSON-RPC for PHP version 1.XX - unreleased
+
+- fixed: the `_prepend.php` file used by the demos would not locate the php autoloader when the library is installed as
+  dependency
+
+
 ## JSON-RPC for PHP version 1.0 - 2025/10/30
 
 - new: default the code to use json-rpc version 2.0 protocol, while allowing usage of json-rpc 1.0 too.

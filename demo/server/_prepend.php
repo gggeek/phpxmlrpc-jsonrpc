@@ -8,8 +8,8 @@ if (isset($_GET['showSource']) && $_GET['showSource']) {
 }
 
 // support being installed both as top-level project and as dependency
-if (file_exists(__DIR__ . '/../../../../vendor/autoload.php')) {
-    include_once __DIR__ . '/../../../../vendor/autoload.php';
+if (file_exists(__DIR__ . '/../../../../../vendor/autoload.php')) {
+    include_once __DIR__ . '/../../../../../vendor/autoload.php';
 } else {
     include_once __DIR__ . '/../../vendor/autoload.php';
 }
