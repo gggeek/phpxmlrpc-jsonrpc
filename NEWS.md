@@ -3,6 +3,8 @@
 - fixed: the `_prepend.php` file used by the demos would not locate the php autoloader when the library is installed as
   dependency
 
+- improved: make it easy to allow CORS requests to the demo server on hosts other than the altervista one
+
 
 ## JSON-RPC for PHP version 1.0 - 2025/10/30
 
