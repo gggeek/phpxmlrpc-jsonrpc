@@ -35,7 +35,7 @@ class JsonrpcArgParser
             'HTTPSSERVER' => 'localhost',
             'HTTPSURI' => null,
             // example alternative:
-            //'HTTPSSERVER' => 'gggeek.altervista.org',
+            //'HTTPSSERVER' => 'tanoconsulting.com',
             //'HTTPSURI' => '/sw/jsonrpc/demo/server/server.php',
             'HTTPSIGNOREPEER' => false,
             'HTTPSVERIFYHOST' => 2,

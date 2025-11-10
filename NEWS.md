@@ -5,6 +5,8 @@
 
 - improved: make it easy to allow CORS requests to the demo server on hosts other than the altervista one
 
+- improved: moved the public demo server and debugger from altervista.org to tanoconsulting.com
+
 
 ## JSON-RPC for PHP version 1.0 - 2025/10/30
 

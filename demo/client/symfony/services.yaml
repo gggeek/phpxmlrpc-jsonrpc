@@ -1,5 +1,5 @@
 parameters:
-    json_rpc_server: https://gggeek.altervista.org/sw/jsonrpc/demo/server/server.php
+    json_rpc_server: https://tanoconsulting.com/sw/jsonrpc/demo/server/server.php
     json_rpc_client_options: []
 
 services:

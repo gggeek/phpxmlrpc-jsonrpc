@@ -19,7 +19,7 @@ if (isset($_SERVER['HTTPSERVER'])) {
     define('JSONRPCSERVER', 'http://'.$_SERVER['HTTPSERVER'].'/demo/server/server.php');
 } else {
     # @todo fix - this url is not a working json-rpc server
-    define('JSONRPCSERVER', 'http://gggeek.altervista.org/sw/xmlrpc/demo/server/server.php');
+    define('JSONRPCSERVER', 'http://tanoconsulting.com/sw/xmlrpc/demo/server/server.php');
 }
 
 // A helper for cli vs web output
