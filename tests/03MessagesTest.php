@@ -79,5 +79,9 @@ class MessagesTest extends PhpJsonRpc_LoggerAwareTestCase
 
         \PhpXmlRpc\Request::setParser($r);
         $this->assertInstanceOf('stdClass', $r->getParser());
+
+        /// @todo also reinstate these in case of failure
+        \PhpXmlRpc\JsonRpc\Request::setParser(new \PhpXmlRpc\JsonRpc\Helper\Parser());
+        \PhpXmlRpc\Request::setParser(new \PhpXmlRpc\Helper\XMLParser());
     }
 }
