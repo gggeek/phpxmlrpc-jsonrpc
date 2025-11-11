@@ -1,7 +1,12 @@
-## JSON-RPC for PHP version 1.XX - unreleased
+## JSON-RPC for PHP version 1.0.1 - 2025/11/11
 
 - fixed: the `_prepend.php` file used by the demos would not locate the php autoloader when the library is installed as
   dependency
+
+- fixed: setting a custom Parser or CharsetEncoder to the JsonRpc Value, Request, Response and Server classes does not
+  reset anymore the same for the corresponding XmlRpc parent class, and vice-versa. This makes it possible to freely
+  mix and match json-rpc and xml-rpc within the same php script.
+  NB: this can have an impact in you access directly protected static members `$parser` and `$charsetEncoder.`
 
 - improved: make it easy to allow CORS requests to the demo server on hosts other than the altervista one
 
