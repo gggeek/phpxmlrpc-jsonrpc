@@ -64,4 +64,20 @@ class MessagesTest extends PhpJsonRpc_LoggerAwareTestCase
         $r = new \PhpXmlRpc\JsonRpc\Notification('hello', array());
         $this->assertSame(null, $r->id());
     }
+
+    /**
+     * Checks that the JsonRpc and XmlRpc parsers do not step on each other
+     */
+    public function testParserClassOverride()
+    {
+        \PhpXmlRpc\JsonRpc\Request::setParser(new stdClass());
+        $r = new \PhpXmlRpc\JsonRpc\Request('test', array());
+        $this->assertInstanceOf('stdClass', $r->getParser());
+
+        $xr = new \PhpXmlRpc\Request('test', array());
+        $this->assertNotInstanceOf('stdClass', $xr->getParser());
+
+        \PhpXmlRpc\Request::setParser($r);
+        $this->assertInstanceOf('stdClass', $r->getParser());
+    }
 }
