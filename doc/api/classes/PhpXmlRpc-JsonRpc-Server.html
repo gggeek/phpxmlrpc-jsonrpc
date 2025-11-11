@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-            <title>JSONRPC</title>
+            <title>PHPJSONRPC</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
@@ -25,7 +25,7 @@
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="index.html" class="phpdocumentor-title__link">JSONRPC 1.0.0</a></h1>
+    <h1 class="phpdocumentor-title"><a href="index.html" class="phpdocumentor-title__link">PHPJSONRPC 1.0.1</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -70,7 +70,7 @@
                 <section class="phpdocumentor-sidebar__category -packages">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/JSONRPC.html" class="">JSONRPC</a>
+    <a href="packages/PHPJSONRPC.html" class="">PHPJSONRPC</a>
 </h4>
 
                         </section>
@@ -106,7 +106,7 @@
             <div class="phpdocumentor-element__package">
             in package
             <ul class="phpdocumentor-breadcrumbs">
-                                    <li class="phpdocumentor-breadcrumb"><a href="packages/JSONRPC.html">JSONRPC</a></li>
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/PHPJSONRPC.html">PHPJSONRPC</a></li>
                             </ul>
         </div>
     
@@ -250,6 +250,18 @@
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -protected">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Server.html#property_jsonRpcCharsetEncoder">$jsonRpcCharsetEncoder</a>
+    <span>
+                        &nbsp;: mixed            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -protected">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Server.html#property_jsonRpcParser">$jsonRpcParser</a>
+    <span>
+                        &nbsp;: mixed            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -protected">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Server.html#property_phpvals_encoding_options">$phpvals_encoding_options</a>
     <span>
                         &nbsp;: array&lt;string|int, mixed&gt;            </span>
@@ -286,7 +298,7 @@
     <span>
                                 &nbsp;: <a href="classes/PhpXmlRpc-JsonRpc-Helper-Charset.html"><abbr title="\PhpXmlRpc\JsonRpc\Helper\Charset">Charset</abbr></a>    </span>
 </dt>
-<dd>Reimplemented to make us use the correct parser type.</dd>
+<dd>Reimplemented to make us use the correct charset encoder type.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Traits-EncoderAware.html#method_getEncoder">getEncoder()</a>
@@ -340,6 +352,12 @@
 <dd>Execute the json-rpc request, printing the response.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Server.html#method_setCharsetEncoder">setCharsetEncoder()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Traits-EncoderAware.html#method_setEncoder">setEncoder()</a>
     <span>
                                 &nbsp;: mixed    </span>
@@ -347,6 +365,12 @@
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/PhpXmlRpc-JsonRpc-Server.html#method_setOption">setOption()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/PhpXmlRpc-JsonRpc-Server.html#method_setParser">setParser()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
@@ -469,7 +493,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">40</span>
+    <span class="phpdocumentor-element-found-in__line">43</span>
 
     </aside>
 
@@ -507,7 +531,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">48</span>
+    <span class="phpdocumentor-element-found-in__line">51</span>
 
     </aside>
 
@@ -547,7 +571,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Traits/EncoderAware.php"><a href="files/traits-encoderaware.html"><abbr title="Traits/EncoderAware.php">EncoderAware.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9</span>
+    <span class="phpdocumentor-element-found-in__line">13</span>
 
     </aside>
 
@@ -585,7 +609,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">30</span>
+    <span class="phpdocumentor-element-found-in__line">33</span>
 
     </aside>
 
@@ -623,7 +647,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">45</span>
+    <span class="phpdocumentor-element-found-in__line">48</span>
 
     </aside>
 
@@ -661,7 +685,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">43</span>
+    <span class="phpdocumentor-element-found-in__line">46</span>
 
     </aside>
 
@@ -689,6 +713,82 @@
             phpdocumentor-element
             -property
             -protected
+            -static                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="property_jsonRpcCharsetEncoder">
+        $jsonRpcCharsetEncoder
+        <a href="classes/PhpXmlRpc-JsonRpc-Server.html#property_jsonRpcCharsetEncoder" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                                            </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">28</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">protected</span>
+        <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">$jsonRpcCharsetEncoder</span>
+    </code>
+
+    
+    
+    
+
+    
+
+    
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -protected
+            -static                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="property_jsonRpcParser">
+        $jsonRpcParser
+        <a href="classes/PhpXmlRpc-JsonRpc-Server.html#property_jsonRpcParser" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                                            </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">27</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">protected</span>
+        <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">$jsonRpcParser</span>
+    </code>
+
+    
+    
+    
+
+    
+
+    
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -protected
                                                                     "
 >
     <h4 class="phpdocumentor-element__name" id="property_phpvals_encoding_options">
@@ -701,7 +801,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">38</span>
+    <span class="phpdocumentor-element-found-in__line">41</span>
 
     </aside>
 
@@ -759,7 +859,7 @@ when the functions_parameters_type member is set to 'phpvals'.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">27</span>
+    <span class="phpdocumentor-element-found-in__line">30</span>
 
     </aside>
 
@@ -797,7 +897,7 @@ when the functions_parameters_type member is set to 'phpvals'.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Traits/SerializerAware.php"><a href="files/traits-serializeraware.html"><abbr title="Traits/SerializerAware.php">SerializerAware.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9</span>
+    <span class="phpdocumentor-element-found-in__line">13</span>
 
     </aside>
 
@@ -840,7 +940,7 @@ when the functions_parameters_type member is set to 'phpvals'.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">648</span>
+    <span class="phpdocumentor-element-found-in__line">661</span>
 
     </aside>
 
@@ -895,11 +995,11 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">55</span>
+    <span class="phpdocumentor-element-found-in__line">58</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Reimplemented to make us use the correct parser type.</p>
+        <p class="phpdocumentor-summary">Reimplemented to make us use the correct charset encoder type.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -934,7 +1034,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Traits/EncoderAware.php"><a href="files/traits-encoderaware.html"><abbr title="Traits/EncoderAware.php">EncoderAware.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">11</span>
+    <span class="phpdocumentor-element-found-in__line">15</span>
 
     </aside>
 
@@ -968,7 +1068,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">824</span>
+    <span class="phpdocumentor-element-found-in__line">837</span>
 
     </aside>
 
@@ -1012,7 +1112,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">68</span>
+    <span class="phpdocumentor-element-found-in__line">76</span>
 
     </aside>
 
@@ -1051,7 +1151,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Traits/SerializerAware.php"><a href="files/traits-serializeraware.html"><abbr title="Traits/SerializerAware.php">SerializerAware.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">11</span>
+    <span class="phpdocumentor-element-found-in__line">15</span>
 
     </aside>
 
@@ -1085,7 +1185,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">625</span>
+    <span class="phpdocumentor-element-found-in__line">638</span>
 
     </aside>
 
@@ -1158,7 +1258,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">131</span>
+    <span class="phpdocumentor-element-found-in__line">144</span>
 
     </aside>
 
@@ -1232,7 +1332,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">81</span>
+    <span class="phpdocumentor-element-found-in__line">94</span>
 
     </aside>
 
@@ -1317,7 +1417,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">116</span>
+    <span class="phpdocumentor-element-found-in__line">129</span>
 
     </aside>
 
@@ -1390,6 +1490,50 @@ unset($outAr['xmlrpc']);</p>
             -public
                                     -static                    "
 >
+    <h4 class="phpdocumentor-element__name" id="method_setCharsetEncoder">
+        setCharsetEncoder()
+        <a href="classes/PhpXmlRpc-JsonRpc-Server.html#method_setCharsetEncoder" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">66</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">setCharsetEncoder</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$charsetEncoder</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$charsetEncoder</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
     <h4 class="phpdocumentor-element__name" id="method_setEncoder">
         setEncoder()
         <a href="classes/PhpXmlRpc-JsonRpc-Traits-EncoderAware.html#method_setEncoder" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1398,7 +1542,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Traits/EncoderAware.php"><a href="files/traits-encoderaware.html"><abbr title="Traits/EncoderAware.php">EncoderAware.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">19</span>
+    <span class="phpdocumentor-element-found-in__line">23</span>
 
     </aside>
 
@@ -1442,7 +1586,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">834</span>
+    <span class="phpdocumentor-element-found-in__line">847</span>
 
     </aside>
 
@@ -1485,6 +1629,50 @@ unset($outAr['xmlrpc']);</p>
             -public
                                     -static                    "
 >
+    <h4 class="phpdocumentor-element__name" id="method_setParser">
+        setParser()
+        <a href="classes/PhpXmlRpc-JsonRpc-Server.html#method_setParser" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">84</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">setParser</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$parser</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$parser</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
     <h4 class="phpdocumentor-element__name" id="method_setSerializer">
         setSerializer()
         <a href="classes/PhpXmlRpc-JsonRpc-Traits-SerializerAware.html#method_setSerializer" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1493,7 +1681,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Traits/SerializerAware.php"><a href="files/traits-serializeraware.html"><abbr title="Traits/SerializerAware.php">SerializerAware.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">19</span>
+    <span class="phpdocumentor-element-found-in__line">23</span>
 
     </aside>
 
@@ -1537,7 +1725,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">153</span>
+    <span class="phpdocumentor-element-found-in__line">166</span>
 
     </aside>
 
@@ -1639,7 +1827,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">485</span>
+    <span class="phpdocumentor-element-found-in__line">498</span>
 
     </aside>
 
@@ -1683,7 +1871,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">510</span>
+    <span class="phpdocumentor-element-found-in__line">523</span>
 
     </aside>
 
@@ -1738,7 +1926,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">565</span>
+    <span class="phpdocumentor-element-found-in__line">578</span>
 
     </aside>
 
@@ -1793,7 +1981,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">691</span>
+    <span class="phpdocumentor-element-found-in__line">704</span>
 
     </aside>
 
@@ -1841,7 +2029,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">601</span>
+    <span class="phpdocumentor-element-found-in__line">614</span>
 
     </aside>
 
@@ -1899,7 +2087,7 @@ unset($outAr['xmlrpc']);</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="Server.php"><a href="files/server.html">Server.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">682</span>
+    <span class="phpdocumentor-element-found-in__line">695</span>
 
     </aside>
 
@@ -2069,6 +2257,8 @@ unset($outAr['xmlrpc']);</p>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#property_functions_parameters_type">$functions_parameters_type</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#property_is_servicing_multicall">$is_servicing_multicall</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#property_is_servicing_notification">$is_servicing_notification</a></li>
+                                                    <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#property_jsonRpcCharsetEncoder">$jsonRpcCharsetEncoder</a></li>
+                                                    <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#property_jsonRpcParser">$jsonRpcParser</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#property_phpvals_encoding_options">$phpvals_encoding_options</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#property_responseClass">$responseClass</a></li>
                                                     <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-SerializerAware.html#property_serializer">$serializer</a></li>
@@ -2088,8 +2278,10 @@ unset($outAr['xmlrpc']);</p>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#method_parseRequestHeaders">parseRequestHeaders()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#method_serializeDebug">serializeDebug()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#method_service">service()</a></li>
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#method_setCharsetEncoder">setCharsetEncoder()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-EncoderAware.html#method_setEncoder">setEncoder()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#method_setOption">setOption()</a></li>
+                                            <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#method_setParser">setParser()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Traits-SerializerAware.html#method_setSerializer">setSerializer()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#method_execute">execute()</a></li>
                                             <li class=""><a href="classes/PhpXmlRpc-JsonRpc-Server.html#method_fixErrorCodeIfNeeded">fixErrorCodeIfNeeded()</a></li>
