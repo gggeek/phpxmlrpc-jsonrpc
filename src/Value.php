@@ -10,17 +10,24 @@ class Value extends BaseValue
 {
     use SerializerAware;
 
+    protected static $jsonRpcCharsetEncoder;
+
     /**
-     * Reimplemented to make us use the correct parser type.
+     * Reimplemented to make us use the correct charset encoder type.
      *
      * @return Charset
      */
     public function getCharsetEncoder()
     {
-        if (self::$charsetEncoder === null) {
-            self::$charsetEncoder = Charset::instance();
+        if (self::$jsonRpcCharsetEncoder === null) {
+            self::$jsonRpcCharsetEncoder = Charset::instance();
         }
-        return self::$charsetEncoder;
+        return self::$jsonRpcCharsetEncoder;
+    }
+
+    public static function setCharsetEncoder($charsetEncoder)
+    {
+        self::$jsonRpcCharsetEncoder = $charsetEncoder;
     }
 
     /**

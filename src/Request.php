@@ -17,6 +17,9 @@ class Request extends BaseRequest
     use SerializerAware;
     use JsonRpcVersionAware;
 
+    protected static $jsonRpcCharsetEncoder;
+    protected static $jsonRpcParser;
+
     protected $id = null; // used to store request ID internally
     protected $content_type = 'application/json';
     /** @var string[] */
@@ -109,16 +112,21 @@ class Request extends BaseRequest
     }
 
     /**
-     * Reimplemented to make us use the correct parser type.
+     * Reimplemented to make us use the correct charset encoder type.
      *
      * @return Charset
      */
     public function getCharsetEncoder()
     {
-        if (self::$charsetEncoder === null) {
-            self::$charsetEncoder = Charset::instance();
+        if (self::$jsonRpcCharsetEncoder === null) {
+            self::$jsonRpcCharsetEncoder = Charset::instance();
         }
-        return self::$charsetEncoder;
+        return self::$jsonRpcCharsetEncoder;
+    }
+
+    public static function setCharsetEncoder($charsetEncoder)
+    {
+        self::$jsonRpcCharsetEncoder = $charsetEncoder;
     }
 
     /**
@@ -128,10 +136,15 @@ class Request extends BaseRequest
      */
     public function getParser()
     {
-        if (self::$parser === null) {
-            self::$parser = new Parser();
+        if (self::$jsonRpcParser === null) {
+            self::$jsonRpcParser = new Parser();
         }
-        return self::$parser;
+        return self::$jsonRpcParser;
+    }
+
+    public static function setParser($parser)
+    {
+        self::$jsonRpcParser = $parser;
     }
 
     /**

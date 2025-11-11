@@ -24,6 +24,9 @@ class Server extends BaseServer
 
     const OPT_DEBUG_FORMAT = 'debug_format';
 
+    protected static $jsonRpcParser;
+    protected static $jsonRpcCharsetEncoder;
+
     protected static $responseClass = '\\PhpXmlRpc\\JsonRpc\\Response';
 
     //public $allow_system_funcs = false;
@@ -48,16 +51,21 @@ class Server extends BaseServer
     protected $debug_format = 'json5';
 
     /**
-     * Reimplemented to make us use the correct parser type.
+     * Reimplemented to make us use the correct charset encoder type.
      *
      * @return Charset
      */
     public function getCharsetEncoder()
     {
-        if (self::$charsetEncoder === null) {
-            self::$charsetEncoder = Charset::instance();
+        if (self::$jsonRpcCharsetEncoder === null) {
+            self::$jsonRpcCharsetEncoder = Charset::instance();
         }
-        return self::$charsetEncoder;
+        return self::$jsonRpcCharsetEncoder;
+    }
+
+    public static function setCharsetEncoder($charsetEncoder)
+    {
+        self::$jsonRpcCharsetEncoder = $charsetEncoder;
     }
 
     /**
@@ -67,10 +75,15 @@ class Server extends BaseServer
      */
     public function getParser()
     {
-        if (self::$parser === null) {
-            self::$parser = new Parser();
+        if (self::$jsonRpcParser === null) {
+            self::$jsonRpcParser = new Parser();
         }
-        return self::$parser;
+        return self::$jsonRpcParser;
+    }
+
+    public static function setParser($parser)
+    {
+        self::$jsonRpcParser = $parser;
     }
 
     /**
